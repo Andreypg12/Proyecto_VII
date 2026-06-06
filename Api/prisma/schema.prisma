@@ -13,3 +13,209 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+// ============================================
+// ENUMS (Reemplazan a las tablas catálogo)
+// ============================================
+
+enum Rol {
+  ADMIN
+  USUARIO
+  PROFESIONAL
+}
+
+enum EstadoUsuario {
+  ACTIVO
+  INACTIVO
+  BLOQUEADO
+}
+
+enum DisponibilidadProfesional {
+  DISPONIBLE
+  NO_DISPONIBLE
+}
+
+enum Modalidad {
+  PRESENCIAL
+  VIRTUAL
+  HIBRIDA
+}
+
+enum EstadoCita {
+  PENDIENTE
+  ACEPTADA
+  RECHAZADA
+  CANCELADA
+  COMPLETADA
+}
+
+enum EstadoServicio {
+  ACTIVO
+  INACTIVO
+}
+
+// ============================================
+// TABLAS PRINCIPALES
+// ============================================
+
+model CategoriaServicio {
+  id          Int     @id @default(autoincrement())
+  categoria   String  @unique @db.VarChar(100)
+  descripcion String? @db.VarChar(200)
+  estado      Boolean @default(true)
+
+  servicios Servicio[]
+
+  @@map("categoria_servicio")
+}
+
+model Especialidad {
+  id           Int     @id @default(autoincrement())
+  especialidad String  @unique @db.VarChar(100)
+  descripcion  String? @db.VarChar(200)
+  estado       Boolean @default(true)
+
+  profesionales ProfesionalEspecialidad[]
+  servicios     ServicioEspecialidad[]
+
+  @@map("especialidad")
+}
+
+model UbicacionProfesional {
+  id        Int     @id @default(autoincrement())
+  provincia String? @db.VarChar(45)
+  canton    String? @db.VarChar(45)
+  distrito  String? @db.VarChar(45)
+
+  perfilesProfesionales PerfilProfesional[]
+
+  @@map("ubicacion_profesional")
+}
+
+model Usuario {
+  id             Int      @id @default(autoincrement())
+  rol            Rol
+  estado         EstadoUsuario
+  nombre         String   @db.VarChar(100)
+  apellidos      String   @db.VarChar(100)
+  correo         String   @unique @db.VarChar(100)
+  contrasena     String   @db.VarChar(255)
+  telefono       String   @db.VarChar(20)
+  fecha_registro DateTime @default(now())
+
+  perfilProfesional      PerfilProfesional?
+  citasComoCliente       Cita[]   @relation("clienteCitas")
+  reseñasComoCliente     Reseña[] @relation("reseñasCliente")
+  reseñasComoProfesional Reseña[] @relation("reseñasProfesional")
+
+  @@map("usuario")
+}
+
+model PerfilProfesional {
+  id_profesional      Int                      @id @default(autoincrement())
+  usuario             Usuario                  @relation(fields: [id_usuario], references: [id])
+  id_usuario          Int                      @unique
+  disponibilidad      DisponibilidadProfesional
+  ubicacion           UbicacionProfesional?    @relation(fields: [id_ubicacion], references: [id])
+  id_ubicacion        Int?
+  modalidad_preferida Modalidad
+  titulo              String                   @db.VarChar(100)
+  descripcion         String                   @db.VarChar(500)
+  tarifa_base         Int
+  annos_experiencia   Int                      @default(0) @db.TinyInt
+  imagen_profesional  String                   @db.VarChar(255)
+
+  especialidades      ProfesionalEspecialidad[]
+  citas               Cita[]
+  servicios           Servicio[]
+  reseñasRecibidas    Reseña[]
+
+  @@map("perfil_profesional")
+}
+
+model ProfesionalEspecialidad {
+  id_profesional  Int
+  id_especialidad Int
+
+  profesional PerfilProfesional @relation(fields: [id_profesional], references: [id_profesional])
+  especialidad Especialidad      @relation(fields: [id_especialidad], references: [id])
+
+  @@id([id_profesional, id_especialidad])
+  @@map("profesional_especialidad")
+}
+
+model Servicio {
+  id                    Int      @id @default(autoincrement())
+  profesional           PerfilProfesional @relation(fields: [id_profesional], references: [id_profesional])
+  id_profesional        Int
+  categoria             CategoriaServicio @relation(fields: [id_categoria_servicio], references: [id])
+  id_categoria_servicio Int
+  modalidad             Modalidad
+  estado                EstadoServicio
+  nombre_servicio       String   @db.VarChar(100)
+  precio                Decimal  @db.Decimal(10, 2)
+  duracion_estimada     Int      @db.SmallInt // Duración en minutos
+  fecha_creacion        DateTime @default(now())
+
+  especialidades ServicioEspecialidad[]
+
+  @@map("servicio")
+}
+
+model ServicioEspecialidad {
+  id_servicio     Int
+  id_especialidad Int
+
+  servicio     Servicio     @relation(fields: [id_servicio], references: [id])
+  especialidad Especialidad @relation(fields: [id_especialidad], references: [id])
+
+  @@id([id_especialidad, id_servicio])
+  @@map("servicio_especialidad")
+}
+
+model Cita {
+  id                                 Int      @id @default(autoincrement())
+  id_cliente                         Int
+  id_profesional                     Int
+  modalidad                          Modalidad
+  estado                             EstadoCita
+  fecha_creacion                     DateTime @default(now())
+  fecha_hora_inicio                  DateTime
+  fecha_hora_finalizacion_esperada   DateTime
+  fecha_hora_finalizacion_real       DateTime?
+  comentario_cliente                 String?  @db.VarChar(500)
+  comentario_profesional             String?  @db.VarChar(500)
+  monto_estimado                     Decimal  @db.Decimal(10, 2)
+
+  // Relaciones
+  cliente     Usuario          @relation("clienteCitas", fields: [id_cliente], references: [id])
+  profesional PerfilProfesional @relation(fields: [id_profesional], references: [id_profesional])
+  reseña      Reseña?
+
+  @@index([id_cliente])
+  @@index([id_profesional])
+  @@index([estado])
+  @@index([fecha_hora_inicio])
+  @@map("cita")
+}
+
+model Reseña {
+  id               Int      @id @default(autoincrement())
+  id_cita          Int      @unique
+  id_cliente       Int
+  id_profesional   Int
+  puntuacion       Int      @db.TinyInt // Valor de 1 a 5
+  comentario       String?  @db.VarChar(500)
+  fecha_reseña     DateTime @default(now())
+
+  // Relaciones
+  cita             Cita     @relation(fields: [id_cita], references: [id])
+  cliente          Usuario  @relation("reseñasCliente", fields: [id_cliente], references: [id])
+  profesional      Usuario  @relation("reseñasProfesional", fields: [id_profesional], references: [id])
+  perfilProfesional PerfilProfesional? @relation(fields: [id_profesional_perfil], references: [id_profesional])
+  id_profesional_perfil Int?
+
+  @@index([id_profesional])
+  @@index([puntuacion])
+  @@map("reseña")
+}
