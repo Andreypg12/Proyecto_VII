@@ -14,8 +14,9 @@ datasource db {
 }
 
 enum Rol {
-  CLIENTE
   ADMINISTRADOR
+  PROFESIONAL
+  CLIENTE
 }
 
 enum EstadoUsuario {
@@ -83,6 +84,7 @@ model PerfilProfesional {
   especialidades Especialidad[]
   citas          Cita[]
   valoracion     Valoracion[]
+  servicios Servicio[]
 
   @@map("perfil_profesional")
 }
@@ -114,6 +116,9 @@ model Servicio {
 
   modalidad Modalidad
 
+  id_profesional Int
+  profesional    PerfilProfesional @relation(fields: [id_profesional], references: [id])
+
   id_categoria Int
   categoria    CategoriaServicio @relation(fields: [id_categoria], references: [id])
 
@@ -141,7 +146,7 @@ model Cita {
   fecha_hora_inicio                DateTime
   fecha_hora_finalizacion_esperada DateTime
   fecha_hora_finalizacion_real     DateTime
-  comentario_cliente               String   @db.VarChar(500)
+  comentario_cliente               String?  @db.VarChar(500)
   monto_estimado                   Decimal  @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
@@ -198,33 +203,30 @@ model Distrito {
   distrito String @db.VarChar(100)
 
   id_canton Int
-  canton Canton @relation(fields: [id_canton], references: [id])
+  canton    Canton @relation(fields: [id_canton], references: [id])
 
   ubicacion_profesionales UbicacionProfesional[]
 
   @@map("distrito")
-
 }
 
 model Canton {
   id       Int    @id @default(autoincrement())
-  distrito String @db.VarChar(100)
+  canton String @db.VarChar(100)
 
   id_ciudad Int
-  ciudad Ciudad @relation(fields: [id_ciudad], references: [id])
+  ciudad    Ciudad @relation(fields: [id_ciudad], references: [id])
 
   distritos Distrito[]
 
   @@map("canton")
-
 }
 
 model Ciudad {
   id       Int    @id @default(autoincrement())
-  distrito String @db.VarChar(100)
+  ciudad String @db.VarChar(100)
 
   cantones Canton[]
 
   @@map("ciudad")
-
 }
