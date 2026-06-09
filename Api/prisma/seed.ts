@@ -1,5 +1,7 @@
-import { Rol } from "../generated/prisma/enums";
+
 import { prisma } from "../src/config/prisma";
+import { Rol } from "../generated/prisma/enums";
+
 async function main() {
     console.log("Iniciando seed...");
     // 1. Limpieza de datos
