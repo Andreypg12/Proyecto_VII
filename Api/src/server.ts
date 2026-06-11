@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { AppRoutes } from "./routes/routes";
 
+
 const app = express();
 // Acceder a la configuracion del archivo .env
 dotenv.config();
@@ -27,7 +28,9 @@ app.get("/", (req, res) => {
 });
 //---- Definir rutas ----
 app.use(AppRoutes.routes)
+
 // Handle errors middleware
+
 
 //Acceso a las imágenes
 
