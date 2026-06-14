@@ -4,7 +4,7 @@ export const especialidadService = {
 
     async listar() {
         return await prisma.especialidad.findMany({
-            orderBy: { especialidad:"asc" }
+            orderBy: { especialidad: "asc" }
         });
     },
     async obtenerPorId(especialidadId: number) {
@@ -13,6 +13,7 @@ export const especialidadService = {
                 id: especialidadId
             }
         })
-    }
+    },
+
 
 }
