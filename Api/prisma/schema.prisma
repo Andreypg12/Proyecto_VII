@@ -84,7 +84,7 @@ model PerfilProfesional {
   especialidades Especialidad[]
   citas          Cita[]
   valoracion     Valoracion[]
-  servicios Servicio[]
+  servicios      Servicio[]
 
   @@map("perfil_profesional")
 }
@@ -211,7 +211,7 @@ model Distrito {
 }
 
 model Canton {
-  id       Int    @id @default(autoincrement())
+  id     Int    @id @default(autoincrement())
   canton String @db.VarChar(100)
 
   id_ciudad Int
@@ -223,7 +223,7 @@ model Canton {
 }
 
 model Ciudad {
-  id       Int    @id @default(autoincrement())
+  id     Int    @id @default(autoincrement())
   ciudad String @db.VarChar(100)
 
   cantones Canton[]

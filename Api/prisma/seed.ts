@@ -1,6 +1,7 @@
 
 import { prisma } from "../src/config/prisma";
-import { Rol } from "../generated/prisma/enums";
+import { EstadoCita, Modalidad, Rol } from "../generated/prisma/enums";
+import { create } from "node:domain";
 
 async function main() {
     console.log("Iniciando seed...");
@@ -54,21 +55,90 @@ async function main() {
         ],
     });
 
+
+    await prisma.ciudad.create({
+        data: {
+            id: 1,
+            ciudad: "Heredia"
+        }
+    });
+
+    await prisma.canton.create({
+        data: {
+            id: 1,
+            canton: "San Rafael",
+            id_ciudad: 1
+        }
+    });
+
+    await prisma.distrito.create({
+        data: {
+            id: 1,
+            distrito: "Los Angeles",
+            id_canton: 1
+        }
+    });
+
+    await prisma.ubicacionProfesional.create({
+        data: {
+            id: 1,
+            descripcion: "125m Norte de la escuela de Getsemaní",
+            id_distrito: 1
+        }
+    });
+
+
+
     // 3. Recuperar datos para mapeo (Uso de Maps para optimizar)
 
-    const [serv, esp, users] = await Promise.all([
+    const [serv, esp, users, prof, catServ] = await Promise.all([
         prisma.servicio.findMany(),
         prisma.especialidad.findMany(),
         prisma.usuario.findMany(),
+        prisma.perfilProfesional.findMany(),
+        prisma.categoriaServicio.findMany()
     ]);
 
     const servMap = Object.fromEntries(serv.map((c) => [c.servicio, c.id]));
     const espMap = Object.fromEntries(esp.map((e) => [e.especialidad, e.id]));
     const usersNomMap = Object.fromEntries(users.map((p) => [p.nombre, p.id]));
     const userEmailMap = Object.fromEntries(users.map((u) => [u.email, u.id]));
+    const profUserMap = Object.fromEntries(prof.map((u) => [u.id_usuario, u.id]));
+    const catServMap = Object.fromEntries(catServ.map((u) => [u.categoria, u.id]));
 
 
     // 4. Creación de Videojuegos con Relaciones
+
+    const profesional = await prisma.perfilProfesional.create({
+        data: {
+            titulo: "Ingeniero en software",
+            descripcion: "Ingeniero en software dispuesto a seguir los requerimientos necesarios para hacer la aplicación que desees",
+            tarifa_por_hora: 10000,
+            annos_experiencia: 5,
+            imagen_profesional: "image-not-found.jpg",
+            disponibilidad: true,
+            modalidad: Modalidad.VIRTUAL,
+            id_usuario: userEmailMap["alejandro@gmail.com"],
+            id_ubicacion: 1,
+            especialidades: {
+                connect: [
+                    { id: espMap["Desarrollo Web"]}, {id: espMap["Desarrollo Móvil"] }
+                ]
+            }
+        }
+    });
+
+    await prisma.servicio.create({
+        data: {
+            servicio: "Software estandard",
+            precio: 10000,
+            duracion_estimada: 60,
+            estado: true,
+            modalidad: Modalidad.VIRTUAL,
+            id_categoria: catServMap["Mantenimiento y Soporte"],
+            id_profesional: profesional.id
+        }
+    });
     // 5. Relaciones Muchos a Muchos (Plataformas)
     // 6. Creación de Órdenes
     console.log("Seed completado con éxito.");
