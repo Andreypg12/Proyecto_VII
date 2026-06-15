@@ -1,16 +1,19 @@
 import { Router } from "express";
-import { especialidadRoutes } from "./especialidad.routes";
-import { categoriaServicioService } from "../services/categoriaServicio.service";
-import { categoriaServicioRoutes } from "./categoriaServicio.routes";
-import { usuarioRoutes } from "./usuario.routes";
+import { EspecialidadRoutes } from "./especialidad.routes";
+import { CategoriaServicioRoutes } from "./categoriaServicio.routes";
+import { UsuarioRoutes } from "./usuario.routes";
+import { ProfesionalRoutes } from "./profesional.routes";
+import { ServicioRoutes } from "./servicio.routes";
 
 export class AppRoutes {
     static get routes(): Router {
         const router = Router();
         // --Agregar las rutas--
-        router.use('/especialidad', especialidadRoutes.routes)
-        router.use('/categoriaServicio', categoriaServicioRoutes.routes)
-        router.use('/usuario', usuarioRoutes.routes)
+        router.use('/especialidad', EspecialidadRoutes.routes)
+        router.use('/categoriaServicio', CategoriaServicioRoutes.routes)
+        router.use('/usuario', UsuarioRoutes.routes)
+        router.use('/profesional', ProfesionalRoutes.routes)
+        router.use('/servicio', ProfesionalRoutes.routes)
         return router;
     }
 }

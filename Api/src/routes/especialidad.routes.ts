@@ -2,7 +2,7 @@ import { Router } from "express";
 import { especialidadController } from "../controllers/especialidad.controller";
 import { asyncHandler } from "../middlewares/async-handler.middleware";
 
-export class especialidadRoutes {
+export class EspecialidadRoutes {
     static get routes(): Router {
         const router = Router()
         const controller = new especialidadController()
