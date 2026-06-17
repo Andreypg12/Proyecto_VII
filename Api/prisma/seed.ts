@@ -58,24 +58,24 @@ async function main() {
 
     await prisma.ciudad.create({
         data: {
-            id: 1,
+            id: 4,
             ciudad: "Heredia"
         }
     });
 
     await prisma.canton.create({
         data: {
-            id: 1,
+            id: 405,
             canton: "San Rafael",
-            id_ciudad: 1
+            id_ciudad: 4
         }
     });
 
     await prisma.distrito.create({
         data: {
-            id: 1,
+            id: 40504,
             distrito: "Los Angeles",
-            id_canton: 1
+            id_canton: 405
         }
     });
 
@@ -83,7 +83,7 @@ async function main() {
         data: {
             id: 1,
             descripcion: "125m Norte de la escuela de Getsemaní",
-            id_distrito: 1
+            id_distrito: 40504
         }
     });
 

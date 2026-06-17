@@ -69,6 +69,7 @@ model PerfilProfesional {
   annos_experiencia  Int     @db.TinyInt
   imagen_profesional String  @default("image-not-found.jpg") @db.VarChar(255)
   disponibilidad     Boolean @default(true)
+  telefono           String  @db.VarChar(100)
 
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now()) @updatedAt
