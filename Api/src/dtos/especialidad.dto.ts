@@ -23,5 +23,5 @@ export const createEspecialidadSchema = z.object({
 });
 
 export const updateEspecialidadSchema = createEspecialidadSchema.partial();
-export type CreateEspcialidadDto = z.infer<typeof createEspecialidadSchema>;
+export type CreateEspecialidadDto = z.infer<typeof createEspecialidadSchema>;
 export type UpdateEspecialidadDto = z.infer<typeof updateEspecialidadSchema>;

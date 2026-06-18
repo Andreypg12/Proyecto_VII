@@ -1,0 +1,116 @@
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(16px);
+    background: color-mix(in srgb, var(--mat-sys-surface) 86%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--mat-sys-outline) 22%, transparent);
+}
+
+.toolbar {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    height: 76px;
+    padding: 0;
+    background: transparent;
+    gap: 0.75rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: inherit;
+    text-decoration: none;
+}
+
+.brand-icon {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: var(--mat-sys-on-primary);
+    background: linear-gradient(135deg, var(--mat-sys-primary), var(--mat-sys-tertiary));
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+
+    strong {
+        font-size: 1.05rem;
+    }
+
+    small {
+        opacity: 0.72;
+        font-size: 0.75rem;
+    }
+}
+
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 1.5rem;
+
+    a,
+    button {
+        border-radius: 999px;
+    }
+
+    mat-icon {
+        margin-right: 0.35rem;
+    }
+}
+
+.active-link {
+    background: color-mix(in srgb, var(--mat-sys-primary) 14%, transparent);
+    color: var(--mat-sys-primary);
+}
+
+.spacer {
+    flex: 1;
+}
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--mat-sys-surface-container-high) 85%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mat-sys-outline) 20%, transparent);
+    font-size: 0.82rem;
+
+    strong {
+        font-size: 0.7rem;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        color: var(--mat-sys-on-tertiary);
+        background: var(--mat-sys-tertiary);
+    }
+}
+
+.mobile-menu-button {
+    display: none;
+}
+
+@media (max-width: 980px) {
+
+    .desktop-nav,
+    .user-chip,
+    .toolbar>button:not(.mobile-menu-button):not([aria-label]) {
+        display: none;
+    }
+
+    .mobile-menu-button {
+        display: inline-flex;
+    }
+
+    .brand-text small {
+        display: none;
+    }
+}

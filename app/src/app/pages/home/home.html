@@ -1,0 +1,37 @@
+<section class="hero glass-card">
+    <div class="hero-content">
+        <span class="eyebrow">Angular + API REST</span>
+        <h1>GameStore </h1>
+        <p>
+            Gestionar videojuegos, órdenes,
+            usuarios y futuras funcionalidades del sistema.
+        </p>
+        <div class="hero-actions">
+            <button mat-flat-button class="secondary-button">
+                Ver videojuegos
+            </button>
+            <button mat-flat-button class="tertiary-button">
+                Ver órdenes
+            </button>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <mat-icon>sports_esports</mat-icon>
+    </div>
+</section>
+<section class="summary-grid">
+    @for (card of cards(); track card.title) {
+    <mat-card class="dashboard-card glass-card">
+        <mat-card-header>
+            <div class="card-icon ">
+                <mat-icon>{{ card.icon }}</mat-icon>
+            </div>
+            <h2>{{ card.title }}</h2>
+        </mat-card-header>
+        <mat-card-content>
+
+            <p>{{ card.description }}</p>
+        </mat-card-content>
+    </mat-card>
+    }
+</section>

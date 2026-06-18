@@ -1,0 +1,17 @@
+.app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(circle at top left, rgba(103, 58, 183, 0.18), transparent 32rem),
+        radial-gradient(circle at top right, rgba(0, 188, 212, 0.14), transparent 28rem),
+        var(--mat-sys-background);
+    color: var(--mat-sys-on-background);
+}
+
+.content {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 2rem 0 3rem;
+    flex: 1;
+}
