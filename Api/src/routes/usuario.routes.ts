@@ -9,6 +9,7 @@ export class UsuarioRoutes {
         //Rutas
         //localhost:3000/usuario/
         router.get('/', asyncHandler(controller.listar))
+        router.get('/:id', asyncHandler(controller.obtenerPorId))
         return router
     }
 }

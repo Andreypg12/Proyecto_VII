@@ -9,6 +9,8 @@ export class CategoriaServicioRoutes {
         //Rutas
         //localhost:3000/categoriaServicio/
         router.get('/', asyncHandler(controller.listar))
+        router.get('/:id', asyncHandler(controller.obtenerPorId))
+
         return router
     }
 }
