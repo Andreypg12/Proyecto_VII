@@ -1,37 +1,97 @@
-<section class="hero glass-card">
-    <div class="hero-content">
-        <span class="eyebrow">Angular + API REST</span>
-        <h1>GameStore </h1>
-        <p>
-            Gestionar videojuegos, órdenes,
-            usuarios y futuras funcionalidades del sistema.
-        </p>
-        <div class="hero-actions">
-            <button mat-flat-button class="secondary-button">
-                Ver videojuegos
-            </button>
-            <button mat-flat-button class="tertiary-button">
-                Ver órdenes
+<!-- HERO - Estilo Fiverr -->
+<section class="hero-section">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1>Encontrá al <span class="accent">desarrollador</span> perfecto para tu proyecto</h1>
+            <p>Conectá con los mejores desarrolladores verificados de Costa Rica. 
+               Filtrá por especialidad, tecnología y tarifa. Agenda en minutos.</p>
+            
+            <div class="search-wrapper">
+                <div class="search-bar">
+                    <mat-icon class="search-icon">search</mat-icon>
+                    <input type="text" placeholder='Intentá "React developer"' [(ngModel)]="searchQuery" />
+                    <button mat-flat-button class="search-btn" (click)="onSearch()">Buscar</button>
+                </div>
+                <div class="popular-tags">
+                    <span class="tag-label">Popular:</span>
+                    @for (tag of quickTags; track tag) {
+                    <span class="tag" (click)="onTagClick(tag)">{{ tag }}</span>
+                    }
+                </div>
+            </div>
+
+            <div class="trusted-brands">
+                <span class="trusted-label">Confiado por:</span>
+                <div class="brand-icons">
+                    <span class="brand-icon">Google</span>
+                    <span class="brand-icon">Microsoft</span>
+                    <span class="brand-icon">Amazon</span>
+                    <span class="brand-icon">IBM</span>
+                    <span class="brand-icon">Intel</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-code-block">
+                <div class="code-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="code-title">developer.js</span>
+                </div>
+                <div class="code-body">
+                    <div><span class="c">// TechHire CR</span></div>
+                    <div><span class="k">const</span> developer = &#123;</div>
+                    <div>&nbsp;&nbsp;name: <span class="s">"Andrea"</span>,</div>
+                    <div>&nbsp;&nbsp;rol: <span class="s">"Full Stack"</span>,</div>
+                    <div>&nbsp;&nbsp;stack: <span class="s">"React / Node"</span>,</div>
+                    <div>&nbsp;&nbsp;disponible: <span class="k">true</span>,</div>
+                    <div>&nbsp;&nbsp;rating: <span class="n">5.0</span></div>
+                    <div>&#125;;</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ESPECIALIDADES POPULARES - FULL WIDTH -->
+<section class="specialties-section full-width">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-eyebrow">EXPLORAR</span>
+            <h2 class="section-title">Especialidades populares</h2>
+        </div>
+        <div class="spec-grid">
+            @for (spec of specialties(); track spec.label) {
+            <div class="spec-card" (click)="onSpecClick(spec)">
+                <div class="spec-icon-wrapper">
+                    <mat-icon>{{ spec.icon }}</mat-icon>
+                </div>
+                <div class="spec-info">
+                    <h3>{{ spec.label }}</h3>
+                    <p>{{ spec.sub }}</p>
+                </div>
+                <div class="spec-arrow">
+                    <mat-icon>arrow_forward</mat-icon>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- CTA BANNER - FULL WIDTH -->
+<section class="cta-banner full-width">
+    <div class="section-container">
+        <div class="cta-content">
+            <div class="cta-text">
+                <h2>Tu talento, al alcance de <span class="accent">un clic</span></h2>
+                <p>Regístrate como profesional y empezá a recibir solicitudes de cita hoy.</p>
+            </div>
+            <button mat-flat-button class="cta-btn" routerLink="/registro">
+                Unirme como dev <mat-icon>arrow_forward</mat-icon>
             </button>
         </div>
     </div>
-    <div class="hero-visual">
-        <mat-icon>sports_esports</mat-icon>
-    </div>
-</section>
-<section class="summary-grid">
-    @for (card of cards(); track card.title) {
-    <mat-card class="dashboard-card glass-card">
-        <mat-card-header>
-            <div class="card-icon ">
-                <mat-icon>{{ card.icon }}</mat-icon>
-            </div>
-            <h2>{{ card.title }}</h2>
-        </mat-card-header>
-        <mat-card-content>
-
-            <p>{{ card.description }}</p>
-        </mat-card-content>
-    </mat-card>
-    }
 </section>
