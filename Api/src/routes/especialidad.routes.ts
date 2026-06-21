@@ -11,6 +11,7 @@ export class EspecialidadRoutes {
         //Rutas
         //localhost:3000/especialidad/
         router.get('/', asyncHandler(controller.listar))
+        router.get('/:id', asyncHandler(controller.obtenerPorId))
         router.post(
             "/",
             validateRequest(createEspecialidadSchema),
