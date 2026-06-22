@@ -2,11 +2,11 @@
     <mat-toolbar class="toolbar">
         <a class="brand" routerLink="/">
             <span class="brand-icon">
-                <mat-icon>sports_esports</mat-icon>
+                <mat-icon>code</mat-icon>
             </span>
             <span class="brand-text">
-                <strong>GameStore</strong>
-                <small>Tienda de videojuegos</small>
+                <strong>TechHire</strong>
+                <small>Marketplace Devs</small>
             </span>
         </a>
         <nav class="desktop-nav">
@@ -42,14 +42,14 @@
             <span>{{ user.nombre }}</span>
             <strong>{{ user.role }}</strong>
         </div>
-        <button mat-flat-button color="primary" (click)="logoutUser.emit()">
+        <button mat-flat-button color="primary" (click)="logoutUser.emit()" class="btn-primary">
             Salir
         </button>
         } @else {
-        <button mat-stroked-button color="primary" (click)="loginClient.emit()">
+        <button mat-stroked-button color="primary" (click)="loginClient.emit()" class="btn-outline">
             Cliente demo
         </button>
-        <button mat-flat-button color="primary" (click)="loginAdmin.emit()">
+        <button mat-flat-button color="primary" (click)="loginAdmin.emit()" class="btn-primary">
             Admin demo
         </button>
         }

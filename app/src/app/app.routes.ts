@@ -2,6 +2,7 @@ import { Routes } from "@angular/router";
 import { MainLayout } from "./layout/main-layout/main-layout";
 import { Home } from "./pages/home/home";
 import { UsuariosList } from "./pages/usuarios/usuarios-list/usuarios-list";
+import { NotFound } from './pages/not-found/not-found';
 
 export const routes: Routes = [
     {
@@ -14,6 +15,6 @@ export const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: '',
+        component: NotFound,
     },
 ];

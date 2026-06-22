@@ -1,34 +1,56 @@
 import { Component, signal } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
+import { Router, RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-interface ContentCard {
-  title: string;
-  description: string;
+
+interface Specialty {
+  label: string;
+  sub: string;
   icon: string;
+  bg: string;
+  color: string;
 }
+
 @Component({
   selector: 'app-home',
-  imports: [MatCardModule, MatIconModule, MatButtonModule],
   templateUrl: './home.html',
-  styleUrl: './home.css',
+  styleUrls: ['./home.css'],
+  standalone: true,
+  imports: [
+    FormsModule,
+    MatIconModule,
+    MatButtonModule,
+    RouterLink,
+  ],
 })
 export class Home {
-  cards = signal<ContentCard[]>([
-    {
-      title: 'Videojuegos',
-      description: 'Mantenimiento de catálogo, categorías, etiquetas y plataformas.',
-      icon: 'sports_esports',
-    },
-    {
-      title: 'Órdenes',
-      description: 'Registro de compras y detalle de videojuegos vendidos.',
-      icon: 'receipt_long',
-    },
-    {
-      title: 'Usuarios',
-      description: 'Gestión de usuarios, roles y acceso al sistema.',
-      icon: 'group',
-    },
+  searchQuery = '';
+
+  quickTags = ['React', 'Node.js', 'Mobile', 'DevOps', 'Full Stack', 'Bases de datos'];
+
+  specialties = signal<Specialty[]>([
+    { label: 'Desarrollo Frontend', sub: 'React, Angular, Vue',   icon: 'dashboard',    bg: '#1e1b4b', color: '#818cf8' },
+    { label: 'Backend & APIs',      sub: 'Node, Python, Java',    icon: 'dns',          bg: '#042f2e', color: '#34d399' },
+    { label: 'Mobile',              sub: 'Flutter, React Native', icon: 'phone_android',bg: '#2e1065', color: '#c084fc' },
+    { label: 'DevOps & Cloud',      sub: 'AWS, Docker, CI/CD',    icon: 'cloud',        bg: '#0c1a3a', color: '#60a5fa' },
+    { label: 'Bases de datos',      sub: 'MySQL, PostgreSQL',     icon: 'storage',      bg: '#1e293b', color: '#94a3b8' },
+    { label: 'QA & Testing',        sub: 'Jest, Cypress, E2E',    icon: 'bug_report',   bg: '#052e16', color: '#4ade80' },
   ]);
+
+  constructor(private router: Router) {}
+
+  onSearch() {
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/servicios'], { queryParams: { q: this.searchQuery } });
+    }
+  }
+
+  onTagClick(tag: string) {
+    this.router.navigate(['/servicios'], { queryParams: { especialidad: tag } });
+  }
+
+  onSpecClick(spec: Specialty) {
+    this.router.navigate(['/servicios'], { queryParams: { categoria: spec.label } });
+  }
 }
