@@ -16,9 +16,6 @@ async function main() {
         prisma.perfilProfesional,
         prisma.usuario,
         prisma.ubicacionProfesional,
-        prisma.distrito,
-        prisma.canton,
-        prisma.ciudad
     ]
 
     for (const model of models) {
@@ -56,38 +53,6 @@ async function main() {
     });
 
 
-    await prisma.ciudad.create({
-        data: {
-            id: 4,
-            ciudad: "Heredia"
-        }
-    });
-
-    await prisma.canton.create({
-        data: {
-            id: 405,
-            canton: "San Rafael",
-            id_ciudad: 4
-        }
-    });
-
-    await prisma.distrito.create({
-        data: {
-            id: 40504,
-            distrito: "Los Angeles",
-            id_canton: 405
-        }
-    });
-
-    await prisma.ubicacionProfesional.create({
-        data: {
-            id: 1,
-            descripcion: "125m Norte de la escuela de Getsemaní",
-            id_distrito: 40504
-        }
-    });
-
-
 
     // 3. Recuperar datos para mapeo (Uso de Maps para optimizar)
 
@@ -115,16 +80,28 @@ async function main() {
             descripcion: "Ingeniero en software dispuesto a seguir los requerimientos necesarios para hacer la aplicación que desees",
             tarifa_por_hora: 10000,
             annos_experiencia: 5,
+            telefono: "87716188",
             imagen_profesional: "image-not-found.jpg",
             disponibilidad: true,
             modalidad: Modalidad.VIRTUAL,
             id_usuario: userEmailMap["alejandro@gmail.com"],
-            id_ubicacion: 1,
             especialidades: {
                 connect: [
-                    { id: espMap["Desarrollo Web"]}, {id: espMap["Desarrollo Móvil"] }
+                    { id: espMap["Desarrollo Web"] }, { id: espMap["Desarrollo Móvil"] }
                 ]
             }
+        }
+    });
+
+    await prisma.ubicacionProfesional.create({
+        data: {
+            id: 1,
+            descripcion: "125m Norte de la escuela de Getsemaní",
+            id_distrito: 40504,
+            distrito: "Los Ángeles",
+            canton: "San Rafael",
+            ciudad: "Heredia",
+            id_profesional: profesional.id
         }
     });
 

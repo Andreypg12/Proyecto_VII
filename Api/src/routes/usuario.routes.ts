@@ -9,7 +9,13 @@ export class UsuarioRoutes {
         //Rutas
         //localhost:3000/usuario/
         router.get('/', asyncHandler(controller.listar))
+
         router.get('/:id', asyncHandler(controller.obtenerPorId))
+
+        router.put('/bloquear/:id', asyncHandler(controller.bloquear))
+
+        router.put('/activar/:id', asyncHandler(controller.activar))
+
         return router
     }
 }
