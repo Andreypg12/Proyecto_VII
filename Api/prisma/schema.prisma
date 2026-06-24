@@ -21,7 +21,6 @@ enum Rol {
 
 enum EstadoUsuario {
   ACTIVO
-  INACTIVO
   BLOQUEADO
 }
 
@@ -79,8 +78,7 @@ model PerfilProfesional {
   id_usuario Int
   usuario    Usuario @relation(fields: [id_usuario], references: [id])
 
-  id_ubicacion Int
-  ubicacion    UbicacionProfesional @relation(fields: [id_ubicacion], references: [id])
+  ubicaciones UbicacionProfesional[]
 
   especialidades Especialidad[]
   citas          Cita[]
@@ -189,45 +187,15 @@ model Valoracion {
 
 model UbicacionProfesional {
   id          Int    @id @default(autoincrement())
+  id_distrito Int
   descripcion String @db.VarChar(500)
 
-  id_distrito Int
-  distrito    Distrito @relation(fields: [id_distrito], references: [id])
+  distrito String @db.VarChar(200)
+  canton   String @db.VarChar(200)
+  ciudad   String @db.VarChar(200)
 
-  profesionales PerfilProfesional[]
+  id_profesional Int
+  profesional    PerfilProfesional @relation(fields: [id_profesional], references: [id])
 
   @@map("ubicacion_profesional")
-}
-
-model Distrito {
-  id       Int    @id @default(autoincrement())
-  distrito String @db.VarChar(100)
-
-  id_canton Int
-  canton    Canton @relation(fields: [id_canton], references: [id])
-
-  ubicacion_profesionales UbicacionProfesional[]
-
-  @@map("distrito")
-}
-
-model Canton {
-  id     Int    @id @default(autoincrement())
-  canton String @db.VarChar(100)
-
-  id_ciudad Int
-  ciudad    Ciudad @relation(fields: [id_ciudad], references: [id])
-
-  distritos Distrito[]
-
-  @@map("canton")
-}
-
-model Ciudad {
-  id     Int    @id @default(autoincrement())
-  ciudad String @db.VarChar(100)
-
-  cantones Canton[]
-
-  @@map("ciudad")
 }

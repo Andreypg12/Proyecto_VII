@@ -58,19 +58,40 @@ export const createProfesionalSchema = z.object({
     disponibilidad: z
         .boolean(),
     modalidad: z.enum(["PRESENCIAL", "VIRTUAL", "HÍBRIDA"]),
-    /* telefono: z
+    telefono: z
         .string()
         .trim()
-        .min(3, "El nombre debe tener al menos 3 caracteres")
-        .max(100, "El nombre no puede superar 100 caracteres"), */ //falta
+        .min(3, "El teléfono debe tener al menos 3 caracteres")
+        .max(100, "El teléfono no puede superar 100 caracteres"),
+    especialidades_Ids: z
+        .array(z.number().int().positive())
+        .optional(),
     ubicacion: z
         .object({
+            id_distrito: z
+                .number()
+                .int()
+                .positive("El id del distrito debe ser mayor a 0"),
             descripcion: z
                 .string()
                 .trim()
                 .min(3, "La descripcion deben tener al menos 3 caracteres")
                 .max(500, "La descripcion no pueden superar los 500 caracteres"),
-            id_ubicacion: z.number()
+            distrito: z
+                .string()
+                .trim()
+                .min(3, "El distrito deben tener al menos 3 caracteres")
+                .max(200, "El distrito no pueden superar los 200 caracteres"),
+            canton: z
+                .string()
+                .trim()
+                .min(3, "El canton deben tener al menos 3 caracteres")
+                .max(200, "El canton no pueden superar los 200 caracteres"),
+            ciudad: z
+                .string()
+                .trim()
+                .min(3, "La ciudad deben tener al menos 3 caracteres")
+                .max(200, "La ciudad no pueden superar los 200 caracteres"),
         })
 });
 
