@@ -1,12 +1,42 @@
 import { prisma } from "../config/prisma";
+import { Rol } from "../../generated/prisma/enums";
+import { ro } from "zod/locales";
 
 export const usuarioService = {
 
-    async listar() {
+    async listar(filtros?: {buscar?: string; rol?: Rol}) {
+        const where: any = {};
+
+        if (filtros?.buscar) {
+            const textoBusqueda = filtros.buscar.trim();
+
+            where.OR = [
+                { nombre: { contains: textoBusqueda } },
+                { apellidos: { contains: textoBusqueda } },
+                { email: { contains: textoBusqueda } },
+            ];
+        }
+
+        if (filtros?.rol) {
+            where.rol = filtros.rol;
+        }
+
         return await prisma.usuario.findMany({
-            orderBy: { id: "asc" }
+            where,
+            select: {
+                id: true,
+                nombre: true,
+                apellidos: true,
+                email: true,
+                rol: true,
+                estado: true,
+            },
+            orderBy: {
+                id: "asc",
+            },
         });
     },
+
     async obtenerPorId(usuarioId: number) {
         return await prisma.usuario.findFirst({
             where: {

@@ -7,11 +7,33 @@ import { especialidadService } from "../services/especialidad.service";
 export class categoriaServicioController {
     listar = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const categorias = await categoriaServicioService.listar();
+
+            const buscar = req.query.buscar as string | undefined;
+            const estado = req.query.estado as string | undefined;
+
+            const estadoParam = req.query.estado as string | undefined;
+
+            if (
+                estadoParam !== undefined &&
+                estadoParam !== "true" &&
+                estadoParam !== "false"
+            ) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    success: false,
+                    message: "Estado inválido. Use true o false."
+                });
+            }
+
+            const categorias = await categoriaServicioService.listar({
+                buscar,
+                estado: estado !== undefined ? estado === "true" : undefined
+            });
+
             return res.status(StatusCodes.OK).json({
                 success: true,
                 data: categorias,
             });
+
         } catch (error) {
             console.error(error);
             next(error);
