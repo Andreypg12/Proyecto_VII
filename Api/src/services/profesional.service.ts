@@ -26,13 +26,23 @@ export const profesionalService = {
             const where: any = {};
 
             if (filtros?.nombre) {
-                const searchTerm = filtros.nombre.trim();
-                where.usuario = {
-                    OR: [
-                        { nombre: { contains: searchTerm, mode: 'insensitive' } },
-                        { apellidos: { contains: searchTerm, mode: 'insensitive' } }
-                    ]
-                };
+                const searchTerm = filtros.nombre.trim().toLowerCase();
+                where.OR = [
+                    {
+                        usuario: {
+                            nombre: {
+                                contains: searchTerm,
+                            }
+                        }
+                    },
+                    {
+                        usuario: {
+                            apellidos: {
+                                contains: searchTerm,
+                            }
+                        }
+                    }
+                ];
             }
 
             if (filtros?.modalidad) {

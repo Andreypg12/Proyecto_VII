@@ -13,7 +13,7 @@ export class AppRoutes {
         router.use('/categoriaServicio', CategoriaServicioRoutes.routes)
         router.use('/usuario', UsuarioRoutes.routes)
         router.use('/profesional', ProfesionalRoutes.routes)
-        router.use('/servicio', ProfesionalRoutes.routes)
+        router.use('/servicio', ServicioRoutes.routes)
         return router;
     }
 }

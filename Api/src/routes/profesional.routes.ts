@@ -20,6 +20,7 @@ export class ProfesionalRoutes {
             validateRequest(createProfesionalSchema),
             asyncHandler(controller.crear)
         )
+        
         router.put(
             "/:id",
             validateRequest(updateProfesionalSchema),

@@ -108,6 +108,7 @@ async function main() {
     await prisma.servicio.create({
         data: {
             servicio: "Software estandard",
+            descripcion: "Servicio de creación de software standard",
             precio: 10000,
             duracion_estimada: 60,
             estado: true,

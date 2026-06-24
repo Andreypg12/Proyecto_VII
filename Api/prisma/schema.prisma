@@ -106,6 +106,7 @@ model Especialidad {
 model Servicio {
   id                Int     @id @default(autoincrement())
   servicio          String  @db.VarChar(100)
+  descripcion       String?  @db.VarChar(500)
   precio            Decimal @db.Decimal(10, 2)
   duracion_estimada Int     @db.SmallInt
   estado            Boolean @default(true)
