@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import { categoriaServicioService } from "../services/categoriaServicio.service";
 import { success } from "zod";
 import { especialidadService } from "../services/especialidad.service";
+import { sendSuccess } from "../utils/http-response";
+import { parseId } from "../utils/parse-id";
 
 export class categoriaServicioController {
     listar = async (req: Request, res: Response, next: NextFunction) => {
@@ -64,5 +66,27 @@ export class categoriaServicioController {
             console.error(error);
             next(error)
         }
-    }
+    };
+
+    crear = async (request: Request, response: Response, next: NextFunction) => {
+    const categoriaServicio = await categoriaServicioService.create(request.body);
+
+        return sendSuccess(
+            response,
+            categoriaServicio,
+            "Categoría de servicio creada correctamente",
+            StatusCodes.CREATED
+        );
+    };
+
+    actualizar = async (request: Request, response: Response, next: NextFunction) => {
+        const id = parseId(request.params.id);
+        const categoriaServicio = await categoriaServicioService.actualizar(id, request.body);
+
+        return sendSuccess(
+            response,
+            categoriaServicio,
+            "Categoría de servicio actualizada correctamente"
+        );
+    };
 }

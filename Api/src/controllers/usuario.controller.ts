@@ -65,6 +65,28 @@ export class usuarioController {
         }
     };
 
+    crear = async (request: Request, response: Response, next: NextFunction) => {
+        const usuario = await usuarioService.crear(request.body);
+
+        return sendSuccess(
+            response,
+            usuario,
+            "Usuario creado correctamente",
+            StatusCodes.CREATED
+        );
+    };
+
+    actualizar = async (request: Request, response: Response, next: NextFunction) => {
+        const id = parseId(request.params.id);
+        const usuario = await usuarioService.actualizar(id, request.body);
+
+        return sendSuccess(
+            response,
+            usuario,
+            "Usuario actualizado correctamente"
+        );
+    };
+
     bloquear = async (request: Request, response: Response, next: NextFunction) => {
         const id = parseId(request.params.id);
         const usuario = await usuarioService.bloquear(id);

@@ -1,5 +1,7 @@
 import { Container } from "winston";
 import { prisma } from "../config/prisma";
+import { create } from "node:domain";
+import { CreateCategoriaServicioDto, UpdateCategoriaServicioDto } from "../dtos/categoriaServicio.dto";
 
 export const categoriaServicioService = {
 
@@ -36,6 +38,41 @@ export const categoriaServicioService = {
                 id: categoriaServicioID
             }
         })
-    }
+    },
+
+    async create(data: CreateCategoriaServicioDto) {
+
+        return await prisma.categoriaServicio.create({
+            data: {
+                categoria: data.categoria,
+                descripcion: data.descripcion,
+                estado: data.estado ?? true,
+            },
+            select: {
+                id: true,
+                categoria: true,
+                descripcion: true,
+                estado: true,
+            },
+        });
+    },
+
+    async actualizar(id: number, data: UpdateCategoriaServicioDto) {
+
+        return await prisma.categoriaServicio.update({
+            where: { id },
+            data: {
+                categoria: data.categoria,
+                descripcion: data.descripcion,
+                estado: data.estado,
+            },
+            select: {
+                id: true,
+                categoria: true,
+                descripcion: true,
+                estado: true,
+            },
+        });
+    },
 
 }
