@@ -54,7 +54,7 @@ export class categoriaServicioController {
             }
 
             //Obtiene la categoría del servicio por medio del servicio y valida que no sea null, Retorna Not found en caso que entre en la validación
-            const categoriaServicio = await especialidadService.obtenerPorId(id);
+            const categoriaServicio = await categoriaServicioService.obtenerPorId(id);
             if (!categoriaServicio) {
             return response.status(StatusCodes.NOT_FOUND).json({ success: false, message: "Categoría no encontrada."})
             }

@@ -1,17 +1,93 @@
-<a routerLink="/categoria-servicio">Volver</a>
+<div class="detail-container">
 
-@if (loading()) {
-    <p>Cargando detalle...</p>
-}
+    <a
+        class="back-btn"
+        routerLink="/categoria-servicio">
 
-@if (error()) {
-    <p>{{ error() }}</p>
-}
+        ← Volver
 
-@if (categoria()) {
-    <h2>{{ categoria()?.categoria }}</h2>
+    </a>
 
-    <p><strong>ID:</strong> {{ categoria()?.id }}</p>
-    <p><strong>Descripción:</strong> {{ categoria()?.descripcion }}</p>
-    <p><strong>Estado:</strong> {{ categoria()?.estado ? 'Activo' : 'Inactivo' }}</p>
-}
+    @if (loading()) {
+
+        <div class="card">
+
+            Cargando...
+
+        </div>
+
+    }
+
+    @if (error()) {
+
+        <div class="card error">
+
+            {{ error() }}
+
+        </div>
+
+    }
+
+    @if (categoria()) {
+
+    <div class="detail-card">
+
+        <div class="detail-header">
+
+            <h1>{{ categoria()?.categoria }}</h1>
+
+            <span
+                class="badge"
+                [class.active]="categoria()?.estado">
+
+                {{ categoria()?.estado ? 'Activo' : 'Inactivo' }}
+
+            </span>
+
+        </div>
+
+        <div class="detail-body">
+
+            <div>
+
+                <label>ID</label>
+
+                <p>{{ categoria()?.id }}</p>
+
+            </div>
+
+            <div>
+
+                <label>Nombre de la categoría</label>
+
+                <p>{{ categoria()?.categoria }}</p>
+
+            </div>
+
+            <div>
+
+                <label>Descripción</label>
+
+                <p>{{ categoria()?.descripcion }}</p>
+
+            </div>
+
+        </div>
+
+        <div class="actions">
+
+            <button class="btn btn-edit">
+                Actualizar
+            </button>
+
+            <button class="btn btn-delete">
+                Borrar
+            </button>
+
+        </div>
+
+    </div>
+
+    }
+
+</div>
