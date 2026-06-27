@@ -1,0 +1,37 @@
+<h2>Categorías de servicio</h2>
+
+@if (loading()) {
+    <p>Cargando categorías...</p>
+}
+
+@if (error()) {
+    <p>{{ error() }}</p>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Categoría</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Detalle</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (categoria of categorias(); track categoria.id) {
+            <tr>
+                <td>{{ categoria.id }}</td>
+                <td>{{ categoria.categoria }}</td>
+                <td>{{ categoria.descripcion }}</td>
+                <td>{{ categoria.estado ? 'Activo' : 'Inactivo' }}</td>
+                <td>
+                    <a [routerLink]="['/categoria-servicio', categoria.id]">
+                        Ver
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

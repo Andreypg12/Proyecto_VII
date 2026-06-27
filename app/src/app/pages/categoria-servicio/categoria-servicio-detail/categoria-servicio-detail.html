@@ -1,0 +1,17 @@
+<a routerLink="/categoria-servicio">Volver</a>
+
+@if (loading()) {
+    <p>Cargando detalle...</p>
+}
+
+@if (error()) {
+    <p>{{ error() }}</p>
+}
+
+@if (categoria()) {
+    <h2>{{ categoria()?.categoria }}</h2>
+
+    <p><strong>ID:</strong> {{ categoria()?.id }}</p>
+    <p><strong>Descripción:</strong> {{ categoria()?.descripcion }}</p>
+    <p><strong>Estado:</strong> {{ categoria()?.estado ? 'Activo' : 'Inactivo' }}</p>
+}
