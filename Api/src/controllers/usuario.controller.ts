@@ -4,15 +4,35 @@ import { usuarioService } from "../services/usuario.service";
 import { success } from "zod";
 import { parseId } from "../utils/parse-id";
 import { sendSuccess } from "../utils/http-response";
+import { Rol } from "../../generated/prisma/enums";
 
 export class usuarioController {
     listar = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const usuarios = await usuarioService.listar();
+
+            //as Rol es para castear el valor porque claramente es un Rol
+            const buscar = req.query.buscar as string | undefined;
+            const rol = req.query.rol as Rol | undefined;
+
+            //Si existe un rol dentro de la variable pero que no está dentro del enum 
+            if (rol && !Object.values(Rol).includes(rol)) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    success: false,
+                    message: "Rol inválido"
+                });
+            }
+
+
+            const usuarios = await usuarioService.listar({
+                buscar,
+                rol
+            });
+            
             return res.status(StatusCodes.OK).json({
                 success: true,
                 data: usuarios,
             });
+
         } catch (error) {
             console.error(error);
             next(error);
@@ -43,6 +63,28 @@ export class usuarioController {
             console.error(error);
             next(error);
         }
+    };
+
+    crear = async (request: Request, response: Response, next: NextFunction) => {
+        const usuario = await usuarioService.crear(request.body);
+
+        return sendSuccess(
+            response,
+            usuario,
+            "Usuario creado correctamente",
+            StatusCodes.CREATED
+        );
+    };
+
+    actualizar = async (request: Request, response: Response, next: NextFunction) => {
+        const id = parseId(request.params.id);
+        const usuario = await usuarioService.actualizar(id, request.body);
+
+        return sendSuccess(
+            response,
+            usuario,
+            "Usuario actualizado correctamente"
+        );
     };
 
     bloquear = async (request: Request, response: Response, next: NextFunction) => {
