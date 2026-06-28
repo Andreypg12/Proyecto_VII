@@ -264,9 +264,10 @@
     }
 
     .brand-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
     }
 
     .brand-icon mat-icon {
@@ -275,7 +276,22 @@
         height: 16px;
     }
 
-    .brand {
-        gap: 0.5rem;
-    }
+
+    
+}
+
+.brand {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

@@ -29,9 +29,14 @@
     }
 
     @if (!loading() && !error()) {
+
+        <p class="result-count">
+            Categorías encontradas: {{ totalCategorias() }}
+        </p>
+
         <app-tabla-listado
             [columnas]="columnas"
-            [datos]="categorias()"
+            [datos]="categoriasFiltradas()"
             rutaDetalle="/categoria-servicio"
             (cambiarEstado)="cambiarEstado($event)"
         />

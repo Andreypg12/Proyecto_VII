@@ -75,11 +75,46 @@ export const categoriaServicioService = {
         });
     },
 
-    async cambiarEstado(id: number, estado: boolean) {
-        return prisma.categoriaServicio.update({
-            where: { id },
-            data: { estado },
-        });
+    async activar(id: number) {
+        const categoria = await this.obtenerPorId(id);
+
+        if (categoria != null) {
+            return await prisma.categoriaServicio.update({
+                where: { id },
+                data: {
+                    estado: true
+                },
+                select: {
+                    id: true,
+                    categoria: true,
+                    descripcion: true,
+                    estado: true,
+                },
+            });
+        }
+
+        return false;
+    },
+
+    async desactivar(id: number) {
+        const categoria = await this.obtenerPorId(id);
+
+        if (categoria != null) {
+            return await prisma.categoriaServicio.update({
+                where: { id },
+                data: {
+                    estado: false
+                },
+                select: {
+                    id: true,
+                    categoria: true,
+                    descripcion: true,
+                    estado: true,
+                },
+            });
+        }
+
+        return false;
     },
 
 }

@@ -90,21 +90,63 @@ export class categoriaServicioController {
         );
     };
 
-    cambiarEstado = async (req: Request, res: Response, next: NextFunction) => {
+    activar = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const id = parseId(req.params.id);
-            const { estado } = req.body;
+            const id = Number(req.params.id);
 
-            if (typeof estado !== 'boolean') {
-                return res.status(400).json({
+            if (Number.isNaN(id)) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
                     success: false,
-                    message: 'El estado debe ser true o false',
+                    message: "ID inválido",
                 });
             }
 
-            const categoria = await categoriaServicioService.cambiarEstado(id, estado);
+            const categoria = await categoriaServicioService.activar(id);
 
-            return sendSuccess(res, categoria, 'Estado actualizado correctamente');
+            if (!categoria) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    success: false,
+                    message: "Categoría no encontrada",
+                });
+            }
+
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                message: "Categoría activada correctamente",
+                data: categoria,
+            });
+
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    desactivar = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = Number(req.params.id);
+
+            if (Number.isNaN(id)) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    success: false,
+                    message: "ID inválido",
+                });
+            }
+
+            const categoria = await categoriaServicioService.desactivar(id);
+
+            if (!categoria) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    success: false,
+                    message: "Categoría no encontrada",
+                });
+            }
+
+            return res.status(StatusCodes.OK).json({
+                success: true,
+                message: "Categoría desactivada correctamente",
+                data: categoria,
+            });
+
         } catch (error) {
             next(error);
         }

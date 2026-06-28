@@ -12,7 +12,7 @@ export class CategoriaServicioService {
     private apiUrl = `${environment.apiUrl}/categoriaServicio`;
 
     listar(buscar?: string, estado?: boolean) {
-        let params: any = {};
+        const params: any = {};
 
         if (buscar && buscar.trim() !== '') {
             params.buscar = buscar.trim();
@@ -22,16 +22,18 @@ export class CategoriaServicioService {
             params.estado = estado;
         }
 
-        return this.http.get<any>(this.apiUrl, { params });
+        return this.http.get<ApiResponse<CategoriaServicio[]>>(this.apiUrl, { params });
     }
 
     obtenerPorId(id: number) {
         return this.http.get<ApiResponse<CategoriaServicio>>(`${this.apiUrl}/${id}`);
     }
 
-    cambiarEstado(id: number, estado: boolean) {
-        return this.http.patch<any>(`${this.apiUrl}/categoria-servicio/${id}/estado`, {
-            estado,
-        });
+    activar(id: number) {
+        return this.http.put<any>(`${this.apiUrl}/activar/${id}`, {});
+    }
+
+    desactivar(id: number) {
+        return this.http.put<any>(`${this.apiUrl}/desactivar/${id}`, {});
     }
 }

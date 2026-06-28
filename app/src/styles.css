@@ -253,9 +253,9 @@
 }
 
 .action-btn.view {
-    background: rgba(59, 130, 246, .12);
-    color: #60a5fa;
-    border-color: rgba(59, 130, 246, .35);
+    background: rgb(200, 241, 243);
+    color: rgb(32, 34, 34);
+    border-color: rgb(154, 176, 177, .35);
 }
 
 .action-btn.view:hover {
