@@ -15,11 +15,15 @@ export class ProfesionalRoutes {
         //  locahost:3000/profesional/1
         router.get('/:id', asyncHandler(controller.obtenerPorId))
 
+        router.put('/cambiarDisponibilidad/:id', asyncHandler(controller.cambiarDisponibilidad))
+
+
         router.post(
             "/",
             validateRequest(createProfesionalSchema),
             asyncHandler(controller.crear)
         )
+        
         router.put(
             "/:id",
             validateRequest(updateProfesionalSchema),

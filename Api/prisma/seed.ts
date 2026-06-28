@@ -221,8 +221,6 @@ async function main() {
                 id_profesional: profesional.id
             }
         ]
-    });
-
 
     console.log("Seed completado con éxito.");
 }

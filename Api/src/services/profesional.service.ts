@@ -26,13 +26,23 @@ export const profesionalService = {
             const where: any = {};
 
             if (filtros?.nombre) {
-                const searchTerm = filtros.nombre.trim();
-                where.usuario = {
-                    OR: [
-                        { nombre: { contains: searchTerm, mode: 'insensitive' } },
-                        { apellidos: { contains: searchTerm, mode: 'insensitive' } }
-                    ]
-                };
+                const searchTerm = filtros.nombre.trim().toLowerCase();
+                where.OR = [
+                    {
+                        usuario: {
+                            nombre: {
+                                contains: searchTerm,
+                            }
+                        }
+                    },
+                    {
+                        usuario: {
+                            apellidos: {
+                                contains: searchTerm,
+                            }
+                        }
+                    }
+                ];
             }
 
             if (filtros?.modalidad) {
@@ -259,6 +269,36 @@ export const profesionalService = {
         }
 
         return profesional
+    },
+
+    async cambiarDisponibilidad(id: number) {
+
+        const profesional = await this.obtenerPorId(id);
+
+        if (!profesional) {
+            throw AppError.notFound(`Profesional con ID ${id} no encontrado`);
+        }
+
+        return await prisma.perfilProfesional.update({
+            where: { id },
+            data: {
+                disponibilidad: !profesional.disponibilidad
+            },
+            select: {
+                id: true,
+                disponibilidad: true,
+                telefono: true,
+                usuario: {
+                    select: {
+                        id: true,
+                        email: true,
+                        nombre: true,
+                        apellidos: true,
+                        rol: true
+                    }
+                },
+            }
+        });
     },
 
     async validateEspecialidades(especialidadIds: number[]) {

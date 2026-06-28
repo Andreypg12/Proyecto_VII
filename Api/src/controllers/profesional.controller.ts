@@ -65,4 +65,14 @@ export class ProfesionalController {
             "Profesional actualizado correctamente"
         );
     };
+
+    cambiarDisponibilidad = async (request: Request, response: Response, next: NextFunction) => {
+            const id = parseId(request.params.id);
+            const profesional = await profesionalService.cambiarDisponibilidad(id);
+            return sendSuccess(
+                response,
+                profesional,
+                "Cambio de disponibilidad completado"
+            );
+        };
 }
