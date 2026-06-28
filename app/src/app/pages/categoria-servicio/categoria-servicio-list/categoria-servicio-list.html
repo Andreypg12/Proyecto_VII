@@ -1,11 +1,20 @@
 <div class="page-container">
 
+    <a class="back-btn" routerLink="/">
+        ← Volver
+    </a>
+
     <div class="page-header">
-        <div>
-            <h1>Categorías de servicio</h1>
-            <p>Administra las categorías disponibles dentro de la plataforma.</p>
-        </div>
+        <h1>Categorías de servicio</h1>
+        <p>Administra las categorías disponibles dentro de la plataforma.</p>
     </div>
+
+    <app-filtros-generales
+        [showSearch]="true"
+        [showStatus]="true"
+        (searchChange)="onBuscarChange($event)"
+        (statusChange)="onEstadoChange($event)"
+    />
 
     @if (loading()) {
         <div class="status-card">
@@ -21,68 +30,16 @@
 
     @if (!loading() && !error()) {
 
-    <div class="table-card">
+        <p class="result-count">
+            Categorías encontradas: {{ totalCategorias() }}
+        </p>
 
-        <table>
-
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Categoría</th>
-                    <th>Descripción</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                @for (categoria of categorias(); track categoria.id) {
-
-                <tr>
-
-                    <td>{{ categoria.id }}</td>
-
-                    <td>
-                        <strong>{{ categoria.categoria }}</strong>
-                    </td>
-
-                    <td>
-                        {{ categoria.descripcion }}
-                    </td>
-
-                    <td>
-
-                        <span
-                            class="badge"
-                            [class.active]="categoria.estado"
-                            [class.inactive]="!categoria.estado">
-
-                            {{ categoria.estado ? 'Activo' : 'Inactivo' }}
-
-                        </span>
-                    </td>
-
-                    <td>
-                        <a
-                            class="btn btn-primary"
-                            [routerLink]="['/categoria-servicio', categoria.id]">
-
-                            Ver
-
-                        </a>
-                    </td>
-
-                </tr>
-
-                }
-
-            </tbody>
-
-        </table>
-
-    </div>
-
+        <app-tabla-listado
+            [columnas]="columnas"
+            [datos]="categoriasFiltradas()"
+            rutaDetalle="/categoria-servicio"
+            (cambiarEstado)="cambiarEstado($event)"
+        />
     }
 
 </div>

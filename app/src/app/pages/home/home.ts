@@ -36,6 +36,8 @@ export class Home {
     { label: 'DevOps & Cloud',      sub: 'AWS, Docker, CI/CD',    icon: 'cloud',        bg: '#0c1a3a', color: '#60a5fa' },
     { label: 'Bases de datos',      sub: 'MySQL, PostgreSQL',     icon: 'storage',      bg: '#1e293b', color: '#94a3b8' },
     { label: 'QA & Testing',        sub: 'Jest, Cypress, E2E',    icon: 'bug_report',   bg: '#052e16', color: '#4ade80' },
+    { label: 'Diseño UI/UX',             sub: 'Figma, Adobe XD, Wireframes', icon: 'palette',      bg: '#4c0519', color: '#f43f5e' },
+    { label: 'Aseguramiento de Calidad', sub: 'Manual, Automation, Plan', icon: 'verified_user', bg: '#131e3a', color: '#38bdf8' },
   ]);
 
   constructor(private router: Router) {}

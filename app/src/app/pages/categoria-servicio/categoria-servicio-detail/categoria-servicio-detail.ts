@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CategoriaServicioService } from '../../../core/services/categoria-servicio';
+import { CategoriaServicioService } from '../../../core/services/categoria-servicio.service';
 import { CategoriaServicio } from '../../../core/models/categoriaServicio.model';
+import { DetalleObjeto, CampoDetalle } from '../../../shared/components/detalle-objeto/detalle-objeto';
 
 @Component({
     selector: 'app-categoria-servicio-detail',
-    imports: [RouterLink],
+    imports: [RouterLink, DetalleObjeto],
     templateUrl: './categoria-servicio-detail.html',
     styleUrl: './categoria-servicio-detail.css'
 })
@@ -16,6 +17,12 @@ export class CategoriaServicioDetail {
     categoria = signal<CategoriaServicio | null>(null);
     loading = signal(false);
     error = signal<string | null>(null);
+
+    campos: CampoDetalle[] = [
+        { etiqueta: 'ID', campo: 'id' },
+        { etiqueta: 'Nombre de la categoría', campo: 'categoria' },
+        { etiqueta: 'Descripción', campo: 'descripcion', completo: true },
+    ];
 
     ngOnInit(): void {
         const id = Number(this.route.snapshot.paramMap.get('id'));

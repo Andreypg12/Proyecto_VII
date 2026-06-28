@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { toast } from 'ngx-sonner';
+import Swal from 'sweetalert2';
 
 export enum ToastType {
     Success = 'success',
@@ -71,5 +72,27 @@ export class NotificationService {
 
     error(message: string, title?: string | null, duration = 5000, redirectTo?: string): void {
         this.show({ title, message, type: ToastType.Error, duration, redirectTo });
+    }
+
+    async confirmar(
+        titulo: string,
+        mensaje: string,
+        textoBoton = 'Aceptar',
+        textoCancelar = 'Cancelar'
+    ): Promise<boolean> {
+
+        const result = await Swal.fire({
+            title: titulo,
+            text: mensaje,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: textoBoton,
+            cancelButtonText: textoCancelar,
+            reverseButtons: true,
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#6b7280'
+        });
+
+        return result.isConfirmed;
     }
 }

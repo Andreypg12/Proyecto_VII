@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import { AppRoutes } from "./routes/routes";
+import path from "path";
 
 
 const app = express();
@@ -26,6 +27,12 @@ app.get("/", (req, res) => {
         message: "API de videojuegos funcionando correctamente",
     });
 });
+
+
+//Acceder al logo
+app.use("/uploads",express.static(path.join(process.cwd(), "assets/uploads")));
+
+
 //---- Definir rutas ----
 app.use(AppRoutes.routes);
 
