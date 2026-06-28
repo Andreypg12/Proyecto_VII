@@ -87,23 +87,14 @@ export class usuarioController {
         );
     };
 
-    bloquear = async (request: Request, response: Response, next: NextFunction) => {
+    cambiarEstado = async (request: Request, response: Response, next: NextFunction) => {
         const id = parseId(request.params.id);
-        const usuario = await usuarioService.bloquear(id);
+        const usuario = await usuarioService.cambiarEstado(id);
         return sendSuccess(
             response,
             usuario,
-            "Usuario bloqueado correctamente"
+            "Cambio de estado completado"
         );
     };
 
-    activar = async (request: Request, response: Response, next: NextFunction) => {
-        const id = parseId(request.params.id);
-        const usuario = await usuarioService.activar(id);
-        return sendSuccess(
-            response,
-            usuario,
-            "Usuario activado correctamente"
-        );
-    };
 }

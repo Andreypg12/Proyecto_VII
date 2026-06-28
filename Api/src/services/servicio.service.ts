@@ -267,6 +267,29 @@ export const servicioService = {
         })
     },
 
+    async cambiarEstado(id: number) {
+
+        const servicio = await this.obtenerPorId(id);
+
+        if (!servicio) {
+            throw AppError.notFound(`Servicio con ID ${id} no encontrado`);
+        }
+
+        return await prisma.servicio.update({
+            where: { id },
+            data: {
+                estado: !servicio.estado
+            },
+            select: {
+                id: true,
+                servicio: true,
+                estado: true,
+                modalidad: true,
+                precio: true
+            }
+        });
+    },
+
     async validateEspecialidades(especialidadIds: number[]) {
         const count = await prisma.especialidad.count({
             where: {

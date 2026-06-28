@@ -54,7 +54,7 @@ export class ServicioController {
             }
         }
     };
-    
+
     obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {
         //Nullish Coalescing (??)
         const rawId = Array.isArray(request.params.id) ? request.params.id[0] : request.params.id;
@@ -86,6 +86,16 @@ export class ServicioController {
             response,
             servicio,
             "Servicio actualizado correctamente"
+        );
+    };
+
+    cambiarEstado = async (request: Request, response: Response, next: NextFunction) => {
+        const id = parseId(request.params.id);
+        const servicio = await servicioService.cambiarEstado(id);
+        return sendSuccess(
+            response,
+            servicio,
+            "Cambio de estado completado"
         );
     };
 }

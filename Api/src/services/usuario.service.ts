@@ -2,10 +2,11 @@ import { prisma } from "../config/prisma";
 import { Rol } from "../../generated/prisma/enums";
 import { ro } from "zod/locales";
 import { CreateUsuarioDto, UpdateUsuarioDto } from "../dtos/usuario.dto";
+import { AppError } from "../utils/app-error";
 
 export const usuarioService = {
 
-    async listar(filtros?: {buscar?: string; rol?: Rol}) {
+    async listar(filtros?: { buscar?: string; rol?: Rol }) {
         const where: any = {};
 
         if (filtros?.buscar) {
@@ -46,8 +47,8 @@ export const usuarioService = {
         })
     },
 
-    async crear(data: CreateUsuarioDto){
-        
+    async crear(data: CreateUsuarioDto) {
+
         return await prisma.usuario.create({
 
             data: {
@@ -93,39 +94,30 @@ export const usuarioService = {
     },
 
 
-    async bloquear(id: number) {
+    async cambiarEstado(id: number) {
 
-        const usuario = await this.obtenerPorId(id)
+        const usuario = await this.obtenerPorId(id);
 
-        if (usuario != null) {
-            const usuarioActualizado = await prisma.usuario.update({
-                where: { id },
-                data: {
-                    estado: "BLOQUEADO"
-                }
-            })
-            return usuarioActualizado
+        if (!usuario) {
+            throw AppError.notFound(`Usuario con ID ${id} no encontrado`);
         }
-        return false
 
+        const nuevoEstado = usuario.estado == "ACTIVO" ? "BLOQUEADO" : "ACTIVO";
+
+        return await prisma.usuario.update({
+            where: { id },
+            data: {
+                estado: nuevoEstado
+            },
+            select: {
+                id: true,
+                nombre: true,
+                apellidos: true,
+                email: true,
+                estado: true,
+                rol: true,
+                updateAt: true
+            }
+        });
     },
-
-    async activar(id: number) {
-
-        const usuario = await this.obtenerPorId(id)
-
-        if (usuario != null) {
-            const usuarioActualizado = await prisma.usuario.update({
-                where: { id },
-                data: {
-                    estado: "ACTIVO"
-                }
-            })
-
-            return usuarioActualizado
-        }
-        return false
-
-    },
-
 }

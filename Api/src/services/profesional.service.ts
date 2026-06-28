@@ -271,6 +271,36 @@ export const profesionalService = {
         return profesional
     },
 
+    async cambiarDisponibilidad(id: number) {
+
+        const profesional = await this.obtenerPorId(id);
+
+        if (!profesional) {
+            throw AppError.notFound(`Profesional con ID ${id} no encontrado`);
+        }
+
+        return await prisma.perfilProfesional.update({
+            where: { id },
+            data: {
+                disponibilidad: !profesional.disponibilidad
+            },
+            select: {
+                id: true,
+                disponibilidad: true,
+                telefono: true,
+                usuario: {
+                    select: {
+                        id: true,
+                        email: true,
+                        nombre: true,
+                        apellidos: true,
+                        rol: true
+                    }
+                },
+            }
+        });
+    },
+
     async validateEspecialidades(especialidadIds: number[]) {
         const count = await prisma.especialidad.count({
             where: {

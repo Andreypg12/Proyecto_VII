@@ -14,9 +14,7 @@ export class UsuarioRoutes {
 
         router.get('/:id', asyncHandler(controller.obtenerPorId))
 
-        router.put('/bloquear/:id', asyncHandler(controller.bloquear))
-
-        router.put('/activar/:id', asyncHandler(controller.activar))
+        router.put('/cambiarEstado/:id', asyncHandler(controller.cambiarEstado))
 
         router.post("/", validateRequest(createUsuarioSchema), asyncHandler(controller.crear))
         router.put("/:id", validateRequest(updateUsuarioSchema), asyncHandler(controller.actualizar))

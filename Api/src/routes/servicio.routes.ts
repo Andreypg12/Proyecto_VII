@@ -14,6 +14,8 @@ export class ServicioRoutes {
 
         router.get('/:id', asyncHandler(controller.obtenerPorId))
 
+        router.put('/cambiarEstado/:id', asyncHandler(controller.cambiarEstado))
+
         router.post(
             "/",
             validateRequest(createServicioSchema),
@@ -21,10 +23,10 @@ export class ServicioRoutes {
         )
 
         router.put(
-                    "/:id",
-                    validateRequest(updateServicioSchema),
-                    asyncHandler(controller.actualizar)
-                )
+            "/:id",
+            validateRequest(updateServicioSchema),
+            asyncHandler(controller.actualizar)
+        )
 
         return router
     }
