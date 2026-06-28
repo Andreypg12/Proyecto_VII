@@ -1,0 +1,16 @@
+<div class="filter-card">
+
+    @if (showSearch()) {
+    <input type="text" placeholder="Buscar por nombre..." [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)" />
+    }
+
+    @if (showStatus()) {
+    <select [ngModel]="status()" (ngModelChange)="onStatusChange($event)">
+        <option value="">Todos</option>
+        <option value="true">Activos</option>
+        <option value="false">Inactivos</option>
+    </select>
+    }
+
+</div>

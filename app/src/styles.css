@@ -1,1 +1,368 @@
 /* You can add global styles to this file, and also import other style files */
+
+
+
+/*Estilos Generales reutilizables*/
+
+.page-container {
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.page-header p {
+    margin-top: .3rem;
+    color: #94a3b8;
+}
+
+.table-card {
+    background: #111827;
+    border-radius: 16px;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 1rem;
+    color: #94a3b8;
+    border-bottom: 1px solid #334155;
+}
+
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #1f2937;
+}
+
+.badge {
+    padding: .35rem .8rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: .85rem;
+}
+
+.badge.active {
+    background: #16a34a;
+    color: white;
+}
+
+.badge.inactive {
+    background: #dc2626;
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: .5rem;
+}
+
+/*Generales de listados*/
+/* CONTENEDOR GENERAL */
+.page-container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #f8fafc;
+}
+
+.page-header p {
+    margin-top: .4rem;
+    color: #94a3b8;
+}
+
+/* BOTÓN VOLVER */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    margin-bottom: .8rem;
+    text-decoration: none;
+    color: #e2e8f0;
+    font-weight: 600;
+}
+
+.back-btn:hover {
+    color: #bae6fd;
+}
+
+/* FILTROS */
+.filter-card {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-card input,
+.filter-card select {
+    padding: .75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #f8fafc;
+    outline: none;
+}
+
+/* TABLA GENERAL */
+.table-card {
+    background: #111827;
+    border-radius: 16px;
+    padding: 1rem;
+    overflow-x: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    text-align: left;
+    padding: 1rem;
+    color: #94a3b8;
+    font-size: .85rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    border-bottom: 1px solid #334155;
+}
+
+.data-table td {
+    padding: 1rem;
+    color: #e5e7eb;
+    border-bottom: 1px solid #1f2937;
+}
+
+.data-table tr:hover {
+    background: rgba(255, 255, 255, .03);
+}
+
+/* BADGES */
+.badge {
+    display: inline-block;
+    padding: .35rem .8rem;
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 700;
+}
+
+.badge.active {
+    background: rgba(22, 163, 74, .18);
+    color: #4ade80;
+}
+
+.badge.inactive {
+    background: rgba(220, 38, 38, .18);
+    color: #f87171;
+}
+
+/* ESTADOS */
+.status-card {
+    background: #1f2937;
+    color: #f8fafc;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+.status-card.error {
+    border-left: 4px solid #ef4444;
+}
+
+/* DETALLE GENERAL */
+.detail-card {
+    background: #111827;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.detail-item {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.detail-item span {
+    display: block;
+    color: #94a3b8;
+    font-size: .8rem;
+    margin-bottom: .3rem;
+}
+
+.detail-item strong {
+    color: #f8fafc;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: .45rem .85rem;
+
+    font-size: .85rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.action-btn mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.action-btn.view {
+    background: rgba(59, 130, 246, .12);
+    color: #60a5fa;
+    border-color: rgba(59, 130, 246, .35);
+}
+
+.action-btn.view:hover {
+    background: rgba(59, 130, 246, .22);
+}
+
+.action-btn.activate {
+    background: rgba(22, 163, 74, .14);
+    color: #4ade80;
+    border-color: rgba(22, 163, 74, .35);
+}
+
+.action-btn.activate:hover {
+    background: rgba(22, 163, 74, .24);
+}
+
+.action-btn.deactivate {
+    background: rgba(239, 68, 68, .14);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, .35);
+}
+
+.action-btn.deactivate:hover {
+    background: rgba(239, 68, 68, .24);
+}
+
+/*Generales de listados Cierre*/
+
+
+
+
+
+
+/*Generales de detalles*/
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.detail-header h1 {
+    margin: 0;
+    color: #f8fafc;
+}
+
+.detail-header p {
+    margin-top: .4rem;
+    color: #94a3b8;
+}
+
+.detail-item.full {
+    grid-column: 1 / -1;
+}
+
+.btn {
+    border: none;
+    padding: .7rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-delete {
+    background: #dc2626;
+    color: white;
+}
+
+/*Generales de detalles Cierre*/
+
+
+.actions {
+    display: flex;
+    gap: .75rem;
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: .55rem 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn:hover {
+    opacity: .9;
+}
+
+.btn-view {
+    background: #2563eb;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-success {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}

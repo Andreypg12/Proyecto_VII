@@ -9,13 +9,29 @@ import { CategoriaServicio } from '../models/categoriaServicio.model';
 })
 export class CategoriaServicioService {
     private readonly http = inject(HttpClient);
-    private readonly apiUrl = `${environment.apiUrl}/categoriaServicio`;
+    private apiUrl = `${environment.apiUrl}/categoriaServicio`;
 
-    listar() {
-        return this.http.get<ApiResponse<CategoriaServicio[]>>(this.apiUrl);
+    listar(buscar?: string, estado?: boolean) {
+        let params: any = {};
+
+        if (buscar && buscar.trim() !== '') {
+            params.buscar = buscar.trim();
+        }
+
+        if (estado !== undefined) {
+            params.estado = estado;
+        }
+
+        return this.http.get<any>(this.apiUrl, { params });
     }
 
     obtenerPorId(id: number) {
         return this.http.get<ApiResponse<CategoriaServicio>>(`${this.apiUrl}/${id}`);
+    }
+
+    cambiarEstado(id: number, estado: boolean) {
+        return this.http.patch<any>(`${this.apiUrl}/categoria-servicio/${id}/estado`, {
+            estado,
+        });
     }
 }

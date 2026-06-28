@@ -42,7 +42,7 @@ export class categoriaServicioController {
         }
     };
 
-    obtenerPorId = async (request: Request, response: Response, next: NextFunction) =>{
+    obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {
         try {
             //Se obtienen los datos
             const rawId = Array.isArray(request.params.id) ? request.params[0] : request.params.id;
@@ -50,18 +50,18 @@ export class categoriaServicioController {
 
             //Valida si es un numero, en caso que no sea un numero devuelve status code Bad request e ID Inválido
             if (isNaN(id)) {
-                return response.status(StatusCodes.BAD_REQUEST).json({ success: false, message: "ID inválido"})
+                return response.status(StatusCodes.BAD_REQUEST).json({ success: false, message: "ID inválido" })
             }
 
             //Obtiene la categoría del servicio por medio del servicio y valida que no sea null, Retorna Not found en caso que entre en la validación
             const categoriaServicio = await categoriaServicioService.obtenerPorId(id);
             if (!categoriaServicio) {
-            return response.status(StatusCodes.NOT_FOUND).json({ success: false, message: "Categoría no encontrada."})
+                return response.status(StatusCodes.NOT_FOUND).json({ success: false, message: "Categoría no encontrada." })
             }
 
             //Respuesta correcta
-            return response.status(StatusCodes.OK).json({ success: true, data: categoriaServicio});
-            
+            return response.status(StatusCodes.OK).json({ success: true, data: categoriaServicio });
+
         } catch (error) {
             console.error(error);
             next(error)
@@ -69,7 +69,7 @@ export class categoriaServicioController {
     };
 
     crear = async (request: Request, response: Response, next: NextFunction) => {
-    const categoriaServicio = await categoriaServicioService.create(request.body);
+        const categoriaServicio = await categoriaServicioService.create(request.body);
 
         return sendSuccess(
             response,
@@ -88,5 +88,25 @@ export class categoriaServicioController {
             categoriaServicio,
             "Categoría de servicio actualizada correctamente"
         );
+    };
+
+    cambiarEstado = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = parseId(req.params.id);
+            const { estado } = req.body;
+
+            if (typeof estado !== 'boolean') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'El estado debe ser true o false',
+                });
+            }
+
+            const categoria = await categoriaServicioService.cambiarEstado(id, estado);
+
+            return sendSuccess(res, categoria, 'Estado actualizado correctamente');
+        } catch (error) {
+            next(error);
+        }
     };
 }

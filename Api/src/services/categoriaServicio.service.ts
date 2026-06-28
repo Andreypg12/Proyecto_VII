@@ -5,12 +5,12 @@ import { CreateCategoriaServicioDto, UpdateCategoriaServicioDto } from "../dtos/
 
 export const categoriaServicioService = {
 
-    async listar(filtros?: {buscar?: string, estado?: boolean}) {
+    async listar(filtros?: { buscar?: string, estado?: boolean }) {
         const where: any = {};
 
         if (filtros?.buscar) {
             where.categoria = {
-            contains: filtros.buscar.trim(),
+                contains: filtros.buscar.trim(),
             }
         }
 
@@ -20,15 +20,15 @@ export const categoriaServicioService = {
 
         return await prisma.categoriaServicio.findMany({
             where,
-            select:{
+            select: {
                 id: true,
                 categoria: true,
                 descripcion: true,
                 estado: true,
             },
-            orderBy: 
-            { 
-                categoria:"asc" 
+            orderBy:
+            {
+                categoria: "asc"
             }
         });
     },
@@ -72,6 +72,13 @@ export const categoriaServicioService = {
                 descripcion: true,
                 estado: true,
             },
+        });
+    },
+
+    async cambiarEstado(id: number, estado: boolean) {
+        return prisma.categoriaServicio.update({
+            where: { id },
+            data: { estado },
         });
     },
 

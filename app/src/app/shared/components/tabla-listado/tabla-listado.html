@@ -1,0 +1,52 @@
+<div class="table-card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                @for (columna of columnas(); track columna.campo) {
+                <th>{{ columna.titulo }}</th>
+                }
+
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @for (item of datos(); track item.id) {
+            <tr>
+                @for (columna of columnas(); track columna.campo) {
+                <td>
+                    @if (columna.tipo === 'estado') {
+                    <span class="badge" [class.active]="item[columna.campo]" [class.inactive]="!item[columna.campo]">
+                        {{ item[columna.campo] ? 'Activo' : 'Inactivo' }}
+                    </span>
+                    } @else {
+                    {{ item[columna.campo] }}
+                    }
+                </td>
+                }
+
+                <td class="actions">
+                    <a class="action-btn view" [routerLink]="[rutaDetalle(), item.id]">
+                        <mat-icon>visibility</mat-icon>
+                        Ver
+                    </a>
+
+                    @if (item.estado !== undefined) {
+                    @if (item.estado) {
+                    <button class="action-btn deactivate" (click)="cambiarEstado.emit(item)">
+                        <mat-icon>toggle_off</mat-icon>
+                        Desactivar
+                    </button>
+                    } @else {
+                    <button class="action-btn activate" (click)="cambiarEstado.emit(item)">
+                        <mat-icon>toggle_on</mat-icon>
+                        Activar
+                    </button>
+                    }
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,93 +1,24 @@
-<div class="detail-container">
+<div class="page-container">
 
-    <a
-        class="back-btn"
-        routerLink="/categoria-servicio">
-
+    <a class="back-btn" routerLink="/categoria-servicio">
         ← Volver
-
     </a>
 
     @if (loading()) {
-
-        <div class="card">
-
-            Cargando...
-
-        </div>
-
+    <div class="status-card">
+        Cargando categoría...
+    </div>
     }
 
     @if (error()) {
-
-        <div class="card error">
-
-            {{ error() }}
-
-        </div>
-
+    <div class="status-card error">
+        {{ error() }}
+    </div>
     }
 
     @if (categoria()) {
-
-    <div class="detail-card">
-
-        <div class="detail-header">
-
-            <h1>{{ categoria()?.categoria }}</h1>
-
-            <span
-                class="badge"
-                [class.active]="categoria()?.estado">
-
-                {{ categoria()?.estado ? 'Activo' : 'Inactivo' }}
-
-            </span>
-
-        </div>
-
-        <div class="detail-body">
-
-            <div>
-
-                <label>ID</label>
-
-                <p>{{ categoria()?.id }}</p>
-
-            </div>
-
-            <div>
-
-                <label>Nombre de la categoría</label>
-
-                <p>{{ categoria()?.categoria }}</p>
-
-            </div>
-
-            <div>
-
-                <label>Descripción</label>
-
-                <p>{{ categoria()?.descripcion }}</p>
-
-            </div>
-
-        </div>
-
-        <div class="actions">
-
-            <button class="btn btn-edit">
-                Actualizar
-            </button>
-
-            <button class="btn btn-delete">
-                Borrar
-            </button>
-
-        </div>
-
-    </div>
-
+    <app-detalle-objeto titulo="Categoría de servicio" descripcion="Detalle de la categoría seleccionada."
+        [objeto]="categoria()" [campos]="campos" />
     }
 
 </div>

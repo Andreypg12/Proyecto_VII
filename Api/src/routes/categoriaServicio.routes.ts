@@ -15,6 +15,7 @@ export class CategoriaServicioRoutes {
         
         router.post("/", validateRequest(createCategoriaServicioSchema), asyncHandler(controller.crear))
         router.put("/:id", validateRequest(updateCategoriaServicioSchema), asyncHandler(controller.actualizar))
+        router.patch('/:id/estado', controller.cambiarEstado);
 
         return router
     }
