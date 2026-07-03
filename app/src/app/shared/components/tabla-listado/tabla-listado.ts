@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 export interface ColumnaTabla {
   titulo: string;
   campo: string;
-  tipo?: 'texto' | 'estado';
+  tipo?: 'texto' | 'estado' | 'estado-usuario';
 }
 
 @Component({

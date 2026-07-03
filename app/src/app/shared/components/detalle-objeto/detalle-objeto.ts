@@ -3,7 +3,7 @@ import { Component, input } from '@angular/core';
 export interface CampoDetalle {
   etiqueta: string;
   campo: string;
-  tipo?: 'texto' | 'estado';
+  tipo?: 'texto' | 'estado' | 'estado-usuario';
   completo?: boolean;
 }
 

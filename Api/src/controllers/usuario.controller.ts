@@ -27,7 +27,7 @@ export class usuarioController {
                 buscar,
                 rol
             });
-            
+
             return res.status(StatusCodes.OK).json({
                 success: true,
                 data: usuarios,
@@ -87,13 +87,27 @@ export class usuarioController {
         );
     };
 
-    cambiarEstado = async (request: Request, response: Response, next: NextFunction) => {
+    activar = async (request: Request, response: Response, next: NextFunction) => {
         const id = parseId(request.params.id);
-        const usuario = await usuarioService.cambiarEstado(id);
+
+        const usuario = await usuarioService.activar(id);
+
         return sendSuccess(
             response,
             usuario,
-            "Cambio de estado completado"
+            "Usuario activado correctamente"
+        );
+    };
+
+    bloquear = async (request: Request, response: Response, next: NextFunction) => {
+        const id = parseId(request.params.id);
+
+        const usuario = await usuarioService.bloquear(id);
+
+        return sendSuccess(
+            response,
+            usuario,
+            "Usuario bloqueado correctamente"
         );
     };
 

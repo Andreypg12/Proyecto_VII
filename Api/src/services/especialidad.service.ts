@@ -4,7 +4,7 @@ import { CreateEspecialidadDto, UpdateEspecialidadDto } from "../dtos/especialid
 
 export const especialidadService = {
 
-    async listar(filtros?: {buscar?: string; estado?: boolean}) {
+    async listar(filtros?: { buscar?: string; estado?: boolean }) {
 
         const where: any = {};
 
@@ -26,9 +26,9 @@ export const especialidadService = {
                 especialidad: true,
                 estado: true,
             },
-            orderBy: 
+            orderBy:
             {
-                especialidad: "asc" 
+                especialidad: "asc"
             },
         });
     },
@@ -57,17 +57,17 @@ export const especialidadService = {
 
                 perfiles_profesionales: data.perfiles_profesionales && data.perfiles_profesionales.length > 0
                     ? {
-                        connect: data.perfiles_profesionales.map((id: number) => ({ 
-                            id 
+                        connect: data.perfiles_profesionales.map((id: number) => ({
+                            id
                         })),
                     }
                     : undefined,
 
-                
+
                 servicios: data.servicios && data.servicios.length > 0
                     ? {
-                        connect: data.servicios.map((id: number) => ({ 
-                            id 
+                        connect: data.servicios.map((id: number) => ({
+                            id
                         })),
                     }
                     : undefined,
@@ -84,7 +84,7 @@ export const especialidadService = {
 
         //
         return prisma.especialidad.update({
-            where: {id},
+            where: { id },
             data: {
                 especialidad: data.especialidad,
                 descripcion: data.descripcion,
@@ -96,7 +96,7 @@ export const especialidadService = {
                     }
                     : undefined,
 
-                
+
                 servicios: data.servicios
                     ? {
                         connect: data.servicios.map((id) => ({ id })),
@@ -109,7 +109,49 @@ export const especialidadService = {
             },
         });
     },
-    
+
+    async activar(id: number) {
+        const especialidad = await this.obtenerPorId(id);
+
+        if (!especialidad) {
+            return false;
+        }
+
+        return await prisma.especialidad.update({
+            where: { id },
+            data: {
+                estado: true
+            },
+            select: {
+                id: true,
+                especialidad: true,
+                descripcion: true,
+                estado: true,
+            },
+        });
+    },
+
+    async desactivar(id: number) {
+        const especialidad = await this.obtenerPorId(id);
+
+        if (!especialidad) {
+            return false;
+        }
+
+        return await prisma.especialidad.update({
+            where: { id },
+            data: {
+                estado: false
+            },
+            select: {
+                id: true,
+                especialidad: true,
+                descripcion: true,
+                estado: true,
+            },
+        });
+    },
+
 
 
 }

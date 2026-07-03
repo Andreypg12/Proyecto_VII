@@ -1,0 +1,24 @@
+<div class="page-container">
+
+    <a class="back-btn" routerLink="/usuarios">
+        ← Volver
+    </a>
+
+    @if (loading()) {
+    <div class="status-card">
+        Cargando usuario...
+    </div>
+    }
+
+    @if (error()) {
+    <div class="status-card error">
+        {{ error() }}
+    </div>
+    }
+
+    @if (usuario()) {
+    <app-detalle-objeto titulo="Usuario" descripcion="Detalle del usuario seleccionado." [objeto]="usuario()"
+        [campos]="campos" />
+    }
+
+</div>

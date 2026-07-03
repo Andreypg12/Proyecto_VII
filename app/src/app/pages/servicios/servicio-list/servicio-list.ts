@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 import { RouterLink } from '@angular/router';
-import { ServicioService } from '../../../core/services/servicio-service';
+import { ServicioService } from '../../../core/services/servicio-service.service';
 import { Servicio } from '../../../core/models/servicio.model';
 
 @Component({
