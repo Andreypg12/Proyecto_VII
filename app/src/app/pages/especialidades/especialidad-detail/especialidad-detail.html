@@ -1,0 +1,24 @@
+<div class="page-container">
+
+    <a class="back-btn" routerLink="/especialidades">
+        ← Volver
+    </a>
+
+    @if (loading()) {
+    <div class="status-card">
+        Cargando especialidad...
+    </div>
+    }
+
+    @if (error()) {
+    <div class="status-card error">
+        {{ error() }}
+    </div>
+    }
+
+    @if (especialidad()) {
+    <app-detalle-objeto titulo="Especialidad" descripcion="Detalle de la especialidad seleccionada."
+        [objeto]="especialidad()" [campos]="campos" />
+    }
+
+</div>

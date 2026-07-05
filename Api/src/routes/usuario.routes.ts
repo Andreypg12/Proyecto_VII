@@ -6,19 +6,30 @@ import { validateRequest } from "../middlewares/validate-request.middleware";
 
 export class UsuarioRoutes {
     static get routes(): Router {
-        const router = Router()
-        const controller = new usuarioController()
-        //Rutas
-        //localhost:3000/usuario/
-        router.get('/', asyncHandler(controller.listar))
+        const router = Router();
+        const controller = new usuarioController();
 
-        router.get('/:id', asyncHandler(controller.obtenerPorId))
+        // GET
+        router.get('/', asyncHandler(controller.listar));
+        router.get('/:id', asyncHandler(controller.obtenerPorId));
 
-        router.put('/cambiarEstado/:id', asyncHandler(controller.cambiarEstado))
+        // POST / PUT
+        router.post(
+            "/",
+            validateRequest(createUsuarioSchema),
+            asyncHandler(controller.crear)
+        );
 
-        router.post("/", validateRequest(createUsuarioSchema), asyncHandler(controller.crear))
-        router.put("/:id", validateRequest(updateUsuarioSchema), asyncHandler(controller.actualizar))
+        router.put(
+            "/:id",
+            validateRequest(updateUsuarioSchema),
+            asyncHandler(controller.actualizar)
+        );
 
-        return router
+        // CAMBIO DE ESTADO
+        router.put('/activar/:id', asyncHandler(controller.activar));
+        router.put('/bloquear/:id', asyncHandler(controller.bloquear));
+
+        return router;
     }
 }

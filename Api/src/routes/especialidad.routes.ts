@@ -11,6 +11,10 @@ export class EspecialidadRoutes {
         //Rutas
         //localhost:3000/especialidad/
         router.get('/', asyncHandler(controller.listar))
+
+        router.put('/activar/:id', asyncHandler(controller.activar));
+        router.put('/desactivar/:id', asyncHandler(controller.desactivar));
+
         router.get('/:id', asyncHandler(controller.obtenerPorId))
         router.post(
             "/",

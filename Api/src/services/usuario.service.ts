@@ -94,7 +94,7 @@ export const usuarioService = {
     },
 
 
-    async cambiarEstado(id: number) {
+    async activar(id: number) {
 
         const usuario = await this.obtenerPorId(id);
 
@@ -102,12 +102,35 @@ export const usuarioService = {
             throw AppError.notFound(`Usuario con ID ${id} no encontrado`);
         }
 
-        const nuevoEstado = usuario.estado == "ACTIVO" ? "BLOQUEADO" : "ACTIVO";
+        return await prisma.usuario.update({
+            where: { id },
+            data: {
+                estado: "ACTIVO"
+            },
+            select: {
+                id: true,
+                nombre: true,
+                apellidos: true,
+                email: true,
+                estado: true,
+                rol: true,
+                updateAt: true
+            }
+        });
+    },
+
+    async bloquear(id: number) {
+
+        const usuario = await this.obtenerPorId(id);
+
+        if (!usuario) {
+            throw AppError.notFound(`Usuario con ID ${id} no encontrado`);
+        }
 
         return await prisma.usuario.update({
             where: { id },
             data: {
-                estado: nuevoEstado
+                estado: "BLOQUEADO"
             },
             select: {
                 id: true,
