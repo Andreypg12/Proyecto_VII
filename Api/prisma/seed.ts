@@ -13,9 +13,9 @@ async function main() {
         prisma.categoriaServicio,
         prisma.valoracion,
         prisma.cita,
+        prisma.ubicacionProfesional,
         prisma.perfilProfesional,
         prisma.usuario,
-        prisma.ubicacionProfesional,
     ]
 
     for (const model of models) {
@@ -59,9 +59,9 @@ async function main() {
             { email: "alejandro@gmail.com", nombre: "Alejandro", apellidos: "Serrano", password: "hash_password", rol: Rol.PROFESIONAL },
             { email: "andrey@correo.com", nombre: "Andrey", apellidos: "Pérez", password: "hash_password", rol: Rol.CLIENTE },
             { email: "fabián@correo.com", nombre: "Fabián", apellidos: "Zamora", password: "hash_password", rol: Rol.CLIENTE },
-            { email: "franklin@correo.com", nombre: "Franklin", apellidos: "Montoya", password: "hash_password", rol: Rol.PROFESIONAL, estado: EstadoUsuario.BLOQUEADO},
+            { email: "franklin@correo.com", nombre: "Franklin", apellidos: "Montoya", password: "hash_password", rol: Rol.PROFESIONAL, estado: EstadoUsuario.BLOQUEADO },
             { email: "gael@correo.com", nombre: "Gael", apellidos: "Osorio", password: "hash_password", rol: Rol.CLIENTE },
-            { email: "valeria@correo.com", nombre: "Valeria", apellidos: "Méndez", password: "hash_password", rol: Rol.PROFESIONAL, estado: EstadoUsuario.BLOQUEADO},
+            { email: "valeria@correo.com", nombre: "Valeria", apellidos: "Méndez", password: "hash_password", rol: Rol.PROFESIONAL, estado: EstadoUsuario.BLOQUEADO },
             { email: "Adriel@correo.com", nombre: "Adriel", apellidos: "Gómez", password: "hash_password", rol: Rol.ADMINISTRADOR }
         ],
         //skipDuplicates: true, 
@@ -132,6 +132,7 @@ async function main() {
 
             {
                 servicio: "Software estandard",
+                descripcion: "Servicio",
                 precio: 10000,
                 duracion_estimada: 60,
                 estado: true,
@@ -141,6 +142,7 @@ async function main() {
             },
             {
                 servicio: "Desarrollo de sitio web informativo",
+                descripcion: "Servicio",
                 precio: 85000,
                 duracion_estimada: 240,
                 estado: true,
@@ -150,6 +152,7 @@ async function main() {
             },
             {
                 servicio: "Aplicación móvil básica",
+                descripcion: "Servicio",
                 precio: 120000,
                 duracion_estimada: 360,
                 estado: true,
@@ -159,6 +162,7 @@ async function main() {
             },
             {
                 servicio: "Optimización de base de datos",
+                descripcion: "Servicio",
                 precio: 65000,
                 duracion_estimada: 180,
                 estado: true,
@@ -168,6 +172,7 @@ async function main() {
             },
             {
                 servicio: "Revisión de seguridad básica",
+                descripcion: "Servicio",
                 precio: 75000,
                 duracion_estimada: 180,
                 estado: true,
@@ -177,6 +182,7 @@ async function main() {
             },
             {
                 servicio: "Mantenimiento mensual de sistema",
+                descripcion: "Servicio",
                 precio: 95000,
                 duracion_estimada: 300,
                 estado: true,
@@ -186,6 +192,7 @@ async function main() {
             },
             {
                 servicio: "Capacitación en desarrollo web",
+                descripcion: "Servicio",
                 precio: 55000,
                 duracion_estimada: 120,
                 estado: true,
@@ -195,6 +202,7 @@ async function main() {
             },
             {
                 servicio: "Migración de sistema legado",
+                descripcion: "Servicio",
                 precio: 150000,
                 duracion_estimada: 480,
                 estado: true,
@@ -204,6 +212,7 @@ async function main() {
             },
             {
                 servicio: "Auditoría de arquitectura de software",
+                descripcion: "Servicio",
                 precio: 110000,
                 duracion_estimada: 240,
                 estado: true,
@@ -213,6 +222,7 @@ async function main() {
             },
             {
                 servicio: "Refactorización y modernización de aplicaciones",
+                descripcion: "Servicio",
                 precio: 140000,
                 duracion_estimada: 420,
                 estado: true,
@@ -221,7 +231,7 @@ async function main() {
                 id_profesional: profesional.id
             }
         ]
-
+    });
     console.log("Seed completado con éxito.");
 }
 main()

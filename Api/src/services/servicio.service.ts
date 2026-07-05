@@ -86,6 +86,7 @@ export const servicioService = {
                     select: {
                         id: true,
                         servicio: true,
+                        descripcion: true,
                         precio: true,
                         duracion_estimada: true,
                         estado: true,

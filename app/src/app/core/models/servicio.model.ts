@@ -1,3 +1,6 @@
+import { CategoriaServicio } from "./categoriaServicio.model";
+import { Profesional } from "./profesional.model";
+
 export type Modalidad = 'PRESENCIAL' | 'VIRTUAL' | 'HÍBRIDA';
 
 export interface Servicio {
@@ -7,7 +10,9 @@ export interface Servicio {
     precio: number;
     duracion_estimada: number;
     estado: boolean;
-    Modalidad: Modalidad;
+    modalidad: Modalidad;
+    profesional: Profesional;
+    categoria: CategoriaServicio;
 }
 
 /* export interface UsuarioCreateDto {

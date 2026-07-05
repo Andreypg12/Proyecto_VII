@@ -19,7 +19,53 @@ interface MenuItem {
 export class MainLayout {
 
   publicMenu = signal<MenuItem[]>([
-    { label: 'Inicio', path: '/', icon: 'home' },
-    { label: 'Listados', path: '/listados', icon: 'list' },
+    {
+      label: 'Inicio',
+      path: '/',
+      icon: 'home'
+    },
+  ]);
+
+  menuListados = signal<MenuItem[]>([
+    {
+      label: 'Usuarios',
+      path: '/usuarios',
+      icon: 'group'
+    },
+    {
+      label: 'Profesionales',
+      path: '/profesionales',
+      icon: 'badge'
+    },
+    {
+      label: 'Categorías Servicio',
+      path: '/categoria-servicio',
+      icon: 'category'
+    },
+    {
+      label: 'Servicios',
+      path: '/servicios',
+      icon: 'miscellaneous_services'
+    },
+    {
+      label: 'Especialidades',
+      path: '/especialidades',
+      icon: 'medical_services'
+    },
+    {
+      label: 'Citas',
+      path: '/citas',
+      icon: 'event'
+    },
+    {
+      label: 'Valoraciones',
+      path: '/valoraciones',
+      icon: 'star'
+    },
+    {
+      label: 'Ubicaciones',
+      path: '/ubicaciones',
+      icon: 'location_on'
+    },
   ]);
 }

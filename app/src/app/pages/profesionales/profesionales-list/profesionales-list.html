@@ -1,0 +1,73 @@
+<section class="page-header">
+    <span class="eyebrow">Catálogo</span>
+    <h1>Videojuegos disponibles</h1>
+    <p>
+        Listado de videojuegos.
+    </p>
+</section>
+<section class="filters">
+    <mat-form-field appearance="outline">
+        <mat-label>Buscar videojuego</mat-label>
+        <input matInput [ngModel]="search()" 
+            (ngModelChange)="search.set($event)"
+            placeholder="Ejemplo: Mario, aventura, carreras" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <!-- <mat-form-field appearance="outline">
+        <mat-label>Categoría</mat-label>
+        <mat-select [(ngModel)]="categoriaId">
+            <mat-option value="null">Todas</mat-option>
+            @for (categoria of categorias(); track categoria.id) {
+            <mat-option [value]="categoria.id">
+                {{categoria.nombre}}
+            </mat-option>
+            }
+        </mat-select>
+    </mat-form-field> -->
+    <button mat-stroked-button class="primary-button" 
+        (click)="clearFilters()">
+        Limpiar
+    </button>
+</section>
+<div class="result-summary">
+    {{ totalProfesionales() }} Profecionales encontrados
+</div>
+@if(loading()){
+<div class="state">
+    <mat-spinner diameter="42" />
+    <p>Cargando videojuegos...</p>
+</div>
+}@else if (error()) {
+<div class="state error">
+    <mat-icon>error</mat-icon>
+    <p>{{ error() }} </p>
+</div>
+} @else if (videojuegosFiltrados().length === 0) {
+<div class="state">
+    <mat-icon>search_off</mat-icon>
+    <p>No hay videojuegos disponibles con los filtros seleccionados.</p>
+</div>
+}
+<section class="games-grid">
+    @for (profesional of videojuegosFiltrados(); track profesional.id) {
+    <mat-card class="game-card">
+        <!-- <img mat-card-image [src]="getImageUrl(game.imagen)" [alt]="game.nombre" /> -->
+        <mat-card-content>
+            <!-- <span class="category">
+                {{game.categoria?.nombre || 'Sin Categoría'}}
+            </span> -->
+            <h2>{{ profesional.usuario?.nombre }} </h2>
+            <p> {{ profesional.descripcion }} </p>
+            <!-- <div class="game-meta">
+                <strong>&cent;{{profesional.precio}} </strong>
+                <span>Stock: {{profesional.stock}}</span>
+            </div> -->
+        </mat-card-content>
+        <mat-card-actions align="end">
+            <a mat-stroked-button color="primary" [routerLink]="['/videojuegos',profesional.id]"  class="view-icon-button">
+                Detalle<mat-icon>more_horiz</mat-icon>
+            </a>
+        </mat-card-actions>
+    </mat-card>
+    }
+</section>
