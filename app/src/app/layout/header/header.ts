@@ -27,15 +27,5 @@ interface MenuItem {
 })
 export class Header {
   publicMenu = input.required<MenuItem[]>();
-
-  listados = [
-  { nombre: 'Usuarios', ruta: '/usuarios', icono: 'group' },
-  { nombre: 'Profesionales', ruta: '/profesionales', icono: 'badge' },
-  { nombre: 'Servicios', ruta: '/servicios', icono: 'miscellaneous_services' },
-  { nombre: 'Categorías Servicio', ruta: '/categoria-servicio', icono: 'category' },
-  { nombre: 'Especialidades', ruta: '/especialidades', icono: 'medical_services' },
-  { nombre: 'Citas', ruta: '/citas', icono: 'event' },
-  { nombre: 'Valoraciones', ruta: '/valoraciones', icono: 'star' },
-  { nombre: 'Ubicaciones', ruta: '/ubicaciones', icono: 'location_on' },
-];
+  menuListados = input.required<MenuItem[]>();
 }

@@ -6,35 +6,55 @@
         </a>
 
         <nav class="desktop-nav">
-            <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }">
-                <mat-icon>home</mat-icon>
-                Inicio
-            </a>
 
-            <button mat-button [matMenuTriggerFor]="menuListados">
+            @for (item of publicMenu(); track item.path) {
+            <a mat-button [routerLink]="item.path" routerLinkActive="active-link"
+                [routerLinkActiveOptions]="{ exact: item.path === '/' }">
+                <mat-icon>{{ item.icon }}</mat-icon>
+                {{ item.label }}
+            </a>
+            }
+
+            <button list-button [mat-menu-trigger-for]="ListMenu">
                 <mat-icon>list</mat-icon>
                 Listados
             </button>
+
+            <!-- <button mat-button [matMenuTriggerFor]="menuListados">
+                <mat-icon>list</mat-icon>
+                Listados
+            </button> -->
         </nav>
 
         <span class="spacer"></span>
 
-        <button class="mobile-menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu">
+        <!-- <button class="mobile-menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu">
             <mat-icon>menu</mat-icon>
-        </button>
+        </button> -->
 
     </mat-toolbar>
 </header>
 
-<mat-menu #menuListados="matMenu">
-    @for (item of listados; track item.ruta) {
-    <a mat-menu-item [routerLink]="item.ruta">
-        <mat-icon>{{ item.icono }}</mat-icon>
-        <span>{{ item.nombre }}</span>
+<!-- <mat-menu #maintenanceMenu="matMenu">
+    @for (item of publicMenu(); track item.path) {
+    <a mat-menu-item [routerLink]="item.path">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+    </a>
+    }
+</mat-menu>
+ -->
+
+<mat-menu #ListMenu="matMenu">
+    @for (item of menuListados(); track item.path) {
+    <a mat-menu-item [routerLink]="item.path">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
     </a>
     }
 </mat-menu>
 
+<!-- 
 <mat-menu #mobileMenu="matMenu">
     <a mat-menu-item routerLink="/">
         <mat-icon>home</mat-icon>
@@ -47,4 +67,4 @@
         <span>{{ item.nombre }}</span>
     </a>
     }
-</mat-menu>
+</mat-menu> -->

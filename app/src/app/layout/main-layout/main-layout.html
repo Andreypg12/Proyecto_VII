@@ -1,7 +1,13 @@
-<app-header
+<div class="app-shell">
+
+    <app-header
     [publicMenu]="publicMenu()"
-/>
+    [menuListados]="menuListados()"
+    
+    />
 
-<router-outlet />
-
-<app-footer />
+    <main class="content">
+        <router-outlet />
+    </main>
+    <app-footer />
+</div>
