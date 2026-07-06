@@ -120,7 +120,8 @@ export const servicioService = {
                             select: {
                                 id: true,
                                 especialidad: true,
-                                descripcion: true
+                                descripcion: true,
+                                estado: true
                             }
                         }
                     }
@@ -169,6 +170,14 @@ export const servicioService = {
                         descripcion: true
                     }
                 },
+                especialidades: {
+                    select: {
+                        id: true,
+                        especialidad: true,
+                        descripcion: true,
+                        estado: true
+                    }
+                },
                 profesional: {
                     select: {
                         id: true,
@@ -185,13 +194,6 @@ export const servicioService = {
                         }
                     }
                 },
-                especialidades: {
-                    select: {
-                        id: true,
-                        especialidad: true,
-                        descripcion: true
-                    }
-                }
             }
         });
     },

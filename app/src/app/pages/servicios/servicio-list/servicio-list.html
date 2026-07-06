@@ -32,20 +32,28 @@
             <mat-option [value]="null">Todas</mat-option>
             <mat-option value="PRESENCIAL">Presencial</mat-option>
             <mat-option value="VIRTUAL">Virtual</mat-option>
-            <mat-option value="HIBRIDO">Híbrido</mat-option>
+            <mat-option value="HÍBRIDA">Híbrida</mat-option>
         </mat-select>
     </mat-form-field>
+
+    <button mat-stroked-button class="clear-button" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar
+    </button>
 </section>
 
 <div class="result-summary">
-    {{ totalServicios() }} servicios encontrados
+    <span class="result-count">
+        <mat-icon>list_alt</mat-icon>
+        {{ totalServicios() }} servicios encontrados
+    </span>
     @if(filtrosActivos()) {
     <span class="filter-badge">Filtros activos</span>
     }
 </div>
 
 @if(loading()){
-<div class="state">
+<div class="state loading">
     <mat-spinner diameter="42" />
     <p>Cargando servicios...</p>
 </div>
@@ -55,7 +63,7 @@
     <p>{{ error() }} </p>
 </div>
 } @else if (serviciosFiltrados().length === 0) {
-<div class="state">
+<div class="state empty">
     <mat-icon>search_off</mat-icon>
     <p>No hay servicios disponibles con los filtros seleccionados.</p>
 </div>
@@ -73,7 +81,7 @@
         <mat-card-content>
             <div class="service-header">
                 <span class="category">
-                    {{service.categoria?.categoria || 'Sin Categoría'}}
+                    {{service.categoria.categoria || 'Sin Categoría'}}
                 </span>
             </div>
 
@@ -86,7 +94,7 @@
             <div class="service-meta">
                 <div class="meta-item">
                     <mat-icon>person</mat-icon>
-                    <span>{{ service.profesional?.usuario?.nombre || 'Sin profesional' }}</span>
+                    <span>{{ service.profesional.usuario?.nombre || 'Sin profesional' }}</span>
                 </div>
                 <div class="meta-item">
                     <mat-icon>devices</mat-icon>
@@ -97,13 +105,15 @@
                 </div>
             </div>
 
-            <!-- @if(service.especialidades && service.especialidades.length > 0) {
+            @if(service.especialidades && service.especialidades.length > 0) {
             <div class="especialidades">
                 @for (esp of service.especialidades; track esp.id) {
-                <span class="especialidad-tag">{{ esp.nombre }}</span>
+                @if(esp.estado === true) {
+                <span class="especialidad-tag">{{ esp.especialidad }}</span>
+                }
                 }
             </div>
-            } -->
+            }
         </mat-card-content>
 
         <mat-card-actions align="end">

@@ -24,6 +24,7 @@ export const especialidadService = {
             select: {
                 id: true,
                 especialidad: true,
+                descripcion: true,
                 estado: true,
             },
             orderBy:
@@ -32,9 +33,9 @@ export const especialidadService = {
             },
         });
     },
-    async obtenerPorId(especialidadId: number) {
+    async obtenerPorId(id: number) {
         return await prisma.especialidad.findFirst({
-            where: { id: especialidadId },
+            where: { id },
             include: {
                 perfiles_profesionales: true,
                 servicios: true

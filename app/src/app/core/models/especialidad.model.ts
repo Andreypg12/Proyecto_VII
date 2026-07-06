@@ -1,10 +1,8 @@
 export interface Especialidad {
     id: number;
-    especialidad: string;
-    descripcion?: string;
     estado: boolean;
-    createdAt?: string;
-    updateAt?: string;
+    especialidad: string;
+    descripcion: string;
 }
 
 export interface EspecialidadCreateDto {
