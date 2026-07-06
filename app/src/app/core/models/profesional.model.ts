@@ -13,7 +13,7 @@ export interface Profesional {
     imagen_profesional: string;
     disponibilidad: boolean;
     telefono: string;
-    Modalidad: Modalidad;
+    modalidad: Modalidad;
 
     usuario?: Usuario;
     servicios?: Servicio[];

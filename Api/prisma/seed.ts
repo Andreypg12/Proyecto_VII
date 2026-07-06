@@ -126,20 +126,46 @@ async function main() {
     });
 
     //Seeds servicios
+    await prisma.servicio.create({
+
+        data: {
+            servicio: "Software estandard",
+            descripcion: "Servicio",
+            precio: 10000,
+            duracion_estimada: 60,
+            estado: true,
+            modalidad: Modalidad.VIRTUAL,
+            id_categoria: catServMap["Mantenimiento y Soporte"],
+            id_profesional: profesional.id,
+            especialidades: {
+                connect: [
+                    { id: espMap["Desarrollo Web"] }, { id: espMap["Desarrollo Móvil"] }
+                ]
+            }
+        },
+    });
+
+    await prisma.servicio.create({
+
+        data: {
+            servicio: "Aplicación móvil básica",
+            descripcion: "Servicio",
+            precio: 120000,
+            duracion_estimada: 360,
+            estado: true,
+            modalidad: Modalidad.HÍBRIDA,
+            id_categoria: catServMap["Desarrollo a Medida"],
+            id_profesional: profesional.id,
+            especialidades: {
+                connect: [
+                    { id: espMap["Desarrollo Web"] }, { id: espMap["Desarrollo Móvil"] }
+                ]
+            }
+        },
+    });
 
     await prisma.servicio.createMany({
         data: [
-
-            {
-                servicio: "Software estandard",
-                descripcion: "Servicio",
-                precio: 10000,
-                duracion_estimada: 60,
-                estado: true,
-                modalidad: Modalidad.VIRTUAL,
-                id_categoria: catServMap["Mantenimiento y Soporte"],
-                id_profesional: profesional.id
-            },
             {
                 servicio: "Desarrollo de sitio web informativo",
                 descripcion: "Servicio",
@@ -151,21 +177,11 @@ async function main() {
                 id_profesional: profesional.id
             },
             {
-                servicio: "Aplicación móvil básica",
-                descripcion: "Servicio",
-                precio: 120000,
-                duracion_estimada: 360,
-                estado: true,
-                modalidad: Modalidad.HÍBRIDA,
-                id_categoria: catServMap["Desarrollo a Medida"],
-                id_profesional: profesional.id
-            },
-            {
                 servicio: "Optimización de base de datos",
                 descripcion: "Servicio",
                 precio: 65000,
                 duracion_estimada: 180,
-                estado: true,
+                estado: false,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Consultoría Técnica"],
                 id_profesional: profesional.id

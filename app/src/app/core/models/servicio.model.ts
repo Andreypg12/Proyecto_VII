@@ -1,4 +1,5 @@
 import { CategoriaServicio } from "./categoriaServicio.model";
+import { Especialidad } from "./especialidad.model";
 import { Profesional } from "./profesional.model";
 
 export type Modalidad = 'PRESENCIAL' | 'VIRTUAL' | 'HÍBRIDA';
@@ -13,6 +14,7 @@ export interface Servicio {
     modalidad: Modalidad;
     profesional: Profesional;
     categoria: CategoriaServicio;
+    especialidades: Especialidad[];
 }
 
 /* export interface UsuarioCreateDto {

@@ -64,6 +64,8 @@ export class ServicioList implements OnInit {
         console.log(response);
         this.servicios.set(response.data);
         this.loading.set(false);
+        console.log('Primer servicio:', response.data[0]);
+        console.log('Especialidades del primer servicio:', response.data[0]?.especialidades);
         console.log('Servicios cargados:', response.data);
       },
       error: () => {
