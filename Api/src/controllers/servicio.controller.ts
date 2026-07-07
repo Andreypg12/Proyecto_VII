@@ -7,52 +7,36 @@ import { parseId } from '../utils/parse-id';
 
 export class ServicioController {
     async listar(req: Request, res: Response) {
-        try {
-            const {
-                nombre,
-                categoria,
-                modalidad,
-                precio_min,
-                precio_max,
-                pagina,
-                limite,
-                orderBy,
-                orderDir
-            } = req.query;
+        const {
+            nombre,
+            categoria,
+            modalidad,
+            precio_min,
+            precio_max,
+            pagina,
+            limite,
+            orderBy,
+            orderDir
+        } = req.query;
 
-            const filtros: ServicioFilters = {};
+        const filtros: ServicioFilters = {};
 
-            if (nombre) filtros.nombre = nombre as string;
-            if (categoria) filtros.categoria = categoria as string;
-            if (modalidad) filtros.modalidad = modalidad as string;
-            if (precio_min) filtros.precio_min = Number(precio_min);
-            if (precio_max) filtros.precio_max = Number(precio_max);
-            if (pagina) filtros.pagina = Number(pagina);
-            if (limite) filtros.limite = Number(limite);
-            if (orderBy) filtros.orderBy = orderBy as any;
-            if (orderDir) filtros.orderDir = orderDir as any;
+        if (nombre) filtros.nombre = nombre as string;
+        if (categoria) filtros.categoria = categoria as string;
+        if (modalidad) filtros.modalidad = modalidad as string;
+        if (precio_min) filtros.precio_min = Number(precio_min);
+        if (precio_max) filtros.precio_max = Number(precio_max);
+        if (pagina) filtros.pagina = Number(pagina);
+        if (limite) filtros.limite = Number(limite);
+        if (orderBy) filtros.orderBy = orderBy as any;
+        if (orderDir) filtros.orderDir = orderDir as any;
 
-            const result = await servicioService.listar(filtros);
+        const result = await servicioService.listar(filtros);
 
-            res.json({
-                success: true,
-                ...result
-            });
-        } catch (error) {
-            console.error('Error en listar servicios:', error);
-
-            if (error instanceof AppError) {
-                res.status(error.statusCode).json({
-                    success: false,
-                    error: error.message
-                });
-            } else {
-                res.status(500).json({
-                    success: false,
-                    error: 'Error al listar servicios'
-                });
-            }
-        }
+        res.json({
+            success: true,
+            ...result
+        });
     };
 
     obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {

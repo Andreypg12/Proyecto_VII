@@ -12,24 +12,47 @@ export interface Servicio {
     duracion_estimada: number;
     estado: boolean;
     modalidad: Modalidad;
+
+    id_profesional: number;
     profesional: Profesional;
-    categoria: CategoriaServicio;
+
+    id_categoria: number;
+    categoria?: CategoriaServicio;
+
     especialidades: Especialidad[];
 }
 
-/* export interface UsuarioCreateDto {
-    email: string;
-    nombre: string;
-    apellidos: string;
-    password: string;
-    rol?: Rol;
+export interface ServicioFormModel {
+    servicio: string;
+    descripcion: string;
+    precio: number;
+    duracion_estimada: number;
+    estado: boolean;
+    modalidad: Modalidad;
+    id_profesional: number;
+    id_categoria: number;
+    especialidades_Ids: number[];
 }
 
-export interface UsuarioUpdateDto {
-    email?: string;
-    nombre?: string;
-    apellidos?: string;
-    password?: string;
-    rol?: Rol;
-    estado?: EstadoUsuario;
-} */
+export interface ServicioCreateDto {
+    servicio: string;
+    descripcion: string;
+    precio: number;
+    duracion_estimada: number;
+    estado: boolean;
+    modalidad: Modalidad;
+    id_profesional: number;
+    id_categoria: number;
+    especialidades_Ids: number[];
+}
+
+export interface ServicioUpdateDto {
+    servicio?: string;
+    descripcion?: string;
+    precio?: number;
+    duracion_estimada?: number;
+    estado?: boolean;
+    modalidad?: Modalidad;
+    id_categoria?: number;
+    especialidades_Ids?: number[];
+} 

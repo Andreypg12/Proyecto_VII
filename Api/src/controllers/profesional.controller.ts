@@ -8,28 +8,22 @@ import { AppError } from '../utils/app-error';
 export class ProfesionalController {
 
     async listar(req: Request, res: Response) {
-        try {
-            const { nombre, modalidad, disponibilidad, pagina, limite } = req.query;
 
-            const filtros = {
-                nombre: nombre as string,
-                modalidad: modalidad as string,
-                disponibilidad: disponibilidad !== undefined ? disponibilidad === 'true' : undefined,
-                pagina: pagina ? Number(pagina) : undefined,
-                limite: limite ? Number(limite) : undefined
-            };
+        const { nombre, modalidad, disponibilidad, pagina, limite } = req.query;
 
-            const result = await profesionalService.listar(filtros);
-            res.json({
-                success: true,
-                ...result
-            });
-        } catch (error) {
-            res.status(500).json({
-                success: false,
-                error: 'Error al listar profesionales'
-            });
-        }
+        const filtros = {
+            nombre: nombre as string,
+            modalidad: modalidad as string,
+            disponibilidad: disponibilidad !== undefined ? disponibilidad === 'true' : undefined,
+            pagina: pagina ? Number(pagina) : undefined,
+            limite: limite ? Number(limite) : undefined
+        };
+
+        const result = await profesionalService.listar(filtros);
+        res.json({
+            success: true,
+            ...result
+        });
     }
 
     obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {
@@ -67,12 +61,12 @@ export class ProfesionalController {
     };
 
     cambiarDisponibilidad = async (request: Request, response: Response, next: NextFunction) => {
-            const id = parseId(request.params.id);
-            const profesional = await profesionalService.cambiarDisponibilidad(id);
-            return sendSuccess(
-                response,
-                profesional,
-                "Cambio de disponibilidad completado"
-            );
-        };
+        const id = parseId(request.params.id);
+        const profesional = await profesionalService.cambiarDisponibilidad(id);
+        return sendSuccess(
+            response,
+            profesional,
+            "Cambio de disponibilidad completado"
+        );
+    };
 }

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { ApiPaginatedResponse, ApiResponse } from '../models/api-response.model';
-import { Servicio } from '../models/servicio.model';
+import { Servicio, ServicioCreateDto, ServicioUpdateDto } from '../models/servicio.model';
 
 @Injectable({ providedIn: 'root' })
 export class ServicioService {
@@ -17,7 +17,11 @@ export class ServicioService {
     return this.http.get<ApiResponse<Servicio>>(`${this.apiUrl}/${id}`);
   }
 
-  // getImageUrl(imageName: string): string {
-  //   return `${environment.imageUrl}/${imageName}`;
-  // }
+  crear(data: ServicioCreateDto) {
+    return this.http.post<ApiResponse<Servicio>>(this.apiUrl, data);
+  }
+
+  actualizar(id: number, data: ServicioUpdateDto) {
+    return this.http.put<ApiResponse<Servicio>>(`${this.apiUrl}/${id}`, data);
+  }
 }

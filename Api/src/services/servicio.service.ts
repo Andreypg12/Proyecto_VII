@@ -93,6 +93,9 @@ export const servicioService = {
                         modalidad: true,
                         createdAt: true,
                         updateAt: true,
+
+                        id_categoria: true,
+                        
                         categoria: {
                             select: {
                                 id: true,
@@ -100,6 +103,9 @@ export const servicioService = {
                                 descripcion: true
                             }
                         },
+
+                        id_profesional : true,
+
                         profesional: {
                             select: {
                                 id: true,
@@ -157,12 +163,15 @@ export const servicioService = {
             select: {
                 id: true,
                 servicio: true,
+                descripcion: true,
                 precio: true,
                 duracion_estimada: true,
                 estado: true,
                 modalidad: true,
                 createdAt: true,
                 updateAt: true,
+
+                id_categoria: true,
                 categoria: {
                     select: {
                         id: true,
@@ -178,6 +187,8 @@ export const servicioService = {
                         estado: true
                     }
                 },
+
+                id_profesional: true,
                 profesional: {
                     select: {
                         id: true,

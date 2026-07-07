@@ -1,0 +1,28 @@
+<section class="page-container">
+    <header class="page-header">
+        <h1>Registrar profesional</h1>
+        <p>Agregue un nuevo profesional al catálogo de desarrolladores de software.</p>
+    </header>
+
+    @if (loading()) {
+    <div class="loading-state">
+        <mat-spinner diameter="42" />
+        <p>Cargando datos del formulario...</p>
+    </div>
+    } @else {
+    @if (error()) {
+    <div class="error-message">
+        <mat-icon>error</mat-icon>
+        <p>{{ error() }}</p>
+    </div>
+    }
+
+    <app-profesional-form [especialidades]="especialidades()" [saving]="saving()" (guardar)="guardar($event)"
+        (cancelar)="cancelar()" />
+    }
+
+    <button mat-stroked-button class="back-button" (click)="volver()">
+        <mat-icon>arrow_back</mat-icon>
+        Volver al listado
+    </button>
+</section>

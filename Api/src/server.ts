@@ -3,8 +3,8 @@ import * as dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import { AppRoutes } from "./routes/routes";
-import path from "path";
-
+import { ErrorMiddleware } from "./middlewares/error.middleware";
+import path from "path/win32";
 
 const app = express();
 // Acceder a la configuracion del archivo .env
@@ -24,25 +24,21 @@ app.use(
 );
 app.get("/", (req, res) => {
     res.json({
-        message: "API de videojuegos funcionando correctamente",
+        message: "API de servicios de software funcionando correctamente",
     });
 });
-
-
-//Acceder al logo
-app.use("/uploads",express.static(path.join(process.cwd(), "assets/uploads")));
-
-
 //---- Definir rutas ----
-app.use(AppRoutes.routes);
+app.use(AppRoutes.routes)
 
 // Handle errors middleware
-
+app.use(ErrorMiddleware.handleError)
 
 //Acceso a las imágenes
+app.use("/images", express.static(
+    path.join(path.resolve(), "assets/uploads")))
+
 
 app.listen(port, () => {
     console.log(`http://localhost:${port}`);
     console.log("Presione CTRL-C para detenerlo\n");
 });
-

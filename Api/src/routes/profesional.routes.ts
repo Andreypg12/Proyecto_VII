@@ -10,7 +10,7 @@ export class ProfesionalRoutes {
         const controller = new ProfesionalController()
         //Rutas
         //  locahost:3000/profesional/
-        router.get('/', controller.listar)
+        router.get('/', asyncHandler(controller.listar))
 
         //  locahost:3000/profesional/1
         router.get('/:id', asyncHandler(controller.obtenerPorId))
@@ -23,7 +23,7 @@ export class ProfesionalRoutes {
             validateRequest(createProfesionalSchema),
             asyncHandler(controller.crear)
         )
-        
+
         router.put(
             "/:id",
             validateRequest(updateProfesionalSchema),

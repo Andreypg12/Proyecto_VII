@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { ApiPaginatedResponse, ApiResponse } from '../models/api-response.model';
-import { Profesional } from '../models/profesional.model';
+import { Profesional, ProfesionalCreateDto, ProfesionalUpdateDto } from '../models/profesional.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProfesionalService {
@@ -16,6 +16,14 @@ export class ProfesionalService {
 
   obtenerPorId(id: number) {
     return this.http.get<ApiResponse<Profesional>>(`${this.apiUrl}/${id}`);
+  }
+
+  crear(data: ProfesionalCreateDto) {
+    return this.http.post<ApiResponse<Profesional>>(this.apiUrl, data);
+  }
+
+  actualizar(id: number, data: ProfesionalUpdateDto) {
+    return this.http.put<ApiResponse<Profesional>>(`${this.apiUrl}/${id}`, data);
   }
 
   getImageUrl(imageName: string): string {
