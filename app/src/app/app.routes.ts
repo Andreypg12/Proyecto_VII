@@ -10,8 +10,14 @@ import { EspecialidadList } from './pages/especialidades/especialidad-list/espec
 import { EspecialidadDetail } from './pages/especialidades/especialidad-detail/especialidad-detail';
 import { UsuariosList } from './pages/usuarios/usuarios-list/usuarios-list';
 import { UsuarioDetail } from './pages/usuarios/usuario-detail/usuario-detail';
+
 import { ServicioList } from "./pages/servicios/servicio-list/servicio-list";
+import { ServicioCreatePage } from "./pages/servicios/servicios-create-page/servicios-create-page";
+
 import { ProfesionalesList } from "./pages/profesionales/profesionales-list/profesionales-list";
+import { ServicioEditPage } from "./pages/servicios/servicios-edit-page/servicios-edit-page";
+import { ProfesionalCreatePage } from "./pages/profesionales/profesionales-create-page/profesionales-create-page";
+import { ProfesionalEditPage } from "./pages/profesionales/profesionales-edit-page/profesionales-edit-page";
 
 export const routes: Routes = [
     {
@@ -51,9 +57,29 @@ export const routes: Routes = [
                 title: 'Servicios'
             },
             {
+                path: 'servicios/crear',
+                component: ServicioCreatePage,
+                title: 'Registrar servicio'
+            },
+            {
+                path: 'servicios/editar/:id',
+                component: ServicioEditPage,
+                title: 'Actualizar servicio'
+            },
+            {
                 path: 'profesionales',
                 component: ProfesionalesList,
                 title: 'Profesionales'
+            },
+            {
+                path: 'profesionales/crear',
+                component: ProfesionalCreatePage,
+                title: 'Actualizar profesional'
+            },
+            {
+                path: 'profesionales/editar/:id',
+                component: ProfesionalEditPage,
+                title: 'Registrar profesional'
             },
         ],
     },

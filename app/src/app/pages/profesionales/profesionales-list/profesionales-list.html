@@ -69,12 +69,6 @@
 <section class="professionals-grid">
     @for (profesional of profesionalesFiltrados(); track profesional.id) {
     <mat-card class="professional-card">
-        <!-- Badge de disponibilidad en esquina -->
-        <div class="availability-indicator" [class.available]="profesional.disponibilidad"
-            [class.unavailable]="!profesional.disponibilidad"
-            matTooltip="{{ profesional.disponibilidad ? 'Disponible' : 'No disponible' }}" matTooltipPosition="above">
-            <mat-icon>{{ profesional.disponibilidad ? 'check_circle' : 'block' }}</mat-icon>
-        </div>
 
         <mat-card-content>
             <!-- Imagen del profesional -->

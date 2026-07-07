@@ -10,7 +10,7 @@ export class ServicioRoutes {
         const controller = new ServicioController()
         //Rutas
         //locahost:3000/servicio/
-        router.get('/', controller.listar)
+        router.get('/', asyncHandler(controller.listar))
 
         router.get('/:id', asyncHandler(controller.obtenerPorId))
 

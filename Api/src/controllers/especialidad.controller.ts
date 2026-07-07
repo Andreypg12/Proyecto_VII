@@ -11,39 +11,33 @@ export class especialidadController {
     //Request es lo que recibo que manda el usuario
     //Responso lo uso para enviarle datos y que los vea el usuario
     listar = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-
-            const buscar = req.query.buscar as string | undefined;
-            const estado = req.query.estado as string | undefined;
+        const buscar = req.query.buscar as string | undefined;
+        const estado = req.query.estado as string | undefined;
 
 
-            const estadoParam = req.query.estado as string | undefined;
+        const estadoParam = req.query.estado as string | undefined;
 
-            if (
-                estadoParam !== undefined &&
-                estadoParam !== "true" &&
-                estadoParam !== "false"
-            ) {
-                return res.status(StatusCodes.BAD_REQUEST).json({
-                    success: false,
-                    message: "Estado inválido. Use true o false."
-                });
-            }
-
-
-            const especialidades = await especialidadService.listar({
-                buscar,
-                estado: estado !== undefined ? estado === "true" : undefined
+        if (
+            estadoParam !== undefined &&
+            estadoParam !== "true" &&
+            estadoParam !== "false"
+        ) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: "Estado inválido. Use true o false."
             });
-
-            return res.status(StatusCodes.OK).json({
-                success: true,
-                data: especialidades,
-            });
-        } catch (error) {
-            console.error(error);
-            next(error);
         }
+
+
+        const especialidades = await especialidadService.listar({
+            buscar,
+            estado: estado !== undefined ? estado === "true" : undefined
+        });
+
+        return res.status(StatusCodes.OK).json({
+            success: true,
+            data: especialidades,
+        });
     };
 
     //Request es lo que recibo que manda el usuario
