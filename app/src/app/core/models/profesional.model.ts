@@ -17,7 +17,7 @@ export interface Profesional {
     modalidad: Modalidad;
 
     id_usuario: number;
-    usuario?: Usuario;
+    usuario: Usuario;
 
     servicios?: Servicio[];
     ubicaciones?: UbicacionProfesional[];

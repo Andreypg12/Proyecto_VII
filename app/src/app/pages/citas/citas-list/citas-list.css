@@ -1,0 +1,66 @@
+:host {
+    display: block;
+}
+
+.citas-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.create-cita-btn {
+    flex-shrink: 0;
+}
+
+.citas-filter-card {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(180px, 1fr));
+
+    align-items: end;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.filter-field label {
+    color: #94a3b8;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.filter-field input,
+.filter-field select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 950px) {
+
+    .citas-filter-card {
+        grid-template-columns:
+            repeat(2, minmax(180px, 1fr));
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .citas-header {
+        flex-direction: column;
+    }
+
+    .create-cita-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .citas-filter-card {
+        grid-template-columns: 1fr;
+    }
+
+}

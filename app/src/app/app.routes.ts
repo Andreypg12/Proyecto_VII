@@ -19,6 +19,12 @@ import { ServicioEditPage } from "./pages/servicios/servicios-edit-page/servicio
 import { ProfesionalCreatePage } from "./pages/profesionales/profesionales-create-page/profesionales-create-page";
 import { ProfesionalEditPage } from "./pages/profesionales/profesionales-edit-page/profesionales-edit-page";
 
+
+import { CitasList } from "./pages/citas/citas-list/citas-list";
+import { CitaDetail } from "./pages/citas/cita-detail/cita-detail";
+import { CitaCreate } from "./pages/citas/cita-create/cita-create";
+
+
 export const routes: Routes = [
     {
         path: '',
@@ -81,6 +87,21 @@ export const routes: Routes = [
                 component: ProfesionalEditPage,
                 title: 'Registrar profesional'
             },
+            {
+                path: 'citas',
+                component: CitasList,
+                title: 'Citas'
+            },
+            {
+                path: 'citas/nueva',
+                component: CitaCreate,
+                title: 'Registrar cita'
+            },
+            {
+                path: 'citas/:id',
+                component: CitaDetail,
+                title: 'Detalle de cita'
+            }
         ],
     },
     {

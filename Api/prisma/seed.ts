@@ -7,7 +7,7 @@ async function main() {
     console.log("Iniciando seed...");
     // 1. Limpieza de datos
 
-    const models = [
+    /*  const models = [
         prisma.especialidad,
         prisma.servicio,
         prisma.categoriaServicio,
@@ -16,10 +16,37 @@ async function main() {
         prisma.ubicacionProfesional,
         prisma.perfilProfesional,
         prisma.usuario,
-    ]
+    ] */
+    const models = [
+    prisma.valoracion,
+    prisma.cita,
+    prisma.servicio,
+    prisma.ubicacionProfesional,
+    prisma.perfilProfesional,
+    prisma.categoriaServicio,
+    prisma.especialidad,
+    prisma.usuario,
+    ];
 
     for (const model of models) {
         await (model as any).deleteMany();
+    }
+
+    const tablasAutoIncrement = [
+        "valoracion",
+        "cita",
+        "servicio",
+        "ubicacion_profesional",
+        "perfil_profesional",
+        "categoria_servicio",
+        "especialidad",
+        "usuario",
+    ];
+
+    for (const tabla of tablasAutoIncrement) {
+        await prisma.$executeRawUnsafe(
+            `ALTER TABLE \`${tabla}\` AUTO_INCREMENT = 1`
+        );
     }
 
     /// 2. Creación de datos maestros (Independientes)
@@ -56,13 +83,16 @@ async function main() {
     await prisma.usuario.createMany({
         data: [
             { email: "admin@gmail.com", nombre: "Admin", apellidos: ".", password: "hash_password", rol: Rol.ADMINISTRADOR },
+            { email: "Adriel@correo.com", nombre: "Adriel", apellidos: "Gómez", password: "hash_password", rol: Rol.ADMINISTRADOR },
             { email: "alejandro@gmail.com", nombre: "Alejandro", apellidos: "Serrano", password: "hash_password", rol: Rol.PROFESIONAL },
-            { email: "andrey@correo.com", nombre: "Andrey", apellidos: "Pérez", password: "hash_password", rol: Rol.CLIENTE },
+            { email: "daniela.rojas@correo.com", nombre: "Daniela", apellidos: "Rojas Vargas", password: "hash_password", rol: Rol.PROFESIONAL },
+            { email: "sebastian.mora@correo.com", nombre: "Sebastián", apellidos: "Mora Jiménez", password: "hash_password", rol: Rol.PROFESIONAL },
+            { email: "valeria@correo.com", nombre: "Valeria", apellidos: "Méndez", password: "hash_password", rol: Rol.PROFESIONAL },
+            { email: "franklin@correo.com", nombre: "Franklin", apellidos: "Montoya", password: "hash_password", rol: Rol.PROFESIONAL },
+            { email: "camila.solis@correo.com", nombre: "Camila", apellidos: "Solís Hernández", password: "hash_password", rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO},
+            { email: "andrey@correo.com", nombre: "Andrey", apellidos: "Pérez", password: "hash_password", rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO },
             { email: "fabián@correo.com", nombre: "Fabián", apellidos: "Zamora", password: "hash_password", rol: Rol.CLIENTE },
-            { email: "franklin@correo.com", nombre: "Franklin", apellidos: "Montoya", password: "hash_password", rol: Rol.PROFESIONAL, estado: EstadoUsuario.BLOQUEADO },
             { email: "gael@correo.com", nombre: "Gael", apellidos: "Osorio", password: "hash_password", rol: Rol.CLIENTE },
-            { email: "valeria@correo.com", nombre: "Valeria", apellidos: "Méndez", password: "hash_password", rol: Rol.PROFESIONAL, estado: EstadoUsuario.BLOQUEADO },
-            { email: "Adriel@correo.com", nombre: "Adriel", apellidos: "Gómez", password: "hash_password", rol: Rol.ADMINISTRADOR }
         ],
         //skipDuplicates: true, 
     });
@@ -110,24 +140,147 @@ async function main() {
         }
     });
 
-
-    //Seeds ubicacionProfesional
-
-    await prisma.ubicacionProfesional.create({
+    const profesionalDaniela = await prisma.perfilProfesional.create({
         data: {
-            id: 1,
-            descripcion: "125m Norte de la escuela de Getsemaní",
-            id_distrito: 40504,
-            distrito: "Los Ángeles",
-            canton: "San Rafael",
-            ciudad: "Heredia",
-            id_profesional: profesional.id
+            titulo: "Desarrolladora web",
+            descripcion: "Especialista en aplicaciones web modernas y diseño de interfaces.",
+            tarifa_por_hora: 12000,
+            annos_experiencia: 4,
+            telefono: "88881111",
+            imagen_profesional: "image-not-found.jpg",
+            disponibilidad: true,
+            modalidad: Modalidad.HÍBRIDA,
+            id_usuario: userEmailMap["daniela.rojas@correo.com"],
+            especialidades: {
+                connect: [
+                    { id: espMap["Desarrollo Web"] },
+                    { id: espMap["Diseño UI/UX"] }
+                ]
+            }
         }
     });
 
-    //Seeds servicios
-    await prisma.servicio.create({
+    const profesionalSebastian = await prisma.perfilProfesional.create({
+        data: {
+            titulo: "Administrador de bases de datos",
+            descripcion: "Especialista en diseño, optimización y mantenimiento de bases de datos.",
+            tarifa_por_hora: 13500,
+            annos_experiencia: 6,
+            telefono: "88882222",
+            imagen_profesional: "image-not-found.jpg",
+            disponibilidad: true,
+            modalidad: Modalidad.VIRTUAL,
+            id_usuario: userEmailMap["sebastian.mora@correo.com"],
+            especialidades: {
+                connect: [
+                    { id: espMap["Bases de Datos"] },
+                    { id: espMap["DevOps y Cloud"] }
+                ]
+            }
+        }
+    });
 
+    const profesionalValeria = await prisma.perfilProfesional.create({
+        data: {
+            titulo: "Especialista en ciberseguridad",
+            descripcion: "Profesional enfocada en auditorías, protección de datos y seguridad de aplicaciones.",
+            tarifa_por_hora: 15000,
+            annos_experiencia: 7,
+            telefono: "88883333",
+            imagen_profesional: "image-not-found.jpg",
+            disponibilidad: true,
+            modalidad: Modalidad.HÍBRIDA,
+            id_usuario: userEmailMap["valeria@correo.com"],
+            especialidades: {
+                connect: [
+                    { id: espMap["Ciberseguridad"] },
+                    { id: espMap["Aseguramiento de Calidad (QA Testing)"] }
+                ]
+            }
+        }
+    });
+
+    const profesionalFranklin = await prisma.perfilProfesional.create({
+        data: {
+            titulo: "Ingeniero de inteligencia artificial",
+            descripcion: "Especialista en inteligencia artificial, análisis de datos y automatización.",
+            tarifa_por_hora: 16000,
+            annos_experiencia: 8,
+            telefono: "88884444",
+            imagen_profesional: "image-not-found.jpg",
+            disponibilidad: true,
+            modalidad: Modalidad.VIRTUAL,
+            id_usuario: userEmailMap["franklin@correo.com"],
+            especialidades: {
+                connect: [
+                    {
+                        id: espMap[
+                            "Inteligencia Artificial y Ciencia de Datos"
+                        ]
+                    },
+                    { id: espMap["Bases de Datos"] }
+                ]
+            }
+        }
+    });
+
+
+
+
+    //Seeds ubicacionProfesional
+
+    await prisma.ubicacionProfesional.createMany({
+        data: [
+            {
+                id: 1,
+                descripcion: "125m Norte de la escuela de Getsemaní",
+                id_distrito: 40504,
+                distrito: "Los Ángeles",
+                canton: "San Rafael",
+                ciudad: "Heredia",
+                id_profesional: profesional.id
+            },
+            {
+                descripcion: "Frente al parque central de San Pedro",
+                id_distrito: 11501,
+                distrito: "San Pedro",
+                canton: "Montes de Oca",
+                ciudad: "San José",
+                id_profesional: profesionalDaniela.id
+            },
+            {
+                descripcion: "200 metros oeste de la municipalidad",
+                id_distrito: 40101,
+                distrito: "Heredia",
+                canton: "Heredia",
+                ciudad: "Heredia",
+                id_profesional: profesionalSebastian.id
+            },
+            {
+                descripcion: "Centro corporativo, segundo piso",
+                id_distrito: 10201,
+                distrito: "Escazú",
+                canton: "Escazú",
+                ciudad: "San José",
+                id_profesional: profesionalValeria.id
+            },
+            {
+                descripcion: "100 metros norte del parque de Curridabat",
+                id_distrito: 11801,
+                distrito: "Curridabat",
+                canton: "Curridabat",
+                ciudad: "San José",
+                id_profesional: profesionalFranklin.id
+            }
+        ]
+    });
+
+    
+
+    //Seeds servicios
+    // Seeds servicios con especialidades relacionadas
+
+    await prisma.servicio.create({
         data: {
             servicio: "Software estandard",
             descripcion: "Servicio",
@@ -137,16 +290,17 @@ async function main() {
             modalidad: Modalidad.VIRTUAL,
             id_categoria: catServMap["Mantenimiento y Soporte"],
             id_profesional: profesional.id,
+
             especialidades: {
                 connect: [
-                    { id: espMap["Desarrollo Web"] }, { id: espMap["Desarrollo Móvil"] }
+                    { id: espMap["Desarrollo Web"] },
+                    { id: espMap["Desarrollo Móvil"] }
                 ]
             }
-        },
+        }
     });
 
     await prisma.servicio.create({
-
         data: {
             servicio: "Aplicación móvil básica",
             descripcion: "Servicio",
@@ -155,13 +309,15 @@ async function main() {
             estado: true,
             modalidad: Modalidad.HÍBRIDA,
             id_categoria: catServMap["Desarrollo a Medida"],
-            id_profesional: profesional.id,
+            id_profesional: profesionalDaniela.id,
+
             especialidades: {
                 connect: [
-                    { id: espMap["Desarrollo Web"] }, { id: espMap["Desarrollo Móvil"] }
+                    { id: espMap["Desarrollo Web"] },
+                    { id: espMap["Desarrollo Móvil"] }
                 ]
             }
-        },
+        }
     });
 
     await prisma.servicio.createMany({
@@ -174,7 +330,7 @@ async function main() {
                 estado: true,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Desarrollo a Medida"],
-                id_profesional: profesional.id
+                id_profesional: profesionalSebastian.id
             },
             {
                 servicio: "Optimización de base de datos",
@@ -184,7 +340,7 @@ async function main() {
                 estado: false,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Consultoría Técnica"],
-                id_profesional: profesional.id
+                id_profesional: profesionalValeria.id
             },
             {
                 servicio: "Revisión de seguridad básica",
@@ -194,7 +350,7 @@ async function main() {
                 estado: true,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Consultoría Técnica"],
-                id_profesional: profesional.id
+                id_profesional: profesionalFranklin.id
             },
             {
                 servicio: "Mantenimiento mensual de sistema",
@@ -214,7 +370,7 @@ async function main() {
                 estado: true,
                 modalidad: Modalidad.PRESENCIAL,
                 id_categoria: catServMap["Capacitación y Formación"],
-                id_profesional: profesional.id
+                id_profesional: profesionalDaniela.id
             },
             {
                 servicio: "Migración de sistema legado",
@@ -224,7 +380,7 @@ async function main() {
                 estado: true,
                 modalidad: Modalidad.HÍBRIDA,
                 id_categoria: catServMap["Migración y Modernización"],
-                id_profesional: profesional.id
+                id_profesional: profesionalSebastian.id
             },
             {
                 servicio: "Auditoría de arquitectura de software",
@@ -234,7 +390,7 @@ async function main() {
                 estado: true,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Consultoría Técnica"],
-                id_profesional: profesional.id
+                id_profesional: profesionalValeria.id
             },
             {
                 servicio: "Refactorización y modernización de aplicaciones",
@@ -244,11 +400,229 @@ async function main() {
                 estado: true,
                 modalidad: Modalidad.HÍBRIDA,
                 id_categoria: catServMap["Migración y Modernización"],
-                id_profesional: profesional.id
+                id_profesional: profesionalFranklin.id
             }
         ]
     });
-    console.log("Seed completado con éxito.");
+
+    // Seeds de citas
+
+    await prisma.cita.createMany({
+        data: [
+            // =====================================================
+            // PROFESIONAL 1: Alejandro
+            // Servicios: 1 y 6
+            // =====================================================
+
+            {
+                fecha_hora_inicio: new Date("2026-06-10T09:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-10T10:00:00"),
+                fecha_hora_finalizacion_real: new Date("2026-06-10T10:05:00"),
+                comentario_cliente: "Solicito revisión de una solución de software estándar.",
+                monto_estimado: 10000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.COMPLETADA,
+                id_cliente: 10,
+                id_profesional: 1,
+                id_servicio: 1
+            },
+            {
+                fecha_hora_inicio: new Date("2026-07-15T08:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-15T13:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Necesito mantenimiento preventivo del sistema empresarial.",
+                monto_estimado: 95000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.ACEPTADA,
+                id_cliente: 11,
+                id_profesional: 1,
+                id_servicio: 6
+            },
+            {
+                fecha_hora_inicio: new Date("2026-08-05T14:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-08-05T15:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Deseo orientación para seleccionar una solución de software.",
+                monto_estimado: 10000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.PENDIENTE,
+                id_cliente: 10,
+                id_profesional: 1,
+                id_servicio: 1
+            },
+
+            // =====================================================
+            // PROFESIONAL 2: Daniela
+            // Servicios: 2 y 7
+            // =====================================================
+
+            {
+                fecha_hora_inicio: new Date("2026-06-12T09:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-12T11:00:00"),
+                fecha_hora_finalizacion_real: new Date("2026-06-12T10:55:00"),
+                comentario_cliente: "Capacitación introductoria sobre desarrollo web.",
+                monto_estimado: 55000,
+                modalidad: Modalidad.PRESENCIAL,
+                estado: EstadoCita.COMPLETADA,
+                id_cliente: 11,
+                id_profesional: 2,
+                id_servicio: 7
+            },
+            {
+                fecha_hora_inicio: new Date("2026-07-20T08:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-20T14:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Requiero el desarrollo de una aplicación móvil básica.",
+                monto_estimado: 120000,
+                modalidad: Modalidad.HÍBRIDA,
+                estado: EstadoCita.PENDIENTE,
+                id_cliente: 10,
+                id_profesional: 2,
+                id_servicio: 2
+            },
+            {
+                fecha_hora_inicio: new Date("2026-07-25T13:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-25T15:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Capacitación para mejorar conocimientos de desarrollo web.",
+                monto_estimado: 55000,
+                modalidad: Modalidad.PRESENCIAL,
+                estado: EstadoCita.CANCELADA,
+                id_cliente: 11,
+                id_profesional: 2,
+                id_servicio: 7
+            },
+
+            // =====================================================
+            // PROFESIONAL 3: Sebastián
+            // Servicios: 3 y 8
+            // =====================================================
+
+            {
+                fecha_hora_inicio: new Date("2026-06-18T09:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-18T13:00:00"),
+                fecha_hora_finalizacion_real: new Date("2026-06-18T13:10:00"),
+                comentario_cliente: "Desarrollo de un sitio web informativo para una pequeña empresa.",
+                monto_estimado: 85000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.COMPLETADA,
+                id_cliente: 10,
+                id_profesional: 3,
+                id_servicio: 3
+            },
+            {
+                fecha_hora_inicio: new Date("2026-07-22T08:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-22T16:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Necesito migrar un sistema antiguo a una plataforma moderna.",
+                monto_estimado: 150000,
+                modalidad: Modalidad.HÍBRIDA,
+                estado: EstadoCita.ACEPTADA,
+                id_cliente: 11,
+                id_profesional: 3,
+                id_servicio: 8
+            },
+            {
+                fecha_hora_inicio: new Date("2026-08-10T09:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-08-10T13:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Solicito la creación de un sitio web para presentar mis servicios.",
+                monto_estimado: 85000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.PENDIENTE,
+                id_cliente: 10,
+                id_profesional: 3,
+                id_servicio: 3
+            },
+
+            // =====================================================
+            // PROFESIONAL 4: Valeria
+            // Servicio activo: 9
+            // El servicio 4 está inactivo
+            // =====================================================
+
+            {
+                fecha_hora_inicio: new Date("2026-06-20T08:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-20T12:00:00"),
+                fecha_hora_finalizacion_real: new Date("2026-06-20T11:50:00"),
+                comentario_cliente: "Auditoría de arquitectura para detectar oportunidades de mejora.",
+                monto_estimado: 110000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.COMPLETADA,
+                id_cliente: 11,
+                id_profesional: 4,
+                id_servicio: 9
+            },
+            {
+                fecha_hora_inicio: new Date("2026-07-18T09:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-18T13:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Solicito revisión de la arquitectura de una aplicación.",
+                monto_estimado: 110000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.RECHAZADA,
+                id_cliente: 10,
+                id_profesional: 4,
+                id_servicio: 9
+            },
+            {
+                fecha_hora_inicio: new Date("2026-08-12T13:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-08-12T17:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Necesito evaluar la estructura técnica de mi sistema.",
+                monto_estimado: 110000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.PENDIENTE,
+                id_cliente: 11,
+                id_profesional: 4,
+                id_servicio: 9
+            },
+
+            // =====================================================
+            // PROFESIONAL 5: Franklin
+            // Servicios: 5 y 10
+            // =====================================================
+
+            {
+                fecha_hora_inicio: new Date("2026-06-25T09:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-25T12:00:00"),
+                fecha_hora_finalizacion_real: new Date("2026-06-25T12:00:00"),
+                comentario_cliente: "Revisión básica de seguridad para una aplicación web.",
+                monto_estimado: 75000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.COMPLETADA,
+                id_cliente: 10,
+                id_profesional: 5,
+                id_servicio: 5
+            },
+            {
+                fecha_hora_inicio: new Date("2026-07-28T08:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-28T15:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Solicito modernizar y refactorizar una aplicación existente.",
+                monto_estimado: 140000,
+                modalidad: Modalidad.HÍBRIDA,
+                estado: EstadoCita.ACEPTADA,
+                id_cliente: 11,
+                id_profesional: 5,
+                id_servicio: 10
+            },
+            {
+                fecha_hora_inicio: new Date("2026-08-15T09:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-08-15T12:00:00"),
+                fecha_hora_finalizacion_real: null,
+                comentario_cliente: "Deseo revisar la seguridad general de mi plataforma.",
+                monto_estimado: 75000,
+                modalidad: Modalidad.VIRTUAL,
+                estado: EstadoCita.PENDIENTE,
+                id_cliente: 10,
+                id_profesional: 5,
+                id_servicio: 5
+            }
+        ]
+    });
+
+    
 }
 main()
     .catch((e) => {
