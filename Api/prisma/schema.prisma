@@ -124,6 +124,8 @@ model Servicio {
 
   especialidades Especialidad[]
 
+  citas Cita[]
+
   @@map("servicio")
 }
 
@@ -142,24 +144,27 @@ model CategoriaServicio {
 }
 
 model Cita {
-  id                               Int      @id @default(autoincrement())
+  id                               Int       @id @default(autoincrement())
   fecha_hora_inicio                DateTime
   fecha_hora_finalizacion_esperada DateTime
-  fecha_hora_finalizacion_real     DateTime
-  comentario_cliente               String?  @db.VarChar(500)
-  monto_estimado                   Decimal  @db.Decimal(10, 2)
+  fecha_hora_finalizacion_real     DateTime?
+  comentario_cliente               String?   @db.VarChar(500)
+  monto_estimado                   Decimal   @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now()) @updatedAt
 
   modalidad Modalidad
-  estado    EstadoCita
+  estado    EstadoCita @default(PENDIENTE)
 
   id_cliente Int
   cliente    Usuario @relation(fields: [id_cliente], references: [id])
 
   id_profesional Int
   profesional    PerfilProfesional @relation(fields: [id_profesional], references: [id])
+
+  id_servicio Int
+  servicio    Servicio @relation(fields: [id_servicio], references: [id])
 
   valoracion Valoracion[]
 
