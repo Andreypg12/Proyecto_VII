@@ -38,7 +38,7 @@ export class UsuariosList {
     this.cargarUsuarios();
   }
 
-  usuariosFiltrados = computed(() => {
+/*   usuariosFiltrados = computed(() => {
     const texto = this.buscar().trim().toLowerCase();
 
     return this.usuarios().filter((usuario) => {
@@ -52,6 +52,29 @@ export class UsuariosList {
         email.includes(texto) ||
         rol.includes(texto)
       );
+    });
+  }); */
+
+  usuariosFiltrados = computed(() => {
+    const texto = this.buscar().trim().toLowerCase();
+    const rolSeleccionado = this.rol();
+
+    return this.usuarios().filter((usuario) => {
+      const nombre = usuario.nombreCompleto?.toLowerCase() ?? '';
+      const email = usuario.email?.toLowerCase() ?? '';
+      const rolUsuario = usuario.rol?.toLowerCase() ?? '';
+
+      const coincideBusqueda =
+        texto.length === 0 ||
+        nombre.includes(texto) ||
+        email.includes(texto) ||
+        rolUsuario.includes(texto);
+
+      const coincideRol =
+        rolSeleccionado === undefined ||
+        usuario.rol === rolSeleccionado;
+
+      return coincideBusqueda && coincideRol;
     });
   });
 
@@ -79,6 +102,10 @@ export class UsuariosList {
 
   onBuscarChange(valor: string): void {
     this.buscar.set(valor);
+  }
+
+  onRolChange(valor: string | undefined): void {
+    this.rol.set(valor);
   }
 
   async cambiarEstado(usuario: any): Promise<void> {

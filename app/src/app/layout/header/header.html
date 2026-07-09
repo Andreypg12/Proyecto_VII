@@ -8,22 +8,22 @@
         <nav class="desktop-nav">
 
             @for (item of publicMenu(); track item.path) {
-            <a mat-button [routerLink]="item.path" routerLinkActive="active-link"
-                [routerLinkActiveOptions]="{ exact: item.path === '/' }">
-                <mat-icon>{{ item.icon }}</mat-icon>
-                {{ item.label }}
-            </a>
+                <a
+                    mat-button
+                    [routerLink]="item.path"
+                    routerLinkActive="active-link"
+                    [routerLinkActiveOptions]="{ exact: item.path === '/' }">
+
+                    <mat-icon>{{ item.icon }}</mat-icon>
+                    <span>{{ item.label }}</span>
+                </a>
             }
 
-            <button list-button [mat-menu-trigger-for]="ListMenu">
+            <button mat-button [matMenuTriggerFor]="ListMenu">
                 <mat-icon>list</mat-icon>
-                Listados
+                <span>Listados</span>
             </button>
 
-            <!-- <button mat-button [matMenuTriggerFor]="menuListados">
-                <mat-icon>list</mat-icon>
-                Listados
-            </button> -->
         </nav>
 
         <span class="spacer"></span>

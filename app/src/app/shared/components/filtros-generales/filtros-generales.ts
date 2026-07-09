@@ -9,14 +9,20 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './filtros-generales.css',
 })
 export class FiltrosGenerales {
-  showSearch = input(true);
-  showStatus = input(true);
+  // Inputs
+  showSearch = input<boolean>(true);
+  showStatus = input<boolean>(true);
+  showRole = input<boolean>(false);
 
+  // Outputs
   searchChange = output<string>();
   statusChange = output<boolean | undefined>();
+  roleChange = output<string | undefined>();
 
+  // Valores internos
   search = signal('');
   status = signal<boolean | undefined>(undefined);
+  role = signal<string | undefined>(undefined);
 
   onSearchChange(value: string): void {
     this.search.set(value);
@@ -31,7 +37,16 @@ export class FiltrosGenerales {
     }
 
     const estado = value === 'true';
+
     this.status.set(estado);
     this.statusChange.emit(estado);
+  }
+
+  onRolChange(value: string): void {
+    const rolSeleccionado =
+      value === '' ? undefined : value;
+
+    this.role.set(rolSeleccionado);
+    this.roleChange.emit(rolSeleccionado);
   }
 }

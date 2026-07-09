@@ -1,16 +1,63 @@
-<div class="filter-card">
+<div class="filters-panel">
 
     @if (showSearch()) {
-    <input type="text" placeholder="Buscar por nombre..." [ngModel]="search()"
-        (ngModelChange)="onSearchChange($event)" />
+        <div class="filter-group filter-search">
+            <label for="search">
+                Buscar
+            </label>
+
+            <input
+                id="search"
+                class="filter-control"
+                type="text"
+                placeholder="Buscar por nombre, correo o rol..."
+                [ngModel]="search()"
+                (ngModelChange)="onSearchChange($event)"
+            >
+        </div>
     }
 
     @if (showStatus()) {
-    <select [ngModel]="status()" (ngModelChange)="onStatusChange($event)">
-        <option value="">Todos</option>
-        <option value="true">Activos</option>
-        <option value="false">Inactivos</option>
-    </select>
+        <div class="filter-group">
+            <label for="status">
+                Estado
+            </label>
+
+            <div class="select-wrapper">
+                <select
+                    id="status"
+                    class="filter-control filter-select"
+                    [ngModel]="status()?.toString() ?? ''"
+                    (ngModelChange)="onStatusChange($event)"
+                >
+                    <option value="">Todos los estados</option>
+                    <option value="true">Activos</option>
+                    <option value="false">Inactivos</option>
+                </select>
+            </div>
+        </div>
+    }
+
+    @if (showRole()) {
+        <div class="filter-group">
+            <label for="role">
+                Rol
+            </label>
+
+            <div class="select-wrapper">
+                <select
+                    id="role"
+                    class="filter-control filter-select"
+                    [ngModel]="role() ?? ''"
+                    (ngModelChange)="onRolChange($event)"
+                >
+                    <option value="">Todos los roles</option>
+                    <option value="ADMINISTRADOR">Administrador</option>
+                    <option value="PROFESIONAL">Profesional</option>
+                    <option value="CLIENTE">Cliente</option>
+                </select>
+            </div>
+        </div>
     }
 
 </div>
