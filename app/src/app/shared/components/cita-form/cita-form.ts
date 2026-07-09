@@ -14,7 +14,6 @@ import {
     required,
     maxLength,
     validate,
-    disabled
 } from '@angular/forms/signals';
 
 import { MatCardModule } from '@angular/material/card';
@@ -34,6 +33,11 @@ import { Usuario } from '../../../core/models/usuario.model';
 import { Profesional } from '../../../core/models/profesional.model';
 import { Servicio } from '../../../core/models/servicio.model';
 
+interface HorarioCita {
+    valor: string;
+    etiqueta: string;
+}
+
 @Component({
     selector: 'app-cita-form',
     standalone: true,
@@ -50,6 +54,9 @@ import { Servicio } from '../../../core/models/servicio.model';
     templateUrl: './cita-form.html',
     styleUrl: './cita-form.css'
 })
+
+
+
 export class CitaForm {
 
     // Datos reales recibidos desde la página contenedora
@@ -68,11 +75,50 @@ export class CitaForm {
         'HÍBRIDA'
     ];
 
+    readonly fechaMinima = this.obtenerFechaLocal(new Date());
+
+    readonly horariosCita: HorarioCita[] = [
+        {
+            valor: '09:00',
+            etiqueta: '9:00 a. m. – 10:00 a. m.'
+        },
+        {
+            valor: '10:00',
+            etiqueta: '10:00 a. m. – 11:00 a. m.'
+        },
+        {
+            valor: '11:00',
+            etiqueta: '11:00 a. m. – 12:00 p. m.'
+        },
+
+        // 12:00 p. m. a 1:00 p. m.: almuerzo
+
+        {
+            valor: '13:00',
+            etiqueta: '1:00 p. m. – 2:00 p. m.'
+        },
+        {
+            valor: '14:00',
+            etiqueta: '2:00 p. m. – 3:00 p. m.'
+        },
+        {
+            valor: '15:00',
+            etiqueta: '3:00 p. m. – 4:00 p. m.'
+        },
+        {
+            valor: '16:00',
+            etiqueta: '4:00 p. m. – 5:00 p. m.'
+        }
+    ];
+
     citaModel = signal<CitaFormModel>({
         id_cliente: null,
         id_profesional: null,
         id_servicio: null,
-        fecha_hora_inicio: '',
+
+        fecha: '',
+        hora: null,
+
         modalidad: null,
         comentario_cliente: ''
     });
@@ -91,30 +137,52 @@ export class CitaForm {
             message: 'Debe seleccionar un servicio'
         });
 
-        required(path.fecha_hora_inicio, {
-            message: 'La fecha y hora son obligatorias'
+        required(path.fecha, {
+            message: 'Debe seleccionar una fecha'
         });
 
-        validate(path.fecha_hora_inicio, (ctx) => {
-            const valor = ctx.value();
+        validate(path.fecha, (ctx) => {
+            const fecha = ctx.value();
 
-            if (!valor) {
+            if (!fecha) {
                 return undefined;
             }
 
-            const fechaSeleccionada = new Date(valor);
-
-            if (Number.isNaN(fechaSeleccionada.getTime())) {
+            if (fecha < this.fechaMinima) {
                 return {
-                    kind: 'fechaInvalida',
-                    message: 'La fecha y hora no son válidas'
+                    kind: 'fechaPasada',
+                    message: 'La fecha no puede ser anterior a hoy'
                 };
             }
 
-            if (fechaSeleccionada <= new Date()) {
+            return undefined;
+        });
+
+        required(path.hora, {
+            message: 'Debe seleccionar una hora'
+        });
+
+        validate(path.hora, (ctx) => {
+            const hora = ctx.value();
+            const fecha = this.citaModel().fecha;
+
+            if (!fecha || !hora) {
+                return undefined;
+            }
+
+            const fechaHora = this.crearFechaHora(fecha, hora);
+
+            if (Number.isNaN(fechaHora.getTime())) {
                 return {
-                    kind: 'fechaPasada',
-                    message: 'La fecha y hora deben ser posteriores a la actual'
+                    kind: 'fechaHoraInvalida',
+                    message: 'La fecha y hora seleccionadas no son válidas'
+                };
+            }
+
+            if (fechaHora <= new Date()) {
+                return {
+                    kind: 'fechaHoraPasada',
+                    message: 'La hora seleccionada ya pasó'
                 };
             }
 
@@ -127,6 +195,33 @@ export class CitaForm {
 
         maxLength(path.comentario_cliente, 500, {
             message: 'El comentario no puede superar los 500 caracteres'
+        });
+
+        required(path.comentario_cliente, {
+            message:
+                'Debe ingresar una descripción o comentario'
+        });
+
+        validate(path.comentario_cliente, (ctx) => {
+            const comentario = ctx.value();
+
+            if (
+                !comentario ||
+                comentario.trim().length === 0
+            ) {
+                return {
+                    kind: 'comentarioRequerido',
+                    message:
+                        'Debe ingresar una descripción o comentario'
+                };
+            }
+
+            return undefined;
+        });
+
+        maxLength(path.comentario_cliente, 500, {
+            message:
+                'El comentario no puede superar los 500 caracteres'
         });
     });
 
@@ -146,7 +241,7 @@ export class CitaForm {
         )
     );
 
-    serviciosDisponibles = computed(() => {
+    /* serviciosDisponibles = computed(() => {
         const idProfesional =
             this.citaModel().id_profesional;
 
@@ -159,6 +254,30 @@ export class CitaForm {
                 servicio.estado &&
                 servicio.id_profesional === idProfesional
         );
+    }); */
+
+    serviciosDisponibles = computed(() => {
+        const idProfesional =
+            this.citaModel().id_profesional;
+
+        if (!idProfesional) {
+            return [];
+        }
+
+        return this.servicios().filter((servicio) => {
+            const idProfesionalServicio =
+                servicio.id_profesional ??
+                servicio.profesional?.id;
+
+            const servicioActivo =
+                servicio.estado !== false;
+
+            return (
+                servicioActivo &&
+                Number(idProfesionalServicio) ===
+                Number(idProfesional)
+            );
+        });
     });
 
     cambiarProfesional(): void {
@@ -190,7 +309,8 @@ export class CitaForm {
         this.citaForm.id_cliente().markAsTouched();
         this.citaForm.id_profesional().markAsTouched();
         this.citaForm.id_servicio().markAsTouched();
-        this.citaForm.fecha_hora_inicio().markAsTouched();
+        this.citaForm.fecha().markAsTouched();
+        this.citaForm.hora().markAsTouched();
         this.citaForm.modalidad().markAsTouched();
         this.citaForm.comentario_cliente().markAsTouched();
     }
@@ -200,7 +320,8 @@ export class CitaForm {
             this.citaForm.id_cliente().invalid() ||
             this.citaForm.id_profesional().invalid() ||
             this.citaForm.id_servicio().invalid() ||
-            this.citaForm.fecha_hora_inicio().invalid() ||
+            this.citaForm.fecha().invalid() ||
+            this.citaForm.hora().invalid() ||
             this.citaForm.modalidad().invalid() ||
             this.citaForm.comentario_cliente().invalid()
         );
@@ -209,18 +330,62 @@ export class CitaForm {
     private buildDto(): CreateCitaDto {
         const value = this.citaModel();
 
+        if (!value.fecha || !value.hora) {
+            throw new Error(
+                'Debe seleccionar una fecha y una hora'
+            );
+        }
+
+        const fechaHora = this.crearFechaHora(
+            value.fecha,
+            value.hora
+        );
+
         return {
             id_cliente: Number(value.id_cliente),
             id_profesional: Number(value.id_profesional),
             id_servicio: Number(value.id_servicio),
 
-            fecha_hora_inicio:
-                new Date(value.fecha_hora_inicio).toISOString(),
+            fecha_hora_inicio: fechaHora.toISOString(),
 
             modalidad: value.modalidad as Modalidad,
 
             comentario_cliente:
                 value.comentario_cliente.trim() || null
         };
+    }
+
+    private crearFechaHora(
+        fecha: string,
+        hora: string
+    ): Date {
+        return new Date(`${fecha}T${hora}:00`);
+    }
+
+    private obtenerFechaLocal(fecha: Date): string {
+        const anio = fecha.getFullYear();
+
+        const mes = String(
+            fecha.getMonth() + 1
+        ).padStart(2, '0');
+
+        const dia = String(
+            fecha.getDate()
+        ).padStart(2, '0');
+
+        return `${anio}-${mes}-${dia}`;
+    }
+
+    abrirCalendario(input: HTMLInputElement): void {
+        const inputConCalendario = input as HTMLInputElement & {
+            showPicker?: () => void;
+        };
+
+        if (inputConCalendario.showPicker) {
+            inputConCalendario.showPicker();
+            return;
+        }
+
+        input.focus();
     }
 }

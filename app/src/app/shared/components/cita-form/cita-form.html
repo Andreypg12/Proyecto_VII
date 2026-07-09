@@ -12,10 +12,7 @@
 
     <mat-card-content>
 
-        <form
-            class="cita-form"
-            (submit)="$event.preventDefault(); submit()"
-        >
+        <form class="cita-form" (submit)="$event.preventDefault(); submit()">
 
             <!-- CLIENTE -->
             <section class="form-section">
@@ -27,28 +24,23 @@
                     </div>
                 </div>
 
-                <mat-form-field
-                    appearance="outline"
-                    class="full-width"
-                >
+                <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Cliente</mat-label>
 
-                    <mat-select
-                        [formField]="citaForm.id_cliente"
-                    >
+                    <mat-select [formField]="citaForm.id_cliente">
                         <mat-option [value]="null">
                             Seleccione un cliente
                         </mat-option>
 
                         @for (
-                            cliente of clientesDisponibles();
-                            track cliente.id
+                        cliente of clientesDisponibles();
+                        track cliente.id
                         ) {
-                            <mat-option [value]="cliente.id">
-                                {{ cliente.nombre }}
-                                {{ cliente.apellidos }}
-                                — {{ cliente.email }}
-                            </mat-option>
+                        <mat-option [value]="cliente.id">
+                            {{ cliente.nombre }}
+                            {{ cliente.apellidos }}
+                            — {{ cliente.email }}
+                        </mat-option>
                         }
                     </mat-select>
 
@@ -57,15 +49,15 @@
                     </mat-icon>
 
                     @if (
-                        citaForm.id_cliente().touched() &&
-                        citaForm.id_cliente().invalid()
+                    citaForm.id_cliente().touched() &&
+                    citaForm.id_cliente().invalid()
                     ) {
-                        <mat-error>
-                            {{
-                                citaForm.id_cliente()
-                                    .errors()[0].message
-                            }}
-                        </mat-error>
+                    <mat-error>
+                        {{
+                        citaForm.id_cliente()
+                        .errors()[0].message
+                        }}
+                    </mat-error>
                     }
                 </mat-form-field>
 
@@ -91,23 +83,20 @@
 
                         <mat-label>Profesional</mat-label>
 
-                        <mat-select
-                            [formField]="citaForm.id_profesional"
-                            (selectionChange)="cambiarProfesional()"
-                        >
+                        <mat-select [formField]="citaForm.id_profesional" (selectionChange)="cambiarProfesional()">
                             <mat-option [value]="null">
                                 Seleccione un profesional
                             </mat-option>
 
                             @for (
-                                profesional of profesionalesDisponibles();
-                                track profesional.id
+                            profesional of profesionalesDisponibles();
+                            track profesional.id
                             ) {
-                                <mat-option [value]="profesional.id">
-                                    {{ profesional.usuario.nombre }}
-                                    {{ profesional.usuario.apellidos }}
-                                    — {{ profesional.titulo }}
-                                </mat-option>
+                            <mat-option [value]="profesional.id">
+                                {{ profesional.usuario.nombre }}
+                                {{ profesional.usuario.apellidos }}
+                                — {{ profesional.titulo }}
+                            </mat-option>
                             }
                         </mat-select>
 
@@ -116,15 +105,15 @@
                         </mat-icon>
 
                         @if (
-                            citaForm.id_profesional().touched() &&
-                            citaForm.id_profesional().invalid()
+                        citaForm.id_profesional().touched() &&
+                        citaForm.id_profesional().invalid()
                         ) {
-                            <mat-error>
-                                {{
-                                    citaForm.id_profesional()
-                                        .errors()[0].message
-                                }}
-                            </mat-error>
+                        <mat-error>
+                            {{
+                            citaForm.id_profesional()
+                            .errors()[0].message
+                            }}
+                        </mat-error>
                         }
 
                     </mat-form-field>
@@ -134,21 +123,19 @@
 
                         <mat-label>Servicio</mat-label>
 
-                        <mat-select
-                            [formField]="citaForm.id_servicio"
-                        >
+                        <mat-select [formField]="citaForm.id_servicio">
                             <mat-option [value]="null">
                                 Seleccione un servicio
                             </mat-option>
 
                             @for (
-                                servicio of serviciosDisponibles();
-                                track servicio.id
+                            servicio of serviciosDisponibles();
+                            track servicio.id
                             ) {
-                                <mat-option [value]="servicio.id">
-                                    {{ servicio.servicio }}
-                                    — ₡{{ servicio.precio }}
-                                </mat-option>
+                            <mat-option [value]="servicio.id">
+                                {{ servicio.servicio }}
+                                — ₡{{ servicio.precio }}
+                            </mat-option>
                             }
                         </mat-select>
 
@@ -157,21 +144,21 @@
                         </mat-icon>
 
                         @if (!citaModel().id_profesional) {
-                            <mat-hint>
-                                Seleccione primero un profesional.
-                            </mat-hint>
+                        <mat-hint>
+                            Seleccione primero un profesional.
+                        </mat-hint>
                         }
 
                         @if (
-                            citaForm.id_servicio().touched() &&
-                            citaForm.id_servicio().invalid()
+                        citaForm.id_servicio().touched() &&
+                        citaForm.id_servicio().invalid()
                         ) {
-                            <mat-error>
-                                {{
-                                    citaForm.id_servicio()
-                                        .errors()[0].message
-                                }}
-                            </mat-error>
+                        <mat-error>
+                            {{
+                            citaForm.id_servicio()
+                            .errors()[0].message
+                            }}
+                        </mat-error>
                         }
 
                     </mat-form-field>
@@ -181,44 +168,93 @@
             </section>
 
             <!-- FECHA Y MODALIDAD -->
+            <!-- FECHA, HORA Y MODALIDAD -->
             <section class="form-section">
 
                 <div class="section-title">
                     <div>
                         <h3>Programación</h3>
+
                         <p>
-                            Indique la fecha, hora y modalidad de la cita.
+                            Seleccione la fecha, la hora y la modalidad de la cita.
                         </p>
                     </div>
                 </div>
 
-                <div class="form-grid two-columns">
+                <div class="form-grid programming-grid">
 
-                    <!-- FECHA Y HORA -->
+                    <!-- FECHA -->
+                <mat-form-field appearance="outline">
+
+                    <mat-label>Fecha</mat-label>
+
+                    <input
+                        #fechaInput
+                        matInput
+                        type="date"
+                        [formField]="citaForm.fecha"
+                    />
+
+                    <button
+                        mat-icon-button
+                        matSuffix
+                        type="button"
+                        aria-label="Abrir calendario"
+                        (click)="abrirCalendario(fechaInput)"
+                    >
+                        <mat-icon>calendar_month</mat-icon>
+                    </button>
+
+                    @if (
+                        citaForm.fecha().touched() &&
+                        citaForm.fecha().invalid()
+                    ) {
+                        <mat-error>
+                            {{
+                                citaForm.fecha()
+                                    .errors()[0].message
+                            }}
+                        </mat-error>
+                    }
+
+                </mat-form-field>
+
+                    <!-- HORA -->
                     <mat-form-field appearance="outline">
 
-                        <mat-label>Fecha y hora</mat-label>
+                        <mat-label>Hora</mat-label>
 
-                        <input
-                            matInput
-                            type="datetime-local"
-                            [formField]="citaForm.fecha_hora_inicio"
-                        />
+                        <mat-select [formField]="citaForm.hora">
+
+                            <mat-option [value]="null">
+                                Seleccione una hora
+                            </mat-option>
+
+                            @for (
+                            horario of horariosCita;
+                            track horario.valor
+                            ) {
+                            <mat-option [value]="horario.valor">
+                                {{ horario.etiqueta }}
+                            </mat-option>
+                            }
+
+                        </mat-select>
 
                         <mat-icon matSuffix>
-                            event
+                            schedule
                         </mat-icon>
 
                         @if (
-                            citaForm.fecha_hora_inicio().touched() &&
-                            citaForm.fecha_hora_inicio().invalid()
+                        citaForm.hora().touched() &&
+                        citaForm.hora().invalid()
                         ) {
-                            <mat-error>
-                                {{
-                                    citaForm.fecha_hora_inicio()
-                                        .errors()[0].message
-                                }}
-                            </mat-error>
+                        <mat-error>
+                            {{
+                            citaForm.hora()
+                            .errors()[0].message
+                            }}
+                        </mat-error>
                         }
 
                     </mat-form-field>
@@ -228,21 +264,21 @@
 
                         <mat-label>Modalidad</mat-label>
 
-                        <mat-select
-                            [formField]="citaForm.modalidad"
-                        >
+                        <mat-select [formField]="citaForm.modalidad">
+
                             <mat-option [value]="null">
                                 Seleccione una modalidad
                             </mat-option>
 
                             @for (
-                                modalidad of modalidades;
-                                track modalidad
+                            modalidad of modalidades;
+                            track modalidad
                             ) {
-                                <mat-option [value]="modalidad">
-                                    {{ modalidad }}
-                                </mat-option>
+                            <mat-option [value]="modalidad">
+                                {{ modalidad }}
+                            </mat-option>
                             }
+
                         </mat-select>
 
                         <mat-icon matSuffix>
@@ -250,15 +286,15 @@
                         </mat-icon>
 
                         @if (
-                            citaForm.modalidad().touched() &&
-                            citaForm.modalidad().invalid()
+                        citaForm.modalidad().touched() &&
+                        citaForm.modalidad().invalid()
                         ) {
-                            <mat-error>
-                                {{
-                                    citaForm.modalidad()
-                                        .errors()[0].message
-                                }}
-                            </mat-error>
+                        <mat-error>
+                            {{
+                            citaForm.modalidad()
+                            .errors()[0].message
+                            }}
+                        </mat-error>
                         }
 
                     </mat-form-field>
@@ -279,37 +315,30 @@
                     </div>
                 </div>
 
-                <mat-form-field
-                    appearance="outline"
-                    class="full-width"
-                >
+                <mat-form-field appearance="outline" class="full-width">
                     <mat-label>
                         Descripción o comentario
                     </mat-label>
 
-                    <textarea
-                        matInput
-                        rows="5"
-                        [formField]="citaForm.comentario_cliente"
-                        placeholder="Describa brevemente el motivo de la cita"
-                    ></textarea>
+                    <textarea matInput rows="5" [formField]="citaForm.comentario_cliente"
+                        placeholder="Describa brevemente el motivo de la cita"></textarea>
 
                     <mat-hint align="end">
                         {{
-                            citaModel().comentario_cliente.length
+                        citaModel().comentario_cliente.length
                         }}/500
                     </mat-hint>
 
                     @if (
-                        citaForm.comentario_cliente().touched() &&
-                        citaForm.comentario_cliente().invalid()
+                    citaForm.comentario_cliente().touched() &&
+                    citaForm.comentario_cliente().invalid()
                     ) {
-                        <mat-error>
-                            {{
-                                citaForm.comentario_cliente()
-                                    .errors()[0].message
-                            }}
-                        </mat-error>
+                    <mat-error>
+                        {{
+                        citaForm.comentario_cliente()
+                        .errors()[0].message
+                        }}
+                    </mat-error>
                     }
 
                 </mat-form-field>
@@ -337,13 +366,8 @@
             <!-- BOTONES -->
             <div class="form-actions">
 
-                <button
-                    mat-stroked-button
-                    type="button"
-                    color="accent"
-                    (click)="cancelar.emit()"
-                    [disabled]="isSubmitting()"
-                >
+                <button mat-stroked-button type="button" color="accent" (click)="cancelar.emit()"
+                    [disabled]="isSubmitting()">
                     <mat-icon>
                         close
                     </mat-icon>
@@ -351,13 +375,8 @@
                     Cancelar
                 </button>
 
-                <button
-                    mat-stroked-button
-                    type="submit"
-                    color="primary"
-                    class="create-icon-button"
-                    [disabled]="isSubmitting()"
-                >
+                <button mat-stroked-button type="submit" color="primary" class="create-icon-button"
+                    [disabled]="isSubmitting()">
                     <mat-icon>
                         {{ isSubmitting() ? 'hourglass_top' : 'add_circle' }}
                     </mat-icon>

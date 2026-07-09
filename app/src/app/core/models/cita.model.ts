@@ -74,14 +74,16 @@ export interface FiltrosCita {
     fechaHasta?: string;
 }
 
+
 export interface CitaFormModel {
     id_cliente: number | null;
     id_profesional: number | null;
     id_servicio: number | null;
 
-    fecha_hora_inicio: string;
-    modalidad: Modalidad | null;
+    fecha: string;
+    hora: string | null;
 
+    modalidad: Modalidad | null;
     comentario_cliente: string;
 }
 
