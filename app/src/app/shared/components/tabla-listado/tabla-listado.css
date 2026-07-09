@@ -27,3 +27,66 @@
     background: rgba(37, 99, 235, 0.18);
     border: 1px solid rgba(59, 130, 246, 0.35);
 }
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.data-table th,
+.data-table td {
+    padding: 15px 14px;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+/* Estado */
+.data-table th:nth-last-child(2),
+.data-table td:nth-last-child(2) {
+    text-align: center;
+}
+
+/* Acciones */
+.data-table th:last-child,
+.data-table td:last-child {
+    text-align: center;
+}
+
+.actions-cell {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.data-table.compact-table {
+    table-layout: fixed;
+}
+
+/* Primera columna */
+.data-table.compact-table th:first-child,
+.data-table.compact-table td:first-child {
+    width: 48%;
+    text-align: left;
+}
+
+/* Estado */
+.data-table.compact-table th:nth-last-child(2),
+.data-table.compact-table td:nth-last-child(2) {
+    width: 18%;
+    text-align: center;
+}
+
+/* Acciones */
+.data-table.compact-table th:last-child,
+.data-table.compact-table td:last-child {
+    width: 34%;
+    text-align: center;
+}

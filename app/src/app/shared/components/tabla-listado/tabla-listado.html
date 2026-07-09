@@ -1,6 +1,6 @@
 <div class="table-card">
 
-    <table class="data-table">
+    <table class="data-table" [class.compact-table]="columnas().length <= 3">
 
         <thead>
             <tr>
@@ -98,12 +98,9 @@
 
                 <td class="actions-cell">
 
-                    <div class="actions-content">
+                    <div class="actions">
 
-                        <a class="action-btn view" [routerLink]="[
-                rutaDetalle(),
-                item.id
-            ]">
+                        <a class="action-btn view" [routerLink]="[rutaDetalle(), item.id ]">
                             <mat-icon>visibility</mat-icon>
                             Ver
                         </a>

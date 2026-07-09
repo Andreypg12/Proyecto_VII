@@ -193,9 +193,6 @@ export class CitaForm {
             message: 'Debe seleccionar una modalidad'
         });
 
-        maxLength(path.comentario_cliente, 500, {
-            message: 'El comentario no puede superar los 500 caracteres'
-        });
 
         required(path.comentario_cliente, {
             message:
