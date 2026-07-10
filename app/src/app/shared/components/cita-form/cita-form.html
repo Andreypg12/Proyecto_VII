@@ -1,22 +1,13 @@
 <mat-card class="cita-form-card">
-
     <mat-card-header>
-        <mat-card-title>
-            Registrar cita
-        </mat-card-title>
-
-        <mat-card-subtitle>
-            Complete la información requerida para programar la cita.
-        </mat-card-subtitle>
+        <mat-card-title>Registrar cita</mat-card-title>
+        <mat-card-subtitle>Complete la información requerida para programar la cita.</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-
-        <form class="cita-form"  novalidate (submit)="$event.preventDefault(); submit()">
-
+        <form class="cita-form" novalidate (submit)="$event.preventDefault(); submit()">
             <!-- CLIENTE -->
-            <section class="form-section">
-
+            <section class="form-section section-client">
                 <div class="section-title">
                     <div>
                         <h3>Cliente</h3>
@@ -26,259 +17,123 @@
 
                 <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Cliente</mat-label>
-
                     <mat-select [formField]="citaForm.id_cliente">
-                        <mat-option [value]="null">
-                            Seleccione un cliente
-                        </mat-option>
-
-                        @for (
-                        cliente of clientesDisponibles();
-                        track cliente.id
-                        ) {
+                        <mat-option [value]="null">Seleccione un cliente</mat-option>
+                        @for (cliente of clientesDisponibles(); track cliente.id) {
                         <mat-option [value]="cliente.id">
-                            {{ cliente.nombre }}
-                            {{ cliente.apellidos }}
-                            — {{ cliente.email }}
+                            {{ cliente.nombre }} {{ cliente.apellidos }} — {{ cliente.email }}
                         </mat-option>
                         }
                     </mat-select>
-
-                    <mat-icon matSuffix>
-                        person
-                    </mat-icon>
-
-                    @if (
-                    citaForm.id_cliente().touched() &&
-                    citaForm.id_cliente().invalid()
-                    ) {
-                    <mat-error>
-                        {{
-                        citaForm.id_cliente()
-                        .errors()[0].message
-                        }}
-                    </mat-error>
+                    <mat-icon matSuffix>person</mat-icon>
+                    @if (citaForm.id_cliente().touched() && citaForm.id_cliente().invalid()) {
+                    <mat-error>{{ citaForm.id_cliente().errors()[0].message }}</mat-error>
                     }
                 </mat-form-field>
-
             </section>
 
             <!-- PROFESIONAL Y SERVICIO -->
-            <section class="form-section">
-
+            <section class="form-section section-service">
                 <div class="section-title">
                     <div>
                         <h3>Servicio profesional</h3>
-                        <p>
-                            Seleccione primero el profesional y luego
-                            uno de sus servicios disponibles.
-                        </p>
+                        <p>Seleccione primero el profesional y luego uno de sus servicios disponibles.</p>
                     </div>
                 </div>
 
                 <div class="form-grid two-columns">
-
-                    <!-- PROFESIONAL -->
                     <mat-form-field appearance="outline">
-
                         <mat-label>Profesional</mat-label>
-
                         <mat-select [formField]="citaForm.id_profesional" (selectionChange)="cambiarProfesional()">
-                            <mat-option [value]="null">
-                                Seleccione un profesional
-                            </mat-option>
-
-                            @for (
-                            profesional of profesionalesDisponibles();
-                            track profesional.id
-                            ) {
+                            <mat-option [value]="null">Seleccione un profesional</mat-option>
+                            @for (profesional of profesionalesDisponibles(); track profesional.id) {
                             <mat-option [value]="profesional.id">
-                                {{ profesional.usuario.nombre }}
-                                {{ profesional.usuario.apellidos }}
-                                — {{ profesional.titulo }}
+                                {{ profesional.usuario.nombre }} {{ profesional.usuario.apellidos }} — {{
+                                profesional.titulo }}
                             </mat-option>
                             }
                         </mat-select>
-
-                        <mat-icon matSuffix>
-                            engineering
-                        </mat-icon>
-
-                        @if (
-                        citaForm.id_profesional().touched() &&
-                        citaForm.id_profesional().invalid()
-                        ) {
-                        <mat-error>
-                            {{
-                            citaForm.id_profesional()
-                            .errors()[0].message
-                            }}
-                        </mat-error>
+                        <mat-icon matSuffix>engineering</mat-icon>
+                        @if (citaForm.id_profesional().touched() && citaForm.id_profesional().invalid()) {
+                        <mat-error>{{ citaForm.id_profesional().errors()[0].message }}</mat-error>
                         }
-
                     </mat-form-field>
 
-                    <!-- SERVICIO -->
                     <mat-form-field appearance="outline">
-
                         <mat-label>Servicio</mat-label>
-
                         <mat-select [formField]="citaForm.id_servicio">
-                            <mat-option [value]="null">
-                                Seleccione un servicio
-                            </mat-option>
-
-                            @for (
-                            servicio of serviciosDisponibles();
-                            track servicio.id
-                            ) {
+                            <mat-option [value]="null">Seleccione un servicio</mat-option>
+                            @for (servicio of serviciosDisponibles(); track servicio.id) {
                             <mat-option [value]="servicio.id">
-                                {{ servicio.servicio }}
-                                — ₡{{ servicio.precio }}
+                                {{ servicio.servicio }} — ₡{{ servicio.precio }}
                             </mat-option>
                             }
                         </mat-select>
-
-                        <mat-icon matSuffix>
-                            design_services
-                        </mat-icon>
-
+                        <mat-icon matSuffix>design_services</mat-icon>
                         @if (!citaModel().id_profesional) {
-                        <mat-hint>
-                            Seleccione primero un profesional.
-                        </mat-hint>
+                        <mat-hint>Seleccione primero un profesional.</mat-hint>
                         }
-
-                        @if (
-                        citaForm.id_servicio().touched() &&
-                        citaForm.id_servicio().invalid()
-                        ) {
-                        <mat-error>
-                            {{
-                            citaForm.id_servicio()
-                            .errors()[0].message
-                            }}
-                        </mat-error>
+                        @if (citaForm.id_servicio().touched() && citaForm.id_servicio().invalid()) {
+                        <mat-error>{{ citaForm.id_servicio().errors()[0].message }}</mat-error>
                         }
-
                     </mat-form-field>
-
                 </div>
-
             </section>
 
-            <!-- FECHA Y MODALIDAD -->
             <!-- FECHA, HORA Y MODALIDAD -->
-            <section class="form-section">
-
+            <section class="form-section section-schedule">
                 <div class="section-title">
                     <div>
                         <h3>Programación</h3>
-
-                        <p>
-                            Seleccione la fecha, la hora y la modalidad de la cita.
-                        </p>
+                        <p>Seleccione la fecha, la hora y la modalidad de la cita.</p>
                     </div>
                 </div>
 
-                <div class="form-grid programming-grid">
-
-                    <!-- FECHA -->
-                <mat-form-field appearance="outline">
-
-                    <mat-label>Fecha</mat-label>
-
-                    <input
-                        #fechaInput
-                        matInput
-                        type="date"
-                        [formField]="citaForm.fecha"
-                    />
-
-                    <button
-                        mat-icon-button
-                        matSuffix
-                        type="button"
-                        aria-label="Abrir calendario"
-                        (click)="abrirCalendario(fechaInput)"
-                    >
-                        <mat-icon>calendar_month</mat-icon>
-                    </button>
-
-                    @if (
-                        citaForm.fecha().touched() &&
-                        citaForm.fecha().invalid()
-                    ) {
-                        <mat-error>
-                            {{
-                                citaForm.fecha()
-                                    .errors()[0].message
-                            }}
-                        </mat-error>
-                    }
-
-                </mat-form-field>
-
-                    <!-- HORA -->
+                <div class="programming-grid">
                     <mat-form-field appearance="outline">
+                        <mat-label>Fecha</mat-label>
+                        <input #fechaInput matInput type="date" [formField]="citaForm.fecha" />
+                        <button mat-icon-button matSuffix type="button" aria-label="Abrir calendario"
+                            (click)="abrirCalendario(fechaInput)">
+                            <mat-icon>calendar_month</mat-icon>
+                        </button>
+                        @if (citaForm.fecha().touched() && citaForm.fecha().invalid()) {
+                        <mat-error>{{ citaForm.fecha().errors()[0].message }}</mat-error>
+                        }
+                    </mat-form-field>
 
+                    <mat-form-field appearance="outline">
                         <mat-label>Hora</mat-label>
-
                         <mat-select [formField]="citaForm.hora">
-
-                            <mat-option [value]="null">
-                                Seleccione una hora
-                            </mat-option>
-
-                            @for (
-                            horario of horariosCita;
-                            track horario.valor
-                            ) {
-                            <mat-option [value]="horario.valor">
+                            <mat-option [value]="null">Seleccione una hora</mat-option>
+                            @for (horario of horariosCita; track horario.inicio) {
+                            <mat-option [value]="horario.inicio">
                                 {{ horario.etiqueta }}
                             </mat-option>
                             }
-
                         </mat-select>
-
-                        <mat-icon matSuffix>
-                            schedule
-                        </mat-icon>
-
-                        @if (
-                        citaForm.hora().touched() &&
-                        citaForm.hora().invalid()
-                        ) {
-                        <mat-error>
-                            {{
-                            citaForm.hora()
-                            .errors()[0].message
-                            }}
-                        </mat-error>
+                        <mat-icon matSuffix>schedule</mat-icon>
+                        @if (citaForm.hora().touched() && citaForm.hora().invalid()) {
+                        <mat-error>{{ citaForm.hora().errors()[0].message }}</mat-error>
                         }
-
                     </mat-form-field>
 
-                    <!-- MODALIDAD -->
                     <mat-form-field appearance="outline">
-
                         <mat-label>Modalidad</mat-label>
 
                         <mat-select [formField]="citaForm.modalidad">
-
                             <mat-option [value]="null">
                                 Seleccione una modalidad
                             </mat-option>
 
                             @for (
-                            modalidad of modalidades;
+                            modalidad of modalidades();
                             track modalidad
                             ) {
                             <mat-option [value]="modalidad">
                                 {{ modalidad }}
                             </mat-option>
                             }
-
                         </mat-select>
 
                         <mat-icon matSuffix>
@@ -296,100 +151,53 @@
                             }}
                         </mat-error>
                         }
-
                     </mat-form-field>
-
                 </div>
-
             </section>
 
             <!-- COMENTARIO -->
-            <section class="form-section">
-
+            <section class="form-section section-comment">
                 <div class="section-title">
                     <div>
                         <h3>Comentario</h3>
-                        <p>
-                            Agregue información adicional para el profesional.
-                        </p>
+                        <p>Agregue información adicional para el profesional.</p>
                     </div>
                 </div>
 
                 <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>
-                        Descripción o comentario
-                    </mat-label>
-
+                    <mat-label>Descripción o comentario</mat-label>
                     <textarea matInput rows="5" [formField]="citaForm.comentario_cliente"
                         placeholder="Describa brevemente el motivo de la cita"></textarea>
-
-                    <mat-hint align="end">
-                        {{
-                        citaModel().comentario_cliente.length
-                        }}/500
-                    </mat-hint>
-
-                    @if (
-                    citaForm.comentario_cliente().touched() &&
-                    citaForm.comentario_cliente().invalid()
-                    ) {
-                    <mat-error>
-                        {{
-                        citaForm.comentario_cliente()
-                        .errors()[0].message
-                        }}
-                    </mat-error>
+                    <mat-hint align="end">{{ citaModel().comentario_cliente.length }}/500</mat-hint>
+                    @if (citaForm.comentario_cliente().touched() && citaForm.comentario_cliente().invalid()) {
+                    <mat-error>{{ citaForm.comentario_cliente().errors()[0].message }}</mat-error>
                     }
-
                 </mat-form-field>
-
             </section>
 
             <!-- INFORMACIÓN DEL ESTADO -->
             <div class="status-information">
-
-                <mat-icon>
-                    info
-                </mat-icon>
-
+                <mat-icon>info</mat-icon>
                 <div>
                     <strong>Estado inicial</strong>
-
-                    <p>
-                        La cita será registrada automáticamente
-                        con estado PENDIENTE.
-                    </p>
+                    <p>La cita será registrada automáticamente con estado PENDIENTE.</p>
                 </div>
-
             </div>
 
             <!-- BOTONES -->
             <div class="form-actions">
-
                 <button mat-stroked-button type="button" color="accent" (click)="cancelar.emit()"
                     [disabled]="isSubmitting()">
-                    <mat-icon>
-                        close
-                    </mat-icon>
-
+                    <mat-icon>close</mat-icon>
                     Cancelar
                 </button>
 
                 <button mat-stroked-button type="submit" color="primary" class="create-icon-button"
                     [disabled]="isSubmitting()">
-                    <mat-icon>
-                        {{ isSubmitting() ? 'hourglass_top' : 'add_circle' }}
-                    </mat-icon>
-
-                    <span>
-                        {{ isSubmitting() ? 'Guardando...' : 'Registrar cita' }}
-                    </span>
+                    <mat-icon>{{ isSubmitting() ? 'hourglass_top' : 'add_circle' }}</mat-icon>
+                    <span>{{ isSubmitting() ? 'Guardando...' : 'Registrar cita' }}</span>
                 </button>
-
             </div>
-
         </form>
-
     </mat-card-content>
-
 </mat-card>

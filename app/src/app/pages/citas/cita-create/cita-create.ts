@@ -11,7 +11,7 @@ import { CitaForm } from
     '../../../shared/components/cita-form/cita-form';
 
 import {
-    CreateCitaDto
+    CreateCitaDto, Modalidad
 } from '../../../core/models/cita.model';
 
 import {
@@ -60,6 +60,7 @@ export class CitaCreate implements OnInit {
     clientes = signal<Usuario[]>([]);
     profesionales = signal<Profesional[]>([]);
     servicios = signal<Servicio[]>([]);
+    modalidades = signal<Modalidad[]>([]);
 
     loading = signal(false);
     saving = signal(false);
@@ -71,7 +72,7 @@ export class CitaCreate implements OnInit {
         private citaService: CitaService,
         private notification: NotificationService,
         private router: Router
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.cargarDatosFormulario();
@@ -81,24 +82,23 @@ export class CitaCreate implements OnInit {
         this.loading.set(true);
 
         forkJoin({
-            usuarios: this.usuarioService.listar(),
-            profesionales: this.profesionalService.listar(),
-            servicios: this.servicioService.listar()
+            usuarios:
+                this.usuarioService.listar(),
+
+            profesionales:
+                this.profesionalService.listar(),
+
+            servicios:
+                this.servicioService.listar(),
+
+            configuracion:
+                this.citaService.obtenerConfiguracion()
         }).subscribe({
             next: (respuestas) => {
-                console.log(
-                    'Respuesta usuarios:',
-                    respuestas.usuarios
-                );
 
                 console.log(
-                    'Respuesta profesionales:',
-                    respuestas.profesionales
-                );
-
-                console.log(
-                    'Respuesta servicios:',
-                    respuestas.servicios
+                    'Configuración recibida:',
+                    respuestas.configuracion
                 );
 
                 this.clientes.set(
@@ -119,11 +119,28 @@ export class CitaCreate implements OnInit {
                     )
                 );
 
+                const modalidadesRecibidas =
+                    respuestas.configuracion
+                        .data
+                        .modalidades;
+
+                this.modalidades.set(
+                    Array.isArray(modalidadesRecibidas)
+                        ? modalidadesRecibidas
+                        : []
+                );
+
+                console.log(
+                    'Modalidades cargadas:',
+                    this.modalidades()
+                );
+
                 this.loading.set(false);
             },
+
             error: (error) => {
                 console.error(
-                    'Error cargando datos de la cita:',
+                    'Error cargando los datos del formulario:',
                     error
                 );
 

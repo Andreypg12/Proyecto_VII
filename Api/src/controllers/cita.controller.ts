@@ -144,4 +144,17 @@ export class citaController {
             StatusCodes.CREATED
         );
     };
+
+    async obtenerConfiguracion(
+    req: Request,
+    res: Response
+    ) {
+        const configuracion =
+            await citaService.obtenerConfiguracion();
+
+        res.status(200).json({
+            success: true,
+            data: configuracion
+        });
+    }
 }

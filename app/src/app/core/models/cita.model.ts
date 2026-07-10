@@ -1,14 +1,10 @@
-export type EstadoCita =
-    | 'PENDIENTE'
-    | 'ACEPTADA'
-    | 'RECHAZADA'
-    | 'CANCELADA'
-    | 'COMPLETADA';
+export type EstadoCita = string;
+export type Modalidad = string;
 
-export type Modalidad =
-    | 'PRESENCIAL'
-    | 'VIRTUAL'
-    | 'HÍBRIDA';
+export interface ConfiguracionCita {
+    modalidades: Modalidad[];
+    estados: EstadoCita[];
+}
 
 export interface ClienteCita {
     id: number;
@@ -73,7 +69,6 @@ export interface FiltrosCita {
     fechaDesde?: string;
     fechaHasta?: string;
 }
-
 
 export interface CitaFormModel {
     id_cliente: number | null;

@@ -9,6 +9,12 @@ export class CitaRoutes {
         const router = Router();
         const controller = new citaController();
 
+        // GET CONFIGURACIÓN
+        router.get(
+            "/configuracion",
+            asyncHandler(controller.obtenerConfiguracion)
+        );
+
         // GET
         router.get(
             "/",

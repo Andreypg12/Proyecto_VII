@@ -34,7 +34,8 @@ import { Profesional } from '../../../core/models/profesional.model';
 import { Servicio } from '../../../core/models/servicio.model';
 
 interface HorarioCita {
-    valor: string;
+    inicio: string;
+    fin: string;
     etiqueta: string;
 }
 
@@ -64,49 +65,50 @@ export class CitaForm {
     profesionales = input<Profesional[]>([]);
     servicios = input<Servicio[]>([]);
 
+    modalidades = input<Modalidad[]>([]);
+
     saving = input<boolean>(false);
 
     guardar = output<CreateCitaDto>();
     cancelar = output<void>();
 
-    modalidades: Modalidad[] = [
-        'PRESENCIAL',
-        'VIRTUAL',
-        'HÍBRIDA'
-    ];
 
     readonly fechaMinima = this.obtenerFechaLocal(new Date());
 
     readonly horariosCita: HorarioCita[] = [
         {
-            valor: '09:00',
+            inicio: '09:00',
+            fin: '10:00',
             etiqueta: '9:00 a. m. – 10:00 a. m.'
         },
         {
-            valor: '10:00',
+            inicio: '10:00',
+            fin: '11:00',
             etiqueta: '10:00 a. m. – 11:00 a. m.'
         },
         {
-            valor: '11:00',
+            inicio: '11:00',
+            fin: '12:00',
             etiqueta: '11:00 a. m. – 12:00 p. m.'
         },
-
-        // 12:00 p. m. a 1:00 p. m.: almuerzo
-
         {
-            valor: '13:00',
+            inicio: '13:00',
+            fin: '14:00',
             etiqueta: '1:00 p. m. – 2:00 p. m.'
         },
         {
-            valor: '14:00',
+            inicio: '14:00',
+            fin: '15:00',
             etiqueta: '2:00 p. m. – 3:00 p. m.'
         },
         {
-            valor: '15:00',
+            inicio: '15:00',
+            fin: '16:00',
             etiqueta: '3:00 p. m. – 4:00 p. m.'
         },
         {
-            valor: '16:00',
+            inicio: '16:00',
+            fin: '17:00',
             etiqueta: '4:00 p. m. – 5:00 p. m.'
         }
     ];
