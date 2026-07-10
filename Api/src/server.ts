@@ -11,7 +11,7 @@ const app = express();
 dotenv.config();
 // Puerto que escucha por defecto 300 o definido .env
 const port = process.env.PORT || 3000;
-// Middleware CORS para aceptar llamadas en el servido
+// Middleware CORS para aceptar llamadas en el servidor
 app.use(cors());
 // Middleware para loggear las llamadas al servidor
 app.use(morgan("dev"));

@@ -16,17 +16,9 @@ export class EspecialidadRoutes {
         router.put('/desactivar/:id', asyncHandler(controller.desactivar));
 
         router.get('/:id', asyncHandler(controller.obtenerPorId))
-        router.post(
-            "/",
-            validateRequest(createEspecialidadSchema),
-            asyncHandler(controller.crear)
-        )
+        router.post("/", validateRequest(createEspecialidadSchema), asyncHandler(controller.crear))
 
-        router.put(
-            "/:id",
-            validateRequest(updateEspecialidadSchema),
-            asyncHandler(controller.actualizar)
-        )
+        router.put( "/:id", validateRequest(updateEspecialidadSchema), asyncHandler(controller.actualizar))
         return router
     }
 }

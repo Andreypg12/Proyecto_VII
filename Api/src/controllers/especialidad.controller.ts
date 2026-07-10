@@ -14,14 +14,8 @@ export class especialidadController {
         const buscar = req.query.buscar as string | undefined;
         const estado = req.query.estado as string | undefined;
 
-
-        const estadoParam = req.query.estado as string | undefined;
-
-        if (
-            estadoParam !== undefined &&
-            estadoParam !== "true" &&
-            estadoParam !== "false"
-        ) {
+        if (estado !== undefined && estado !== "true" && estado !== "false") {
+            
             return res.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
                 message: "Estado inválido. Use true o false."

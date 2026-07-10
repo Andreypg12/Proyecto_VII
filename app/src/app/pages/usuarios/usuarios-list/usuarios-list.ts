@@ -38,23 +38,6 @@ export class UsuariosList {
     this.cargarUsuarios();
   }
 
-/*   usuariosFiltrados = computed(() => {
-    const texto = this.buscar().trim().toLowerCase();
-
-    return this.usuarios().filter((usuario) => {
-      const nombre = usuario.nombreCompleto?.toLowerCase() ?? '';
-      const email = usuario.email?.toLowerCase() ?? '';
-      const rol = usuario.rol?.toLowerCase() ?? '';
-
-      return (
-        texto.length === 0 ||
-        nombre.includes(texto) ||
-        email.includes(texto) ||
-        rol.includes(texto)
-      );
-    });
-  }); */
-
   usuariosFiltrados = computed(() => {
     const texto = this.buscar().trim().toLowerCase();
     const rolSeleccionado = this.rol();

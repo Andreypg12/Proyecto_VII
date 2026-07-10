@@ -14,17 +14,8 @@ export class UsuarioRoutes {
         router.get('/:id', asyncHandler(controller.obtenerPorId));
 
         // POST / PUT
-        router.post(
-            "/",
-            validateRequest(createUsuarioSchema),
-            asyncHandler(controller.crear)
-        );
-
-        router.put(
-            "/:id",
-            validateRequest(updateUsuarioSchema),
-            asyncHandler(controller.actualizar)
-        );
+        router.post("/",validateRequest(createUsuarioSchema),asyncHandler(controller.crear));
+        router.put( "/:id", validateRequest(updateUsuarioSchema), asyncHandler(controller.actualizar));
 
         // CAMBIO DE ESTADO
         router.put('/activar/:id', asyncHandler(controller.activar));
