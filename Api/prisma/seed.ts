@@ -305,7 +305,7 @@ async function main() {
             servicio: "Aplicación móvil básica",
             descripcion: "Servicio",
             precio: 120000,
-            duracion_estimada: 360,
+            duracion_estimada: 60,
             estado: true,
             modalidad: Modalidad.HÍBRIDA,
             id_categoria: catServMap["Desarrollo a Medida"],
@@ -326,7 +326,7 @@ async function main() {
                 servicio: "Desarrollo de sitio web informativo",
                 descripcion: "Servicio",
                 precio: 85000,
-                duracion_estimada: 240,
+                duracion_estimada: 60,
                 estado: true,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Desarrollo a Medida"],
@@ -336,7 +336,7 @@ async function main() {
                 servicio: "Optimización de base de datos",
                 descripcion: "Servicio",
                 precio: 65000,
-                duracion_estimada: 180,
+                duracion_estimada: 60,
                 estado: false,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Consultoría Técnica"],
@@ -346,7 +346,7 @@ async function main() {
                 servicio: "Revisión de seguridad básica",
                 descripcion: "Servicio",
                 precio: 75000,
-                duracion_estimada: 180,
+                duracion_estimada: 60,
                 estado: true,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Consultoría Técnica"],
@@ -356,7 +356,7 @@ async function main() {
                 servicio: "Mantenimiento mensual de sistema",
                 descripcion: "Servicio",
                 precio: 95000,
-                duracion_estimada: 300,
+                duracion_estimada: 60,
                 estado: true,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Mantenimiento y Soporte"],
@@ -366,7 +366,7 @@ async function main() {
                 servicio: "Capacitación en desarrollo web",
                 descripcion: "Servicio",
                 precio: 55000,
-                duracion_estimada: 120,
+                duracion_estimada: 60,
                 estado: true,
                 modalidad: Modalidad.PRESENCIAL,
                 id_categoria: catServMap["Capacitación y Formación"],
@@ -376,7 +376,7 @@ async function main() {
                 servicio: "Migración de sistema legado",
                 descripcion: "Servicio",
                 precio: 150000,
-                duracion_estimada: 480,
+                duracion_estimada: 60,
                 estado: true,
                 modalidad: Modalidad.HÍBRIDA,
                 id_categoria: catServMap["Migración y Modernización"],
@@ -386,7 +386,7 @@ async function main() {
                 servicio: "Auditoría de arquitectura de software",
                 descripcion: "Servicio",
                 precio: 110000,
-                duracion_estimada: 240,
+                duracion_estimada: 60,
                 estado: true,
                 modalidad: Modalidad.VIRTUAL,
                 id_categoria: catServMap["Consultoría Técnica"],
@@ -396,7 +396,7 @@ async function main() {
                 servicio: "Refactorización y modernización de aplicaciones",
                 descripcion: "Servicio",
                 precio: 140000,
-                duracion_estimada: 420,
+                duracion_estimada: 60,
                 estado: true,
                 modalidad: Modalidad.HÍBRIDA,
                 id_categoria: catServMap["Migración y Modernización"],
@@ -428,7 +428,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-07-15T08:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-07-15T13:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-15T09:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Necesito mantenimiento preventivo del sistema empresarial.",
                 monto_estimado: 95000,
@@ -458,7 +458,7 @@ async function main() {
 
             {
                 fecha_hora_inicio: new Date("2026-06-12T09:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-06-12T11:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-12T10:00:00"),
                 fecha_hora_finalizacion_real: new Date("2026-06-12T10:55:00"),
                 comentario_cliente: "Capacitación introductoria sobre desarrollo web.",
                 monto_estimado: 55000,
@@ -470,7 +470,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-07-20T08:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-07-20T14:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-20T09:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Requiero el desarrollo de una aplicación móvil básica.",
                 monto_estimado: 120000,
@@ -482,7 +482,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-07-25T13:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-07-25T15:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-25T14:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Capacitación para mejorar conocimientos de desarrollo web.",
                 monto_estimado: 55000,
@@ -500,7 +500,7 @@ async function main() {
 
             {
                 fecha_hora_inicio: new Date("2026-06-18T09:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-06-18T13:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-18T10:00:00"),
                 fecha_hora_finalizacion_real: new Date("2026-06-18T13:10:00"),
                 comentario_cliente: "Desarrollo de un sitio web informativo para una pequeña empresa.",
                 monto_estimado: 85000,
@@ -512,7 +512,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-07-22T08:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-07-22T16:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-22T09:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Necesito migrar un sistema antiguo a una plataforma moderna.",
                 monto_estimado: 150000,
@@ -524,7 +524,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-08-10T09:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-08-10T13:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-08-10T10:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Solicito la creación de un sitio web para presentar mis servicios.",
                 monto_estimado: 85000,
@@ -543,7 +543,7 @@ async function main() {
 
             {
                 fecha_hora_inicio: new Date("2026-06-20T08:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-06-20T12:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-20T09:00:00"),
                 fecha_hora_finalizacion_real: new Date("2026-06-20T11:50:00"),
                 comentario_cliente: "Auditoría de arquitectura para detectar oportunidades de mejora.",
                 monto_estimado: 110000,
@@ -555,7 +555,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-07-18T09:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-07-18T13:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-18T10:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Solicito revisión de la arquitectura de una aplicación.",
                 monto_estimado: 110000,
@@ -567,7 +567,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-08-12T13:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-08-12T17:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-08-12T14:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Necesito evaluar la estructura técnica de mi sistema.",
                 monto_estimado: 110000,
@@ -585,7 +585,7 @@ async function main() {
 
             {
                 fecha_hora_inicio: new Date("2026-06-25T09:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-06-25T12:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-06-25T10:00:00"),
                 fecha_hora_finalizacion_real: new Date("2026-06-25T12:00:00"),
                 comentario_cliente: "Revisión básica de seguridad para una aplicación web.",
                 monto_estimado: 75000,
@@ -597,7 +597,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-07-28T08:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-07-28T15:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-07-28T09:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Solicito modernizar y refactorizar una aplicación existente.",
                 monto_estimado: 140000,
@@ -609,7 +609,7 @@ async function main() {
             },
             {
                 fecha_hora_inicio: new Date("2026-08-15T09:00:00"),
-                fecha_hora_finalizacion_esperada: new Date("2026-08-15T12:00:00"),
+                fecha_hora_finalizacion_esperada: new Date("2026-08-15T10:00:00"),
                 fecha_hora_finalizacion_real: null,
                 comentario_cliente: "Deseo revisar la seguridad general de mi plataforma.",
                 monto_estimado: 75000,

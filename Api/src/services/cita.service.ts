@@ -1,5 +1,5 @@
 import { prisma } from '../config/prisma';
-import {EstadoCita,EstadoUsuario,Modalidad,Rol,} from '../../generated/prisma/enums';
+import { EstadoCita, EstadoUsuario, Modalidad, Rol, } from '../../generated/prisma/enums';
 import { CreateCitaDto } from '../dtos/cita.dto';
 import { AppError } from '../utils/app-error';
 
@@ -10,48 +10,6 @@ interface FiltrosCita {
     fechaHasta?: string;
 }
 
-
-const ZONA_HORARIA_NEGOCIO = 'America/Costa_Rica';
-const DURACION_CITA_MINUTOS = 60;
-const HORAS_INICIO_PERMITIDAS = new Set([
-    '09:00',
-    '10:00',
-    '11:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-]);
-
-
-function obtenerHoraCostaRica(fecha: Date): string {
-
-    const partes = new Intl.DateTimeFormat(
-        'en-GB',
-        {
-            timeZone: ZONA_HORARIA_NEGOCIO,
-            hour: '2-digit',
-            minute: '2-digit',
-            hourCycle: 'h23',
-        }
-    ).formatToParts(fecha);
-
-    const hora = partes.find(
-        (parte) => parte.type === 'hour'
-    )?.value;
-
-    const minuto = partes.find(
-        (parte) => parte.type === 'minute'
-    )?.value;
-
-    if (!hora || !minuto) {
-        throw AppError.badRequest(
-            'No fue posible interpretar la hora de la cita'
-        );
-    }
-
-    return `${hora}:${minuto}`;
-}
 
 export const citaService = {
     async obtenerConfiguracion() {
@@ -175,7 +133,7 @@ export const citaService = {
         });
     },
 
-    
+
     async obtenerPorId(
         id: number
     ) {
@@ -256,186 +214,98 @@ export const citaService = {
         });
     },
 
-    
-    async crear(
-        data: CreateCitaDto
-    ) {
 
-        
-        const fechaInicio =
-            new Date(
-                data.fecha_hora_inicio
-            );
+    async crear(data: CreateCitaDto) {
 
-        if (
-            Number.isNaN(
-                fechaInicio.getTime()
-            )
-        ) {
+        const fechaInicio = new Date(data.fecha_hora_inicio);
+
+        if (Number.isNaN(fechaInicio.getTime())) {
             throw AppError.badRequest(
-                'La fecha y hora de inicio no son válidas'
+                "La fecha y hora de inicio no son válidas"
             );
         }
 
-        if (
-            fechaInicio <= new Date()
-        ) {
+        if (fechaInicio <= new Date()) {
             throw AppError.badRequest(
-                'La fecha y hora de la cita deben ser posteriores a la fecha actual'
+                "La fecha y hora deben ser posteriores a la fecha actual"
             );
         }
 
-        if (
-            !Object.values(
-                Modalidad
-            ).includes(
-                data.modalidad as Modalidad
-            )
-        ) {
-            throw AppError.badRequest(
-                'La modalidad seleccionada no es válida'
-            );
-        }
-
-        const horaCostaRica =
-            obtenerHoraCostaRica(
-                fechaInicio
-            );
-
-        if (
-            !HORAS_INICIO_PERMITIDAS.has(
-                horaCostaRica
-            )
-        ) {
-            throw AppError.badRequest(
-                'La hora seleccionada no corresponde a un horario permitido'
-            );
-        }
-
-        const comentario =
-            data.comentario_cliente
-                ?.trim();
-
-        if (!comentario) {
-            throw AppError.badRequest(
-                'Debe ingresar una descripción o comentario'
-            );
-        }
-
-        if (
-            comentario.length > 500
-        ) {
-            throw AppError.badRequest(
-                'El comentario no puede superar los 500 caracteres'
-            );
-        }
-
-        const cliente =
-            await prisma.usuario.findFirst({
-                where: {
-                    id: data.id_cliente,
-                    rol: Rol.CLIENTE,
-
-                    estado:
-                        EstadoUsuario.ACTIVO,
-                },
-            });
+        const cliente = await prisma.usuario.findFirst({
+            where: {
+                id: data.id_cliente,
+                rol: Rol.CLIENTE,
+                estado: EstadoUsuario.ACTIVO,
+            },
+        });
 
         if (!cliente) {
             throw AppError.badRequest(
-                'El cliente seleccionado no existe o no se encuentra activo'
+                "El cliente seleccionado no existe o no está activo"
             );
         }
 
-        
-        const profesional =
-            await prisma
-                .perfilProfesional
-                .findFirst({
-                    where: {
-                        id:
-                            data.id_profesional,
-
-                        disponibilidad:
-                            true,
-
-                        usuario: {
-                            estado:
-                                EstadoUsuario.ACTIVO,
-
-                            rol:
-                                Rol.PROFESIONAL,
-                        },
-                    },
-                });
+        const profesional = await prisma.perfilProfesional.findFirst({
+            where: {
+                id: data.id_profesional,
+                disponibilidad: true,
+                usuario: {
+                    rol: Rol.PROFESIONAL,
+                    estado: EstadoUsuario.ACTIVO,
+                },
+            },
+        });
 
         if (!profesional) {
             throw AppError.badRequest(
-                'El profesional seleccionado no existe o no se encuentra disponible'
+                "El profesional no existe o no está disponible"
             );
         }
 
-        
-        const servicio =
-            await prisma.servicio.findFirst({
-                where: {
-                    id:
-                        data.id_servicio,
-
-                    estado:
-                        true,
-
-                    id_profesional:
-                        data.id_profesional,
-                },
-            });
+        const servicio = await prisma.servicio.findFirst({
+            where: {
+                id: data.id_servicio,
+                id_profesional: data.id_profesional,
+                estado: true,
+            },
+        });
 
         if (!servicio) {
             throw AppError.badRequest(
-                'El servicio seleccionado no existe, está desactivado o no pertenece al profesional indicado'
+                "El servicio no existe o no pertenece al profesional"
             );
         }
 
-        
         if (
-            servicio.modalidad !==
-                Modalidad.HÍBRIDA &&
-
-            servicio.modalidad !==
-                data.modalidad
+            servicio.modalidad !== Modalidad.HÍBRIDA &&
+            servicio.modalidad !== data.modalidad
         ) {
             throw AppError.badRequest(
                 `El servicio solamente se ofrece en modalidad ${servicio.modalidad}`
             );
         }
 
-        
-        const fechaFinalizacionEsperada = new Date( fechaInicio.getTime() + DURACION_CITA_MINUTOS * 60 * 1000 );
+        const fechaFinalizacionEsperada = new Date(fechaInicio);
+
+        fechaFinalizacionEsperada.setMinutes(
+            fechaFinalizacionEsperada.getMinutes() +
+            servicio.duracion_estimada
+        );
 
         return prisma.cita.create({
             data: {
-                fecha_hora_inicio:
-                    fechaInicio,
-
+                fecha_hora_inicio: fechaInicio,
                 fecha_hora_finalizacion_esperada:
                     fechaFinalizacionEsperada,
 
-                fecha_hora_finalizacion_real:
-                    null,
-
                 comentario_cliente:
-                    comentario,
+                    data.comentario_cliente,
 
-                
                 monto_estimado:
                     servicio.precio,
 
                 modalidad:
                     data.modalidad,
-
-                
-                estado:
-                    EstadoCita.PENDIENTE,
 
                 id_cliente:
                     data.id_cliente,
@@ -446,69 +316,6 @@ export const citaService = {
                 id_servicio:
                     data.id_servicio,
             },
-
-            select: {
-                id: true,
-
-                fecha_hora_inicio:
-                    true,
-
-                fecha_hora_finalizacion_esperada:
-                    true,
-
-                fecha_hora_finalizacion_real:
-                    true,
-
-                comentario_cliente:
-                    true,
-
-                monto_estimado:
-                    true,
-
-                modalidad:
-                    true,
-
-                estado:
-                    true,
-
-                cliente: {
-                    select: {
-                        id: true,
-                        nombre: true,
-                        apellidos: true,
-                        email: true,
-                    },
-                },
-
-                profesional: {
-                    select: {
-                        id: true,
-                        titulo: true,
-
-                        usuario: {
-                            select: {
-                                id: true,
-                                nombre: true,
-                                apellidos: true,
-                                email: true,
-                            },
-                        },
-                    },
-                },
-
-                servicio: {
-                    select: {
-                        id: true,
-                        servicio: true,
-                        precio: true,
-
-                        duracion_estimada:
-                            true,
-
-                        modalidad: true,
-                    },
-                },
-            },
         });
-    },
-};
+    }
+}
