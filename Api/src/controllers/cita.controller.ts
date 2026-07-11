@@ -9,23 +9,13 @@ import { EstadoCita } from "../../generated/prisma/enums";
 
 export class citaController {
 
-    listar = async (
-        request: Request,
-        response: Response,
-        next: NextFunction
-    ) => {
+    listar = async (request: Request, response: Response, next: NextFunction) => {
 
-        const estado =
-            request.query.estado as EstadoCita | undefined;
+        const estado = request.query.estado as EstadoCita | undefined;
+        const idProfesionalParam = request.query.idProfesional as string | undefined;
+        const fechaDesde = request.query.fechaDesde as string | undefined;
+        const fechaHasta = request.query.fechaHasta as string | undefined;
 
-        const idProfesionalParam =
-            request.query.idProfesional as string | undefined;
-
-        const fechaDesde =
-            request.query.fechaDesde as string | undefined;
-
-        const fechaHasta =
-            request.query.fechaHasta as string | undefined;
 
         // Validar estado
         if (
@@ -105,14 +95,10 @@ export class citaController {
         );
     };
 
-    obtenerPorId = async (
-        request: Request,
-        response: Response,
-        next: NextFunction
-    ) => {
+
+    obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {
 
         const id = parseId(request.params.id);
-
         const cita = await citaService.obtenerPorId(id);
 
         if (!cita) {
@@ -122,18 +108,11 @@ export class citaController {
             });
         }
 
-        return sendSuccess(
-            response,
-            cita,
-            "Cita obtenida correctamente"
-        );
+        return sendSuccess(response, cita, "Cita obtenida correctamente");
     };
 
-    crear = async (
-        request: Request,
-        response: Response,
-        next: NextFunction
-    ) => {
+
+    crear = async (request: Request, response: Response, next: NextFunction) => {
 
         const cita = await citaService.crear(request.body);
 
@@ -145,12 +124,8 @@ export class citaController {
         );
     };
 
-    async obtenerConfiguracion(
-    req: Request,
-    res: Response
-    ) {
-        const configuracion =
-            await citaService.obtenerConfiguracion();
+    async obtenerConfiguracion(req: Request,res: Response) {
+        const configuracion = await citaService.obtenerConfiguracion();
 
         res.status(200).json({
             success: true,

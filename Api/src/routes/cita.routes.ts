@@ -10,29 +10,16 @@ export class CitaRoutes {
         const controller = new citaController();
 
         // GET CONFIGURACIÓN
-        router.get(
-            "/configuracion",
-            asyncHandler(controller.obtenerConfiguracion)
-        );
+        router.get("/configuracion",asyncHandler(controller.obtenerConfiguracion));
 
         // GET
-        router.get(
-            "/",
-            asyncHandler(controller.listar)
-        );
+        router.get("/",asyncHandler(controller.listar));
 
         // GET BY ID
-        router.get(
-            "/:id",
-            asyncHandler(controller.obtenerPorId)
-        );
+        router.get("/:id",asyncHandler(controller.obtenerPorId));
 
         // POST
-        router.post(
-            "/",
-            validateRequest(createCitaSchema),
-            asyncHandler(controller.crear)
-        );
+        router.post("/",validateRequest(createCitaSchema),asyncHandler(controller.crear));
 
         return router;
     }

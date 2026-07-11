@@ -1,16 +1,6 @@
 import { prisma } from '../config/prisma';
-
-import {
-    EstadoCita,
-    EstadoUsuario,
-    Modalidad,
-    Rol,
-} from '../../generated/prisma/enums';
-
-import {
-    CreateCitaDto,
-} from '../dtos/cita.dto';
-
+import {EstadoCita,EstadoUsuario,Modalidad,Rol,} from '../../generated/prisma/enums';
+import { CreateCitaDto } from '../dtos/cita.dto';
 import { AppError } from '../utils/app-error';
 
 interface FiltrosCita {
@@ -20,17 +10,9 @@ interface FiltrosCita {
     fechaHasta?: string;
 }
 
-/*
- * Configuración del horario de citas.
- *
- * Las horas pueden permanecer definidas en el backend
- * porque representan reglas de funcionamiento del negocio.
- */
-const ZONA_HORARIA_NEGOCIO =
-    'America/Costa_Rica';
 
+const ZONA_HORARIA_NEGOCIO = 'America/Costa_Rica';
 const DURACION_CITA_MINUTOS = 60;
-
 const HORAS_INICIO_PERMITIDAS = new Set([
     '09:00',
     '10:00',
@@ -41,13 +23,8 @@ const HORAS_INICIO_PERMITIDAS = new Set([
     '16:00',
 ]);
 
-/**
- * Obtiene la hora correspondiente a Costa Rica
- * a partir de una fecha almacenada o recibida en UTC.
- */
-function obtenerHoraCostaRica(
-    fecha: Date
-): string {
+
+function obtenerHoraCostaRica(fecha: Date): string {
 
     const partes = new Intl.DateTimeFormat(
         'en-GB',
@@ -77,13 +54,6 @@ function obtenerHoraCostaRica(
 }
 
 export const citaService = {
-
-    /**
-     * Retorna los enums reales generados por Prisma.
-     *
-     * Angular consumirá este método mediante:
-     * GET /cita/configuracion
-     */
     async obtenerConfiguracion() {
 
         return {
@@ -97,14 +67,7 @@ export const citaService = {
         };
     },
 
-    /**
-     * Lista las citas y permite combinar:
-     *
-     * - Estado
-     * - Profesional
-     * - Fecha desde
-     * - Fecha hasta
-     */
+
     async listar(
         filtros?: FiltrosCita
     ) {
@@ -212,9 +175,7 @@ export const citaService = {
         });
     },
 
-    /**
-     * Obtiene el detalle completo de una cita.
-     */
+    
     async obtenerPorId(
         id: number
     ) {
@@ -295,24 +256,12 @@ export const citaService = {
         });
     },
 
-    /**
-     * Registra una nueva cita.
-     */
+    
     async crear(
         data: CreateCitaDto
     ) {
 
-        /*
-         * Angular envía la fecha en formato ISO UTC.
-         *
-         * Ejemplo:
-         *
-         * Costa Rica:
-         * 10/07/2026 09:00
-         *
-         * API:
-         * 2026-07-10T15:00:00.000Z
-         */
+        
         const fechaInicio =
             new Date(
                 data.fecha_hora_inicio
@@ -336,12 +285,6 @@ export const citaService = {
             );
         }
 
-        /*
-         * Validación real del enum Modalidad.
-         *
-         * Aunque Angular lea las opciones desde el API,
-         * el backend debe validar nuevamente el valor.
-         */
         if (
             !Object.values(
                 Modalidad
@@ -354,10 +297,6 @@ export const citaService = {
             );
         }
 
-        /*
-         * Validar que la hora corresponda a uno
-         * de los horarios permitidos.
-         */
         const horaCostaRica =
             obtenerHoraCostaRica(
                 fechaInicio
@@ -373,9 +312,6 @@ export const citaService = {
             );
         }
 
-        /*
-         * Validar comentario obligatorio.
-         */
         const comentario =
             data.comentario_cliente
                 ?.trim();
@@ -394,13 +330,6 @@ export const citaService = {
             );
         }
 
-        /*
-         * Validar cliente:
-         *
-         * - Debe existir.
-         * - Debe estar activo.
-         * - Debe tener rol CLIENTE.
-         */
         const cliente =
             await prisma.usuario.findFirst({
                 where: {
@@ -418,14 +347,7 @@ export const citaService = {
             );
         }
 
-        /*
-         * Validar profesional:
-         *
-         * - Debe existir.
-         * - Debe estar disponible.
-         * - Su usuario debe estar activo.
-         * - Su usuario debe tener rol PROFESIONAL.
-         */
+        
         const profesional =
             await prisma
                 .perfilProfesional
@@ -453,13 +375,7 @@ export const citaService = {
             );
         }
 
-        /*
-         * Validar servicio:
-         *
-         * - Debe existir.
-         * - Debe estar activo.
-         * - Debe pertenecer al profesional.
-         */
+        
         const servicio =
             await prisma.servicio.findFirst({
                 where: {
@@ -480,11 +396,7 @@ export const citaService = {
             );
         }
 
-        /*
-         * Si el servicio no es híbrido,
-         * la modalidad seleccionada debe coincidir
-         * con la modalidad del servicio.
-         */
+        
         if (
             servicio.modalidad !==
                 Modalidad.HÍBRIDA &&
@@ -497,17 +409,8 @@ export const citaService = {
             );
         }
 
-        /*
-         * Las citas tienen una duración fija
-         * de 60 minutos.
-         */
-        const fechaFinalizacionEsperada =
-            new Date(
-                fechaInicio.getTime() +
-                DURACION_CITA_MINUTOS *
-                    60 *
-                    1000
-            );
+        
+        const fechaFinalizacionEsperada = new Date( fechaInicio.getTime() + DURACION_CITA_MINUTOS * 60 * 1000 );
 
         return prisma.cita.create({
             data: {
@@ -523,20 +426,14 @@ export const citaService = {
                 comentario_cliente:
                     comentario,
 
-                /*
-                 * El monto se toma del servicio,
-                 * no del formulario.
-                 */
+                
                 monto_estimado:
                     servicio.precio,
 
                 modalidad:
                     data.modalidad,
 
-                /*
-                 * El estado inicial se asigna
-                 * únicamente desde el backend.
-                 */
+                
                 estado:
                     EstadoCita.PENDIENTE,
 
