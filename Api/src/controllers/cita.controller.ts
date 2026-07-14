@@ -18,10 +18,7 @@ export class citaController {
 
 
         // Validar estado
-        if (
-            estado &&
-            !Object.values(EstadoCita).includes(estado)
-        ) {
+        if (estado && !Object.values(EstadoCita).includes(estado)) {
             return response.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
                 message: "El estado de la cita no es válido",
@@ -34,10 +31,8 @@ export class citaController {
         if (idProfesionalParam) {
             idProfesional = Number(idProfesionalParam);
 
-            if (
-                !Number.isInteger(idProfesional) ||
-                idProfesional <= 0
-            ) {
+            if (!Number.isInteger(idProfesional) || idProfesional <= 0) {
+
                 return response.status(StatusCodes.BAD_REQUEST).json({
                     success: false,
                     message: "El profesional seleccionado no es válido",
@@ -45,23 +40,20 @@ export class citaController {
             }
         }
 
-        // Validar formato de fechas
+        // Validar formato de fechas   Exige el formato AAAA-MM-DD
         const formatoFecha = /^\d{4}-\d{2}-\d{2}$/;
 
-        if (
-            fechaDesde &&
-            !formatoFecha.test(fechaDesde)
-        ) {
+        //Si se recibió fechaDesde, pero no tiene el formato esperado, responde con error
+        if (fechaDesde && !formatoFecha.test(fechaDesde)) {
+
             return response.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
                 message: "La fecha inicial no es válida",
             });
         }
 
-        if (
-            fechaHasta &&
-            !formatoFecha.test(fechaHasta)
-        ) {
+        //Si se recibió fechaHasta, pero no tiene el formato esperado, responde con error
+        if (fechaHasta && !formatoFecha.test(fechaHasta)) {
             return response.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
                 message: "La fecha final no es válida",
@@ -69,11 +61,9 @@ export class citaController {
         }
 
         // Validar rango
-        if (
-            fechaDesde &&
-            fechaHasta &&
-            fechaDesde > fechaHasta
-        ) {
+        //Comprueba que la fecha inicial no sea posterior a la final.
+        if (fechaDesde && fechaHasta && fechaDesde > fechaHasta) {
+
             return response.status(StatusCodes.BAD_REQUEST).json({
                 success: false,
                 message:
@@ -81,6 +71,7 @@ export class citaController {
             });
         }
 
+        //Llamada al servicio para listar
         const citas = await citaService.listar({
             estado,
             idProfesional,
@@ -88,6 +79,8 @@ export class citaController {
             fechaHasta,
         });
 
+
+        //Respuesta exitosa del listado
         return sendSuccess(
             response,
             citas,
@@ -98,7 +91,9 @@ export class citaController {
 
     obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {
 
+        //Convierte el id por medio del parseId que se encuentra en utils
         const id = parseId(request.params.id);
+        //Obtiene la cita por medio del id
         const cita = await citaService.obtenerPorId(id);
 
         if (!cita) {

@@ -89,8 +89,8 @@ export class NotificationService {
             confirmButtonText: textoBoton,
             cancelButtonText: textoCancelar,
             reverseButtons: true,
-            confirmButtonColor: '#2563eb',
-            cancelButtonColor: '#6b7280'
+            confirmButtonColor: 'rgb(167, 190, 196)',
+            cancelButtonColor: 'rgb(30, 41, 59)'
         });
 
         return result.isConfirmed;

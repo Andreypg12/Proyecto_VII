@@ -4,8 +4,17 @@ import { ro } from "zod/locales";
 import { CreateUsuarioDto, UpdateUsuarioDto } from "../dtos/usuario.dto";
 import { AppError } from "../utils/app-error";
 
+
+
+// Declarar la interfaz arriba, Forma #1
+/* interface FiltrosUsuario {
+    buscar?: string;
+    rol?: Rol;
+} */
+
 export const usuarioService = {
 
+    // Utilizar los filtros en el mismo metodo #2
     async listar(filtros?: { buscar?: string; rol?: Rol }) {
 
         // Objeto donde se construyen dinámicamente los filtros de Prisma

@@ -31,14 +31,12 @@ export class UsuariosList {
     { titulo: 'Estado', campo: 'estado', tipo: 'estado-usuario' },
   ];
 
-  constructor(
-    private usuarioService: UsuarioService,
-    private notification: NotificationService
-  ) {
+  constructor( private usuarioService: UsuarioService, private notification: NotificationService) {
     this.cargarUsuarios();
   }
 
   usuariosFiltrados = computed(() => {
+
     const texto = this.buscar().trim().toLowerCase();
     const rolSeleccionado = this.rol();
 
@@ -62,18 +60,18 @@ export class UsuariosList {
   });
 
   cargarUsuarios(): void {
+
+    //Activa estado de carga y limpia errores
     this.loading.set(true);
     this.error.set(null);
 
     this.usuarioService.listar().subscribe({
       next: (res) => {
-        const data = res.data.map((usuario: any) => ({
-          ...usuario,
-          nombreCompleto: `${usuario.nombre} ${usuario.apellidos}`,
-        }));
 
+        const data = res.data.map((usuario: any) => ({...usuario, nombreCompleto: `${usuario.nombre} ${usuario.apellidos}`,}));
         this.usuarios.set(data);
         this.loading.set(false);
+      
       },
       error: () => {
         this.error.set('Error al cargar usuarios');

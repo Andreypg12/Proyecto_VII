@@ -12,6 +12,8 @@ interface FiltrosCita {
 
 
 export const citaService = {
+
+    //Este método devuelve las modalidades y estados disponibles en los enums de Prisma.
     async obtenerConfiguracion() {
 
         return {
@@ -26,26 +28,16 @@ export const citaService = {
     },
 
 
-    async listar(
-        filtros?: FiltrosCita
-    ) {
+    async listar(filtros?: FiltrosCita) {
 
         const where: any = {};
 
-        if (filtros?.estado) {
-            where.estado =
-                filtros.estado;
-        }
+        if (filtros?.estado) { where.estado = filtros.estado; }
 
-        if (filtros?.idProfesional) {
-            where.id_profesional =
-                filtros.idProfesional;
-        }
+        if (filtros?.idProfesional) { where.id_profesional = filtros.idProfesional;}
 
-        if (
-            filtros?.fechaDesde ||
-            filtros?.fechaHasta
-        ) {
+        //se ejecuta cuando se recibió al menos una de las dos fechas.
+        if (filtros?.fechaDesde || filtros?.fechaHasta) {
 
             where.fecha_hora_inicio = {};
 
@@ -134,9 +126,7 @@ export const citaService = {
     },
 
 
-    async obtenerPorId(
-        id: number
-    ) {
+    async obtenerPorId(id: number) {
 
         return prisma.cita.findUnique({
             where: {
@@ -148,11 +138,9 @@ export const citaService = {
 
                 fecha_hora_inicio: true,
 
-                fecha_hora_finalizacion_esperada:
-                    true,
+                fecha_hora_finalizacion_esperada: true,
 
-                fecha_hora_finalizacion_real:
-                    true,
+                fecha_hora_finalizacion_real: true,
 
                 comentario_cliente: true,
                 monto_estimado: true,
@@ -217,14 +205,17 @@ export const citaService = {
 
     async crear(data: CreateCitaDto) {
 
+        //Convertir la fecha recibida
         const fechaInicio = new Date(data.fecha_hora_inicio);
 
+        //Valida que la fecha sea válida
         if (Number.isNaN(fechaInicio.getTime())) {
             throw AppError.badRequest(
                 "La fecha y hora de inicio no son válidas"
             );
         }
 
+        //Validar que la cita sea futura
         if (fechaInicio <= new Date()) {
             throw AppError.badRequest(
                 "La fecha y hora deben ser posteriores a la fecha actual"
@@ -287,10 +278,7 @@ export const citaService = {
 
         const fechaFinalizacionEsperada = new Date(fechaInicio);
 
-        fechaFinalizacionEsperada.setMinutes(
-            fechaFinalizacionEsperada.getMinutes() +
-            servicio.duracion_estimada
-        );
+        fechaFinalizacionEsperada.setMinutes( fechaFinalizacionEsperada.getMinutes() + servicio.duracion_estimada);
 
         return prisma.cita.create({
             data: {
