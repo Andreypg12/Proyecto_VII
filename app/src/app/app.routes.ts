@@ -18,6 +18,8 @@ import { ProfesionalesList } from "./pages/profesionales/profesionales-list/prof
 import { ServicioEditPage } from "./pages/servicios/servicios-edit-page/servicios-edit-page";
 import { ProfesionalCreatePage } from "./pages/profesionales/profesionales-create-page/profesionales-create-page";
 import { ProfesionalEditPage } from "./pages/profesionales/profesionales-edit-page/profesionales-edit-page";
+import { ServicioDetail } from "./pages/servicios/servicio-detail/servicio-detail";
+import { ProfesionalDetail } from "./pages/profesionales/profesional-detail/profesional-detail";
 
 export const routes: Routes = [
     {
@@ -62,6 +64,11 @@ export const routes: Routes = [
                 title: 'Registrar servicio'
             },
             {
+                path: 'servicios/:id',
+                component: ServicioDetail,
+                title: 'Servicio'
+            },
+            {
                 path: 'servicios/editar/:id',
                 component: ServicioEditPage,
                 title: 'Actualizar servicio'
@@ -74,12 +81,17 @@ export const routes: Routes = [
             {
                 path: 'profesionales/crear',
                 component: ProfesionalCreatePage,
-                title: 'Actualizar profesional'
+                title: 'Registrar profesional'
+            },
+            {
+                path: 'profesionales/:id',
+                component: ProfesionalDetail,
+                title: 'Profesional'
             },
             {
                 path: 'profesionales/editar/:id',
                 component: ProfesionalEditPage,
-                title: 'Registrar profesional'
+                title: 'Actualizar profesional'
             },
         ],
     },

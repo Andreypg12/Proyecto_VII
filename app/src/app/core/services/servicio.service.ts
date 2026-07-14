@@ -24,4 +24,8 @@ export class ServicioService {
   actualizar(id: number, data: ServicioUpdateDto) {
     return this.http.put<ApiResponse<Servicio>>(`${this.apiUrl}/${id}`, data);
   }
+
+  cambiarEstado(id: number) {
+    return this.http.put<ApiResponse<Servicio>>(`${this.apiUrl}/cambiarEstado/${id}`, {});
+  }
 }

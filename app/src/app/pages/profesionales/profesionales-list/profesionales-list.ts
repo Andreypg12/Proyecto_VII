@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { NotificationService } from '../../../core/services/notification.service';
 
 import { RouterLink } from '@angular/router';
 import { ProfesionalService } from '../../../core/services/profesional.service';
@@ -35,6 +36,7 @@ import { Profesional } from '../../../core/models/profesional.model';
 })
 export class ProfesionalesList implements OnInit {
   private readonly profesionalService = inject(ProfesionalService);
+  private readonly notification = inject(NotificationService);
 
   //Listado de profesionales
   profesionales = signal<Profesional[]>([]);
@@ -48,13 +50,17 @@ export class ProfesionalesList implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
 
+
+
   ngOnInit(): void {
     this.loadProfesionales();
   }
 
+
   loadProfesionales(): void {
     this.loading.set(true);
     this.error.set(null);
+
 
     this.profesionalService.listar().subscribe({
       next: (response) => {
@@ -69,6 +75,7 @@ export class ProfesionalesList implements OnInit {
       },
     });
   }
+
 
   profesionalesFiltrados = computed(() => {
     const texto = this.search().trim().toLowerCase();
@@ -132,5 +139,44 @@ export class ProfesionalesList implements OnInit {
         (placeholder as HTMLElement).style.display = 'flex';
       }
     }
+  }
+
+  async cambiarDisponibilidad(profesional: Profesional, event: Event): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const debeActivar = !profesional.disponibilidad;
+    const accion = debeActivar ? 'activar' : 'desactivar';
+    const nombreProfesional = profesional.usuario?.nombre || 'este profesional';
+
+    const confirmado = await this.notification.confirmar(
+      `${debeActivar ? 'Activar' : 'Desactivar'} disponibilidad`,
+      `¿Desea ${accion} la disponibilidad de ${nombreProfesional}?`,
+      debeActivar ? 'Activar' : 'Desactivar'
+    );
+
+    if (!confirmado) return;
+
+    this.profesionalService.cambiarDisponibilidad(profesional.id).subscribe({
+      next: (response) => {
+        this.notification.success(
+          `Disponibilidad ${debeActivar ? 'activada' : 'desactivada'} correctamente`
+        );
+
+        // Actualizar el profesional en la lista
+        this.profesionales.update(lista =>
+          lista.map(p =>
+            p.id === profesional.id
+              ? { ...p, disponibilidad: response.data.disponibilidad }
+              : p
+          )
+        );
+      },
+      error: () => {
+        this.notification.error(
+          `Error al ${accion} la disponibilidad`
+        );
+      },
+    });
   }
 }

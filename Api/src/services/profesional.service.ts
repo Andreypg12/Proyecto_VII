@@ -205,7 +205,6 @@ export const profesionalService = {
                     email: data.usuario?.email,
                     nombre: data.usuario?.nombre,
                     apellidos: data.usuario?.apellidos,
-                    password: data.usuario?.password,
                     rol: Rol.PROFESIONAL
                 }
             })

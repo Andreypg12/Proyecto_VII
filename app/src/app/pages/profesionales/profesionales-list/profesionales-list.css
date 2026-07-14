@@ -487,3 +487,6 @@ mat-card-actions {
         opacity: 0.6;
     }
 }
+.disponibilidad-switch {
+    cursor: pointer;
+}

@@ -8,6 +8,7 @@ import {
   signal
 } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { FormsModule } from '@angular/forms'
 import {
   FormField,
   form,
@@ -45,6 +46,7 @@ import { Profesional } from '../../../core/models/profesional.model'
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     FormField,
     MatCardModule,
     MatFormFieldModule,
@@ -59,18 +61,21 @@ import { Profesional } from '../../../core/models/profesional.model'
   styleUrl: './servicio-form.css',
 })
 export class ServicioForm {
-
+  // Inputs
   servicio = input<Servicio | null>(null)
   categorias = input<CategoriaServicio[]>([])
   profesionales = input<Profesional[]>([])
   especialidades = input<Especialidad[]>([])
-  modalidades = input<Modalidad[]>([])
+  saving = input<boolean>(false)  // ← Este viene del padre
 
-  saving = input<boolean>(false)
-
+  // Outputs
   guardar = output<ServicioCreateDto | ServicioUpdateDto>()
   cancelar = output<void>()
 
+  // Estado local de error
+  errorMensaje = signal<string | null>(null)
+
+  // Modelo del formulario
   servicioModel = signal<ServicioFormModel>({
     servicio: '',
     descripcion: '',
@@ -78,11 +83,12 @@ export class ServicioForm {
     duracion_estimada: 0,
     estado: true,
     modalidad: 'VIRTUAL',
-    id_categoria: 0,
-    id_profesional: 0,
+    categoria_id: null,
+    profesional_id: null,
     especialidades_Ids: [],
   })
 
+  // Validaciones del formulario
   servicioForm = form(this.servicioModel, (path) => {
     required(path.servicio, {
       message: 'El nombre del servicio es obligatorio'
@@ -138,7 +144,7 @@ export class ServicioForm {
       if (precio > 1000000) {
         return {
           kind: 'precioExcesivo',
-          message: 'El precio no puede superar ₡1 000 000'
+          message: 'El precio no puede superar $1,000,000'
         }
       }
       return undefined
@@ -151,35 +157,36 @@ export class ServicioForm {
       message: 'La duración no puede ser menor de 30 minutos'
     })
     validate(path.duracion_estimada, (ctx) => {
-      const duracion_estimada = Number(ctx.value())
-      if (!Number.isInteger(duracion_estimada)) {
+      const duracion = Number(ctx.value())
+      if (!Number.isInteger(duracion)) {
         return {
           kind: 'duracionEntero',
           message: 'La duración debe ser un número entero'
         }
       }
+      if (duracion > 1440) {
+        return {
+          kind: 'duracionExcesiva',
+          message: 'La duración no puede superar 1440 minutos (24 horas)'
+        }
+      }
       return undefined
-    })
-
-    required(path.estado, {
-      message: 'Se debe seleccionar un estado'
     })
 
     required(path.modalidad, {
       message: 'Se debe seleccionar una modalidad'
     })
 
-    required(path.id_profesional, {
-      message: 'Debe tener un profesional asociado'
+    required(path.profesional_id, {
+      message: 'Debe seleccionar un profesional'
     })
 
-    required(path.id_categoria, {
-      message: 'Seleccione una categoría'
+    required(path.categoria_id, {
+      message: 'Debe seleccionar una categoría'
     })
 
     validate(path.especialidades_Ids, (ctx) => {
       const especialidades = ctx.value()
-
       if (!especialidades || especialidades.length === 0) {
         return {
           kind: 'especialidadRequerida',
@@ -190,7 +197,8 @@ export class ServicioForm {
     })
   })
 
-  isEdit = computed(() => this.servicio() !== null)
+  isEdit = computed(() => !!this.servicio())
+
 
   isSubmitting = computed(() => this.saving())
 
@@ -201,6 +209,7 @@ export class ServicioForm {
         this.resetForm()
         return
       }
+
       this.servicioModel.set({
         servicio: servicio.servicio ?? '',
         descripcion: servicio.descripcion ?? '',
@@ -208,10 +217,13 @@ export class ServicioForm {
         duracion_estimada: Number(servicio.duracion_estimada ?? 0),
         estado: servicio.estado ?? true,
         modalidad: servicio.modalidad ?? 'VIRTUAL',
-        id_profesional: servicio.id_profesional ?? null,
-        id_categoria: servicio.id_categoria ?? null,
+        profesional_id: servicio.id_profesional ?? null,
+        categoria_id: servicio.id_categoria ?? null,
         especialidades_Ids: servicio.especialidades?.map((item) => item.id) ?? [],
       })
+
+      // Limpiar error al cargar datos
+      this.errorMensaje.set(null)
     })
   }
 
@@ -223,10 +235,11 @@ export class ServicioForm {
       duracion_estimada: 0,
       estado: true,
       modalidad: 'VIRTUAL',
-      id_categoria: 0,
-      id_profesional: 0,
+      categoria_id: null,
+      profesional_id: null,
       especialidades_Ids: [],
     })
+    this.errorMensaje.set(null)
   }
 
   toggleEspecialidad(id: number, checked: boolean) {
@@ -236,6 +249,8 @@ export class ServicioForm {
         ? Array.from(new Set([...value.especialidades_Ids, id]))
         : value.especialidades_Ids.filter((item) => item !== id),
     }))
+    this.servicioForm.especialidades_Ids().markAsTouched()
+    this.errorMensaje.set(null)
   }
 
   isEspecialidadSelected(id: number): boolean {
@@ -243,11 +258,29 @@ export class ServicioForm {
   }
 
   submit() {
+    // 1. Si ya está enviando, no hacer nada
     if (this.isSubmitting()) return
-    this.marcarCamposComoTocados()
-    if (this.formularioInvalido()) return
 
-    this.emitirGuardar()
+    // 2. Limpiar error anterior
+    this.errorMensaje.set(null)
+
+    // 3. Marcar campos como tocados
+    this.marcarCamposComoTocados()
+
+    // 4. Validar formulario
+    if (this.formularioInvalido()) {
+      return
+    }
+
+    // 5. Intentar guardar
+    try {
+      const dto = this.buildDto()
+      console.log('JSON enviado al API:', JSON.stringify(dto, null, 2))
+      this.guardar.emit(dto)
+    } catch (error) {
+      // Si hay error en buildDto, mostrar mensaje
+      this.errorMensaje.set(error instanceof Error ? error.message : 'Error al procesar los datos')
+    }
   }
 
   private marcarCamposComoTocados() {
@@ -257,8 +290,8 @@ export class ServicioForm {
     this.servicioForm.duracion_estimada().markAsTouched()
     this.servicioForm.estado().markAsTouched()
     this.servicioForm.modalidad().markAsTouched()
-    this.servicioForm.id_profesional().markAsTouched()
-    this.servicioForm.id_categoria().markAsTouched()
+    this.servicioForm.profesional_id().markAsTouched()
+    this.servicioForm.categoria_id().markAsTouched()
     this.servicioForm.especialidades_Ids().markAsTouched()
   }
 
@@ -270,29 +303,29 @@ export class ServicioForm {
       this.servicioForm.duracion_estimada().invalid() ||
       this.servicioForm.estado().invalid() ||
       this.servicioForm.modalidad().invalid() ||
-      this.servicioForm.id_profesional().invalid() ||
-      this.servicioForm.id_categoria().invalid() ||
+      this.servicioForm.profesional_id().invalid() ||
+      this.servicioForm.categoria_id().invalid() ||
       this.servicioForm.especialidades_Ids().invalid()
     )
   }
 
   private emitirGuardar() {
     const dto = this.buildDto()
-    console.log('JSON enviado al API:', dto)
     this.guardar.emit(dto)
   }
 
   private buildDto(): ServicioCreateDto | ServicioUpdateDto {
     const value = this.servicioModel()
+
     return {
       servicio: value.servicio.trim(),
       descripcion: value.descripcion.trim(),
       precio: Number(value.precio),
       duracion_estimada: Number(value.duracion_estimada),
       estado: value.estado,
-      modalidad: value.modalidad,
-      id_profesional: Number(value.id_profesional),
-      id_categoria: Number(value.id_categoria),
+      modalidad: value.modalidad as Modalidad,
+      profesional_id: Number(value.profesional_id),
+      categoria_id: Number(value.categoria_id),
       especialidades_Ids: value.especialidades_Ids,
     }
   }

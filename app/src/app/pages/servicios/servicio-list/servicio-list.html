@@ -1,9 +1,19 @@
 <section class="page-header">
-    <span class="eyebrow">Catálogo</span>
-    <h1>Servicios de Software disponibles</h1>
-    <p>
-        Listado de servicios ofrecidos por profesionales de software.
-    </p>
+    <div class="header-content">
+        <div class="header-text">
+            <span class="eyebrow">Catálogo</span>
+            <h1>Servicios de Software disponibles</h1>
+            <p>
+                Listado de servicios ofrecidos por profesionales de software.
+            </p>
+        </div>
+        <div class="header-actions">
+            <button mat-flat-button color="primary" class="add-button" [routerLink]="['/servicios/crear']">
+                <mat-icon>add</mat-icon>
+                Nuevo Servicio
+            </button>
+        </div>
+    </div>
 </section>
 
 <section class="filters">
@@ -34,7 +44,22 @@
             <mat-option value="VIRTUAL">Virtual</mat-option>
             <mat-option value="HÍBRIDA">Híbrida</mat-option>
         </mat-select>
+
     </mat-form-field>
+    <div class="price-filter">
+        <div class="price-header">
+            <span class="price-label">Rango de precio</span>
+            <div class="price-values">
+                <span class="price-min">${{ precioMin() | number }}</span>
+                <span class="price-separator">—</span>
+                <span class="price-max">${{ precioMax() | number }}</span>
+            </div>
+        </div>
+        <mat-slider [min]="precioMinimoGlobal" [max]="precioMaximoGlobal" [step]="1000" class="price-slider">
+            <input matSliderStartThumb [(ngModel)]="precioMin" (ngModelChange)="onPriceChange()">
+            <input matSliderEndThumb [(ngModel)]="precioMax" (ngModelChange)="onPriceChange()">
+        </mat-slider>
+    </div>
 
     <button mat-stroked-button class="clear-button" (click)="clearFilters()">
         <mat-icon>clear</mat-icon>
@@ -103,6 +128,13 @@
                 <div class="meta-item price">
                     <strong>${{ service.precio | number }}</strong>
                 </div>
+                <div class="meta-item estado-switch" [class.active]="service.estado" [class.inactive]="!service.estado"
+                    (click)="cambiarEstado(service, $event)"
+                    matTooltip="{{ service.estado ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
+                    matTooltipPosition="above">
+                    <mat-icon class="switch-icon">{{ service.estado ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                    <span class="switch-label">{{ service.estado ? 'Activo' : 'Inactivo' }}</span>
+                </div>
             </div>
 
             @if(service.especialidades && service.especialidades.length > 0) {
@@ -117,6 +149,11 @@
         </mat-card-content>
 
         <mat-card-actions align="end">
+            <a mat-stroked-button color="accent" [routerLink]="['/servicios/editar', service.id]" class="edit-button">
+                <mat-icon>edit</mat-icon>
+                Editar
+            </a>
+
             <a mat-stroked-button color="primary" [routerLink]="['/servicios', service.id]" class="view-icon-button">
                 Detalle<mat-icon>more_horiz</mat-icon>
             </a>
