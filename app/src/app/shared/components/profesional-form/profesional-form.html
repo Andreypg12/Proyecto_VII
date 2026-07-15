@@ -152,16 +152,16 @@
                     </mat-form-field>
 
                     @if (!isEdit()){
-                        <mat-form-field appearance="outline">
-                            <mat-label>Contraseña</mat-label>
-                            <input matInput type="password" [formField]="profesionalForm.password" placeholder="********" />
-                            <mat-hint>Mínimo 6 caracteres</mat-hint>
-                            @if (profesionalForm.password().touched() && profesionalForm.password().invalid()) {
-                            <mat-error>
-                                {{ profesionalForm.password().errors()[0].message }}
-                            </mat-error>
-                            }
-                        </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Contraseña</mat-label>
+                        <input matInput type="password" [formField]="profesionalForm.password" placeholder="********" />
+                        <mat-hint>Mínimo 6 caracteres</mat-hint>
+                        @if (profesionalForm.password().touched() && profesionalForm.password().invalid()) {
+                        <mat-error>
+                            {{ profesionalForm.password().errors()[0].message }}
+                        </mat-error>
+                        }
+                    </mat-form-field>
                     }
                 </div>
             </section>
@@ -321,19 +321,10 @@
                     Cancelar
                 </button>
 
-                <button mat-stroked-button type="submit" [color]="isEdit() ? 'accent' : 'primary'"
-                    [class.edit-icon-button]="isEdit()" [class.create-icon-button]="!isEdit()"
+                <button mat-stroked-button type="submit" color="primary" class="create-icon-button"
                     [disabled]="isSubmitting()">
-
-                    @if (isSubmitting()) {
-                    <mat-icon>hourglass_top</mat-icon>
-                    Guardando...
-                    } @else {
-                    <mat-icon>
-                        {{ isEdit() ? 'edit' : 'add_circle' }}
-                    </mat-icon>
-                    {{ isEdit() ? 'Actualizar' : 'Registrar' }}
-                    }
+                    <mat-icon>{{ isSubmitting() ? 'hourglass_top' : 'add_circle' }}</mat-icon>
+                    <span>{{ isSubmitting() ? 'Guardando...' : 'Guardar' }}</span>
                 </button>
             </div>
 

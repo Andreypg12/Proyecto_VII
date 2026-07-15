@@ -72,7 +72,7 @@ export class ServicioList implements OnInit, OnDestroy {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         if (event.url === '/servicios' || event.url === '/servicios/') {
-          console.log('🔁 Recargando servicios al volver a la lista...');
+          console.log('Recargando servicios al volver a la lista...');
           this.loadServicios(); // ← Esto recalcula el rango
         }
       });

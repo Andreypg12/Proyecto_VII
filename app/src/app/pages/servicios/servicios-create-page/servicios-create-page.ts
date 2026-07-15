@@ -13,6 +13,7 @@ import { Especialidad } from '../../../core/models/especialidad.model'
 import { ServicioCreateDto, ServicioUpdateDto } from '../../../core/models/servicio.model'
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatIcon } from "@angular/material/icon";
+import { NotificationService } from '../../../core/services/notification.service'
 
 @Component({
   selector: 'app-servicio-create-page',
@@ -26,6 +27,7 @@ export class ServicioCreatePage {
   private readonly categoriaService = inject(CategoriaServicioService)
   private readonly profesionalService = inject(ProfesionalService)
   private readonly especialidadService = inject(EspecialidadService)
+  private readonly notification = inject(NotificationService);
 
   categorias = signal<CategoriaServicio[]>([])
   profesionales = signal<Profesional[]>([])
@@ -66,6 +68,7 @@ export class ServicioCreatePage {
     console.log("Data: ", data)
     this.servicioService.crear(data as ServicioCreateDto).subscribe({
       next: () => {
+        this.notification.success("Servicio creado correctamente")
         this.router.navigate(['/servicios'])
       },
       error: () => {
@@ -73,7 +76,7 @@ export class ServicioCreatePage {
       },
       complete: () => {
         this.saving.set(false)
-      },  
+      },
     })
   }
   cancelar() {

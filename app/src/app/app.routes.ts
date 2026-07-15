@@ -33,25 +33,25 @@ export const routes: Routes = [
             { path: '', component: Home, title: 'Inicio' },
             { path: 'usuarios', component: UsuariosList, title: 'Usuarios' },
             { path: 'usuarios/:id', component: UsuarioDetail, title: 'Detalle usuario' },
-          
+
             { path: 'admin/usuarios', component: UsuariosList, title: 'Gestión de usuarios' }, //No se usa
-          
+
             { path: 'categoria-servicio', component: CategoriaServicioList, title: 'Categorías de servicio' },
             { path: 'categoria-servicio/:id', component: CategoriaServicioDetail, title: 'Detalle categoría servicio' },
-          
+
             { path: 'especialidades', component: EspecialidadList, title: 'Especialidades' },
             { path: 'especialidades/:id', component: EspecialidadDetail, title: 'Detalle especialidad' },
-          
+
             { path: 'servicios', component: ServicioList, title: 'Servicios' },
             { path: 'servicios/crear', component: ServicioCreatePage, title: 'Registrar servicio' },
-            { path: 'servicios/:id', component: ServicioDetail, title: 'Servicio'},
+            { path: 'servicios/:id', component: ServicioDetail, title: 'Servicio' },
             { path: 'servicios/editar/:id', component: ServicioEditPage, title: 'Actualizar servicio' },
-          
+
             { path: 'profesionales', component: ProfesionalesList, title: 'Profesionales' },
             { path: 'profesionales/crear', component: ProfesionalCreatePage, title: 'Registrar profesional' },
             { path: 'profesionales/:id', component: ProfesionalDetail, title: 'Profesional' },
             { path: 'profesionales/editar/:id', component: ProfesionalEditPage, title: 'Actualizar profesional' },
-          
+
             { path: 'citas', component: CitasList, title: 'Citas' },
             { path: 'citas/nueva', component: CitaCreate, title: 'Registrar cita' },
             { path: 'citas/:id', component: CitaDetail, title: 'Detalle de cita' }

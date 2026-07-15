@@ -14,6 +14,7 @@ import { EspecialidadService } from '../../../core/services/especialidad.service
 
 import { Profesional, ProfesionalCreateDto, ProfesionalUpdateDto } from '../../../core/models/profesional.model'
 import { Especialidad } from '../../../core/models/especialidad.model'
+import { NotificationService } from '../../../core/services/notification.service'
 
 @Component({
   selector: 'app-profesional-edit-page',
@@ -34,6 +35,7 @@ export class ProfesionalEditPage {
   private readonly router = inject(Router)
   private readonly profesionalService = inject(ProfesionalService)
   private readonly especialidadService = inject(EspecialidadService)
+  private readonly notification = inject(NotificationService);
 
   profesional = signal<Profesional | null>(null)
   especialidades = signal<Especialidad[]>([])
@@ -92,6 +94,7 @@ export class ProfesionalEditPage {
 
     this.profesionalService.actualizar(this.id, data as ProfesionalUpdateDto).subscribe({
       next: () => {
+        this.notification.success("Profesional editado correctamente")
         this.router.navigate(['/profesionales'])
       },
       error: (error) => {

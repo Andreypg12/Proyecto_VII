@@ -96,24 +96,24 @@
                     </mat-form-field>
 
                     @if (!isEdit()){
-                        <mat-form-field appearance="outline">
-                            <mat-label>Profesional</mat-label>
-                            <mat-select [formField]="servicioForm.profesional_id">
-                                <mat-option [value]="0">
-                                    Seleccione un profesional
-                                </mat-option>
-                                @for (profesional of profesionales(); track profesional.id) {
-                                <mat-option [value]="profesional.id">
-                                    {{ profesional.usuario?.nombre || 'Sin nombre' }}
-                                </mat-option>
-                                }
-                            </mat-select>
-                            @if (servicioForm.profesional_id().touched() && servicioForm.profesional_id().invalid()) {
-                            <mat-error>
-                                {{ servicioForm.profesional_id().errors()[0].message }}
-                            </mat-error>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Profesional</mat-label>
+                        <mat-select [formField]="servicioForm.profesional_id">
+                            <mat-option [value]="0">
+                                Seleccione un profesional
+                            </mat-option>
+                            @for (profesional of profesionales(); track profesional.id) {
+                            <mat-option [value]="profesional.id">
+                                {{ profesional.usuario.nombre || 'Sin nombre' }}
+                            </mat-option>
                             }
-                        </mat-form-field>
+                        </mat-select>
+                        @if (servicioForm.profesional_id().touched() && servicioForm.profesional_id().invalid()) {
+                        <mat-error>
+                            {{ servicioForm.profesional_id().errors()[0].message }}
+                        </mat-error>
+                        }
+                    </mat-form-field>
                     }
                     <div class="estado-box">
                         <mat-checkbox [formField]="servicioForm.estado">
@@ -159,19 +159,10 @@
                     Cancelar
                 </button>
 
-                <button mat-stroked-button type="submit" [color]="isEdit() ? 'accent' : 'primary'"
-                    [class.edit-icon-button]="isEdit()" [class.create-icon-button]="!isEdit()"
+                <button mat-stroked-button type="submit" color="primary" class="create-icon-button"
                     [disabled]="isSubmitting()">
-
-                    @if (isSubmitting()) {
-                    <mat-icon>hourglass_top</mat-icon>
-                    Guardando...
-                    } @else {
-                    <mat-icon>
-                        {{ isEdit() ? 'edit' : 'add_circle' }}
-                    </mat-icon>
-                    {{ isEdit() ? 'Actualizar' : 'Registrar' }}
-                    }
+                    <mat-icon>{{ isSubmitting() ? 'hourglass_top' : 'add_circle' }}</mat-icon>
+                    <span>{{ isSubmitting() ? 'Guardando...' : 'Guardar' }}</span>
                 </button>
             </div>
 

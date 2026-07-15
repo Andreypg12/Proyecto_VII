@@ -18,7 +18,6 @@ import { Profesional } from '../../../core/models/profesional.model';
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -60,10 +59,10 @@ export class ProfesionalDetail implements OnInit {
       next: (response) => {
         this.profesional.set(response.data);
         this.loading.set(false);
-        console.log('✅ Profesional cargado:', response);
+        console.log('Profesional cargado:', response);
       },
       error: (err) => {
-        console.error('❌ Error al cargar profesional:', err);
+        console.error('Error al cargar profesional:', err);
         this.error.set('No se pudo cargar el profesional solicitado.');
         this.loading.set(false);
       },
@@ -89,7 +88,6 @@ export class ProfesionalDetail implements OnInit {
   getEstadoInfo(estado: string): { label: string; icon: string; class: string } {
     const map: Record<string, { label: string; icon: string; class: string }> = {
       'ACTIVO': { label: 'Activo', icon: 'check_circle', class: 'active' },
-      'INACTIVO': { label: 'Inactivo', icon: 'block', class: 'inactive' },
       'BLOQUEADO': { label: 'Bloqueado', icon: 'lock', class: 'blocked' },
     };
     return map[estado] || { label: estado || 'Desconocido', icon: 'help', class: 'unknown' };

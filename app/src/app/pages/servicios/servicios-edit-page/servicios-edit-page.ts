@@ -18,6 +18,7 @@ import { Servicio, ServicioCreateDto, ServicioUpdateDto } from '../../../core/mo
 import { CategoriaServicio } from '../../../core/models/categoriaServicio.model'
 import { Profesional } from '../../../core/models/profesional.model'
 import { Especialidad } from '../../../core/models/especialidad.model'
+import { NotificationService } from '../../../core/services/notification.service'
 
 @Component({
   selector: 'app-servicio-edit-page',
@@ -40,6 +41,7 @@ export class ServicioEditPage {
   private readonly categoriaService = inject(CategoriaServicioService)
   private readonly profesionalService = inject(ProfesionalService)
   private readonly especialidadService = inject(EspecialidadService)
+  private readonly notification = inject(NotificationService);
 
   servicio = signal<Servicio | null>(null)
   categorias = signal<CategoriaServicio[]>([])
@@ -103,6 +105,7 @@ export class ServicioEditPage {
 
     this.servicioService.actualizar(this.id, data as ServicioUpdateDto).subscribe({
       next: () => {
+        this.notification.success("Servicio editado correctamente")
         this.router.navigate(['/servicios'])
       },
       error: () => {

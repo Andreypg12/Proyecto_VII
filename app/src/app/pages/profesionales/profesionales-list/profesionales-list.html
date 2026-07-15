@@ -86,7 +86,7 @@
             <div class="professional-image">
                 @if(profesional.imagen_profesional) {
                 <img [src]="getImageUrl(profesional.imagen_profesional)"
-                    [alt]="profesional.usuario?.nombre || 'Profesional'" (error)="handleImageError($event)" />
+                    [alt]="profesional.usuario.nombre || 'Profesional'" (error)="handleImageError($event)" />
                 } @else {
                 <div class="image-placeholder">
                     <mat-icon>person</mat-icon>
@@ -95,7 +95,7 @@
             </div>
 
             <div class="professional-header">
-                <h2>{{ profesional.usuario?.nombre || 'Sin nombre' }}</h2>
+                <h2>{{ profesional.usuario.nombre || 'Sin nombre' }}</h2>
                 <span class="modalidad-badge">{{ profesional.modalidad || 'No especificada' }}</span>
             </div>
 

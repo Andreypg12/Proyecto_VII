@@ -95,7 +95,7 @@ export const servicioService = {
                         updateAt: true,
 
                         id_categoria: true,
-                        
+
                         categoria: {
                             select: {
                                 id: true,
@@ -104,7 +104,7 @@ export const servicioService = {
                             }
                         },
 
-                        id_profesional : true,
+                        id_profesional: true,
 
                         profesional: {
                             select: {
@@ -201,7 +201,7 @@ export const servicioService = {
                                 nombre: true,
                                 apellidos: true,
                                 email: true,
-                                
+
                             }
                         }
                     }
@@ -270,9 +270,11 @@ export const servicioService = {
                 duracion_estimada: data.duracion_estimada,
                 modalidad: data.modalidad,
                 id_categoria: data.categoria_id,
-                especialidades: {
-                    connect: data.especialidades_Ids?.map(id => ({ id })) || []
+                estado: data.estado,
+                especialidades: data.especialidades_Ids ? {
+                    set: data.especialidades_Ids.map((id) => ({ id })),
                 }
+                    : undefined,
             },
             include: {
                 especialidades: true,

@@ -14,6 +14,7 @@ import { EspecialidadService } from '../../../core/services/especialidad.service
 
 import { Especialidad } from '../../../core/models/especialidad.model'
 import { ProfesionalCreateDto, ProfesionalUpdateDto } from '../../../core/models/profesional.model'
+import { NotificationService } from '../../../core/services/notification.service'
 
 @Component({
   selector: 'app-profesional-create-page',
@@ -33,12 +34,15 @@ export class ProfesionalCreatePage {
   private readonly router = inject(Router)
   private readonly profesionalService = inject(ProfesionalService)
   private readonly especialidadService = inject(EspecialidadService)
+  private readonly notification = inject(NotificationService);
+  
 
   especialidades = signal<Especialidad[]>([])
 
   loading = signal(true)
   saving = signal(false)
   error = signal<string | null>(null)
+  
 
   constructor() {
     this.cargarDatosFormulario()
@@ -72,6 +76,7 @@ export class ProfesionalCreatePage {
 
     this.profesionalService.crear(data as ProfesionalCreateDto).subscribe({
       next: () => {
+        this.notification.success("Profesional creado correctamente")
         this.router.navigate(['/profesionales'])
       },
       error: (error) => {

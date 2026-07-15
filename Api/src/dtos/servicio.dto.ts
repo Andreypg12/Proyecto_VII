@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { Modalidad } from "../../generated/prisma/enums";
 
 export const createServicioSchema = z.object({
     servicio: z
@@ -30,6 +29,8 @@ export const createServicioSchema = z.object({
         .max(32767, "La duración estimada no puede superar los 32767 minutos"),
 
     modalidad: z.enum(["PRESENCIAL", "VIRTUAL", "HÍBRIDA"]),
+
+    estado: z.boolean(),
 
     profesional_id: z
         .number()

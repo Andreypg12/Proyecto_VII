@@ -22,6 +22,7 @@
     "http-status-codes": "^2.3.0",
     "ngx-sonner": "^3.1.0",
     "rxjs": "~7.8.0",
+    "sweetalert2": "^11.26.25",
     "tslib": "^2.3.0",
     "winston": "^3.19.0",
     "winston-daily-rotate-file": "^5.0.0",
