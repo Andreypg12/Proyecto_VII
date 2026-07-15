@@ -100,7 +100,6 @@ export interface ProfesionalUpdateDto {
         email?: string;
         nombre?: string;
         apellidos?: string;
-        password?: string;
     };
 
     ubicacion?: {

@@ -248,11 +248,27 @@ export class ProfesionalForm {
       message: 'Los apellidos solo pueden contener letras y espacios'
     })
 
-    required(path.password, {
-      message: 'La contraseña es obligatoria'
-    })
-    minLength(path.password, 6, {
-      message: 'Mínimo 6 caracteres'
+    validate(path.password, (ctx) => {
+      const password = ctx.value()
+      const isEdit = this.isEdit()
+
+      if (isEdit) {
+        return undefined
+      } else {
+        if (!password || password.length === 0) {
+          return {
+            kind: 'passwordRequerida',
+            message: 'La contraseña es obligatoria'
+          }
+        }
+        if (password.length < 6) {
+          return {
+            kind: 'passwordCorta',
+            message: 'La contraseña debe tener al menos 6 caracteres'
+          }
+        }
+        return undefined
+      }
     })
 
     // ===== VALIDACIONES DE UBICACIÓN =====
@@ -624,7 +640,7 @@ export class ProfesionalForm {
           email: value.email.trim(),
           nombre: value.nombre.trim(),
           apellidos: value.apellidos.trim(),
-          password: value.password,
+          password: value.password || undefined,
         },
         ubicacion: {
           descripcion: value.descripcionUbicacion.trim(),

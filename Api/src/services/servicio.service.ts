@@ -19,7 +19,7 @@ export const servicioService = {
         try {
             // Paginación
             const pagina = Math.max(1, filtros?.pagina || 1);
-            const limite = Math.min(Math.max(1, filtros?.limite || 10), 100);
+            const limite = Math.min(Math.max(1, filtros?.limite || 24), 100);
             const skip = (pagina - 1) * limite;
 
             // Construir WHERE dinámico
@@ -200,7 +200,8 @@ export const servicioService = {
                                 id: true,
                                 nombre: true,
                                 apellidos: true,
-                                email: true
+                                email: true,
+                                
                             }
                         }
                     }

@@ -29,8 +29,8 @@ export interface ServicioFormModel {
     duracion_estimada: number;
     estado: boolean;
     modalidad: Modalidad;
-    id_profesional: number;
-    id_categoria: number;
+    profesional_id: number | null;
+    categoria_id: number | null;
     especialidades_Ids: number[];
 }
 
@@ -41,8 +41,8 @@ export interface ServicioCreateDto {
     duracion_estimada: number;
     estado: boolean;
     modalidad: Modalidad;
-    id_profesional: number;
-    id_categoria: number;
+    profesional_id: number;
+    categoria_id: number;
     especialidades_Ids: number[];
 }
 
@@ -53,6 +53,6 @@ export interface ServicioUpdateDto {
     duracion_estimada?: number;
     estado?: boolean;
     modalidad?: Modalidad;
-    id_categoria?: number;
+    categoria_id?: number;
     especialidades_Ids?: number[];
 } 

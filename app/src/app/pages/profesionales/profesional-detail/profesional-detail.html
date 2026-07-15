@@ -1,0 +1,266 @@
+<div class="detail-container">
+    <!-- Header con botón volver -->
+    <div class="detail-header">
+        <button mat-stroked-button (click)="volver()" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
+            Volver
+        </button>
+        <div class="header-actions">
+            @if (profesional(); as prof) {
+            <button mat-flat-button color="primary" (click)="editar()" class="edit-button">
+                <mat-icon>edit</mat-icon>
+                Editar
+            </button>
+            }
+        </div>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+    <div class="state loading">
+        <mat-spinner diameter="48" />
+        <p>Cargando profesional...</p>
+    </div>
+    }
+
+    <!-- Error -->
+    @else if (error()) {
+    <div class="state error">
+        <mat-icon>error</mat-icon>
+        <p>{{ error() }}</p>
+        <button mat-stroked-button color="primary" (click)="volver()">
+            <mat-icon>arrow_back</mat-icon>
+            Volver
+        </button>
+    </div>
+    }
+
+    <!-- Detalle -->
+    @else if (profesional(); as prof) {
+    <mat-card class="detail-card">
+        <mat-card-content>
+            <!-- Cabecera con imagen y datos -->
+            <div class="profile-header">
+                <div class="profile-image">
+                    @if(prof.imagen_profesional) {
+                    <div class="image-wrapper">
+                        <img [src]="getImageUrl(prof.imagen_profesional)" [alt]="prof.usuario?.nombre || 'Profesional'"
+                            (error)="handleImageError($event)" class="profile-img" />
+                    </div>
+                    } @else {
+                    <div class="image-placeholder">
+                        <mat-icon>person</mat-icon>
+                    </div>
+
+                    }
+                </div>
+
+                <div class="profile-info">
+                    <div class="profile-name">
+                        <h1>{{ prof.usuario?.nombre || 'Sin nombre' }} {{ prof.usuario?.apellidos || '' }}</h1>
+                        <div class="status-badge" [class]="getEstadoInfo(prof.usuario?.estado || 'INACTIVO').class">
+                            <mat-icon>{{ getEstadoInfo(prof.usuario?.estado || 'INACTIVO').icon }}</mat-icon>
+                            <span>{{ getEstadoInfo(prof.usuario?.estado || 'INACTIVO').label }}</span>
+                        </div>
+                    </div>
+                    <p class="titulo">{{ prof.titulo || 'Sin título' }}</p>
+                    <div class="profile-email">
+                        <mat-icon>email</mat-icon>
+                        <span>{{ prof.usuario?.email }}</span>
+                    </div>
+                </div>
+                <div class="profile-tarifa">
+                    <span class="tarifa-amount">${{ prof.tarifa_por_hora | number }}</span>
+                    <span class="tarifa-label">/ hora</span>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Descripción -->
+            <div class="info-section">
+                <h3>
+                    <mat-icon class="section-icon">description</mat-icon>
+                    Descripción
+                </h3>
+                <p class="descripcion">{{ prof.descripcion }}</p>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Datos principales -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <mat-icon>work</mat-icon>
+                    <div>
+                        <span class="label">Título</span>
+                        <span class="value">{{ prof.titulo || 'Sin título' }}</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <mat-icon>calendar_today</mat-icon>
+                    <div>
+                        <span class="label">Años de experiencia</span>
+                        <span class="value">{{ prof.annos_experiencia }} años</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <mat-icon>phone</mat-icon>
+                    <div>
+                        <span class="label">Teléfono</span>
+                        <span class="value">{{ prof.telefono || 'No especificado' }}</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div>
+                        <span class="label">Modalidad</span>
+                        <span class="value">
+                            <mat-icon class="modalidad-icon">{{ getModalidadInfo(prof.modalidad).icon }}</mat-icon>
+                            {{ getModalidadInfo(prof.modalidad).label }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <mat-icon>check_circle</mat-icon>
+                    <div>
+                        <span class="label">Disponibilidad</span>
+                        <span class="value" [class.available]="prof.disponibilidad"
+                            [class.unavailable]="!prof.disponibilidad">
+                            <mat-icon>{{ prof.disponibilidad ? 'check_circle' : 'cancel' }}</mat-icon>
+                            {{ prof.disponibilidad ? 'Disponible' : 'No disponible' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <mat-icon>location_on</mat-icon>
+                    <div>
+                        <span class="label">Ubicación</span>
+                        <span class="value">{{ prof.ubicaciones?.[0]?.ciudad || 'No especificada' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Ubicación detallada -->
+            <div class="info-section">
+                <h3>
+                    <mat-icon class="section-icon">place</mat-icon>
+                    Ubicación
+                </h3>
+                @if (prof.ubicaciones && prof.ubicaciones.length > 0) {
+                <div class="location-detail">
+                    <div class="location-item">
+                        <span class="location-label">Ciudad:</span>
+                        <span>{{ prof.ubicaciones[0].ciudad || 'No especificada' }}</span>
+                    </div>
+                    <div class="location-item">
+                        <span class="location-label">Cantón:</span>
+                        <span>{{ prof.ubicaciones[0].canton || 'No especificado' }}</span>
+                    </div>
+                    <div class="location-item">
+                        <span class="location-label">Distrito:</span>
+                        <span>{{ prof.ubicaciones[0].distrito || 'No especificado' }}</span>
+                    </div>
+                    <div class="location-item">
+                        <span class="location-label">Descripción:</span>
+                        <span>{{ prof.ubicaciones[0].descripcion || 'No especificada' }}</span>
+                    </div>
+                </div>
+                } @else {
+                <p class="no-data">No hay ubicación registrada</p>
+                }
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Especialidades -->
+            <div class="info-section">
+                <h3>
+                    <mat-icon class="section-icon">local_offer</mat-icon>
+                    Especialidades
+                </h3>
+                @if (prof.especialidades && prof.especialidades.length > 0) {
+                <div class="especialidades-list">
+                    @for (esp of prof.especialidades; track esp.id) {
+                    <div class="especialidad-chip" [class.inactive-chip]="!esp.estado">
+                        <mat-icon>{{ esp.estado ? 'verified' : 'disabled' }}</mat-icon>
+                        <span>{{ esp.especialidad }}</span>
+                    </div>
+                    }
+                </div>
+                } @else {
+                <p class="no-data">No hay especialidades asociadas</p>
+                }
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Servicios -->
+            <div class="info-section">
+                <div class="section-header">
+                    <h3>
+                        <mat-icon class="section-icon">list_alt</mat-icon>
+                        Servicios
+                    </h3>
+                    <div class="section-actions">
+                        <span class="servicios-count">
+                            {{ getServiciosActivos() }} / {{ getTotalServicios() }} activos
+                        </span>
+                        <button mat-stroked-button (click)="toggleServiciosFiltro()" class="filter-btn">
+                            <mat-icon>{{ serviciosActivos() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                            {{ serviciosActivos() ? 'Ver todos' : 'Ver activos' }}
+                        </button>
+                    </div>
+                </div>
+
+                @if (getServiciosFiltrados().length > 0) {
+                <div class="servicios-grid">
+                    @for (servicio of getServiciosFiltrados(); track servicio.id) {
+                    <div class="servicio-card" [class.inactive-servicio]="!servicio.estado">
+                        <div class="servicio-header">
+                            <span class="servicio-nombre">{{ servicio.servicio }}</span>
+                            <span class="servicio-status" [class.active]="servicio.estado"
+                                [class.inactive]="!servicio.estado">
+                                <mat-icon>{{ servicio.estado ? 'check_circle' : 'block' }}</mat-icon>
+                            </span>
+                        </div>
+                        <div class="servicio-meta">
+                            <span class="servicio-precio">${{ servicio.precio | number }}</span>
+                            <span class="servicio-modalidad">
+                                <mat-icon class="modalidad-icon">{{ getModalidadInfo(servicio.modalidad).icon
+                                    }}</mat-icon>
+                                {{ getModalidadInfo(servicio.modalidad).label }}
+                            </span>
+                        </div>
+                        <div class="servicio-duracion">
+                            <mat-icon>schedule</mat-icon>
+                            {{ servicio.duracion_estimada }} min
+                        </div>
+                    </div>
+                    }
+                </div>
+                } @else {
+                <p class="no-data">No hay servicios{{ serviciosActivos() ? ' activos' : '' }}</p>
+                }
+            </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end" class="card-actions">
+            <button mat-stroked-button (click)="volver()" class="back-action-btn">
+                <mat-icon>arrow_back</mat-icon>
+                Volver
+            </button>
+            <button mat-flat-button color="primary" (click)="editar()" class="edit-action-btn">
+                <mat-icon>edit</mat-icon>
+                Editar profesional
+            </button>
+        </mat-card-actions>
+    </mat-card>
+    }
+</div>

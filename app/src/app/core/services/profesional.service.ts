@@ -26,6 +26,10 @@ export class ProfesionalService {
     return this.http.put<ApiResponse<Profesional>>(`${this.apiUrl}/${id}`, data);
   }
 
+  cambiarDisponibilidad(id: number) {
+    return this.http.put<ApiResponse<Profesional>>(`${this.apiUrl}/cambiarDisponibilidad/${id}`, {});
+  }
+
   getImageUrl(imageName: string): string {
     return `${environment.imageUrl}/${imageName}`;
   }

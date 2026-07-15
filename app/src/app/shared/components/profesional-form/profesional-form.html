@@ -75,9 +75,18 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Modalidad</mat-label>
                         <mat-select [formField]="profesionalForm.modalidad">
-                            <mat-option value="VIRTUAL">💻 Virtual</mat-option>
-                            <mat-option value="PRESENCIAL">🏢 Presencial</mat-option>
-                            <mat-option value="HÍBRIDA">🔄 Híbrida</mat-option>
+                            <mat-option value="VIRTUAL">
+                                <mat-icon>devices</mat-icon>
+                                Virtual
+                            </mat-option>
+                            <mat-option value="PRESENCIAL">
+                                <mat-icon>people</mat-icon>
+                                Presencial
+                            </mat-option>
+                            <mat-option value="HÍBRIDA">
+                                <mat-icon>sync_alt</mat-icon>
+                                Híbrida
+                            </mat-option>
                         </mat-select>
                         @if (profesionalForm.modalidad().touched() && profesionalForm.modalidad().invalid()) {
                         <mat-error>
@@ -142,16 +151,18 @@
                         }
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline">
-                        <mat-label>Contraseña</mat-label>
-                        <input matInput type="password" [formField]="profesionalForm.password" placeholder="********" />
-                        <mat-hint>Mínimo 6 caracteres</mat-hint>
-                        @if (profesionalForm.password().touched() && profesionalForm.password().invalid()) {
-                        <mat-error>
-                            {{ profesionalForm.password().errors()[0].message }}
-                        </mat-error>
-                        }
-                    </mat-form-field>
+                    @if (!isEdit()){
+                        <mat-form-field appearance="outline">
+                            <mat-label>Contraseña</mat-label>
+                            <input matInput type="password" [formField]="profesionalForm.password" placeholder="********" />
+                            <mat-hint>Mínimo 6 caracteres</mat-hint>
+                            @if (profesionalForm.password().touched() && profesionalForm.password().invalid()) {
+                            <mat-error>
+                                {{ profesionalForm.password().errors()[0].message }}
+                            </mat-error>
+                            }
+                        </mat-form-field>
+                    }
                 </div>
             </section>
 
@@ -249,7 +260,7 @@
                 </div>
 
                 <div class="especialidades-grid">
-                    @for (especialidad of (especialidades() || []); track especialidad.id) {
+                    @for (especialidad of (especialidades()); track especialidad.id) {
                     @if(especialidad.estado) {
                     <mat-checkbox class="especialidad-check" [checked]="isEspecialidadSelected(especialidad.id)"
                         (change)="toggleEspecialidad(especialidad.id, $event.checked)">

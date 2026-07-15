@@ -1,9 +1,19 @@
 <section class="page-header">
-    <span class="eyebrow">Catálogo</span>
-    <h1>Profesionales de Software disponibles</h1>
-    <p>
-        Listado de profesionales ofrecidos por desarrolladores de software.
-    </p>
+    <div class="header-content">
+        <div class="header-text">
+            <span class="eyebrow">Catálogo</span>
+            <h1>Profesionales de Software disponibles</h1>
+            <p>
+                Listado de profesionales ofrecidos por desarrolladores de software.
+            </p>
+        </div>
+        <div class="header-actions">
+            <button mat-flat-button color="primary" class="add-button" [routerLink]="['/profesionales/crear']">
+                <mat-icon>add</mat-icon>
+                Nuevo Profesional
+            </button>
+        </div>
+    </div>
 </section>
 
 <section class="filters">
@@ -31,6 +41,7 @@
             <mat-option [value]="true">Disponible</mat-option>
             <mat-option [value]="false">No disponible</mat-option>
         </mat-select>
+
     </mat-form-field>
 
     <button mat-stroked-button class="clear-button" (click)="clearFilters()">
@@ -95,18 +106,31 @@
                     <mat-icon>attach_money</mat-icon>
                     <span><strong>${{ profesional.tarifa_por_hora | number }}</strong> / hora</span>
                 </div>
-                <div class="meta-item" [class.available]="profesional.disponibilidad"
-                    [class.unavailable]="!profesional.disponibilidad">
-                    <mat-icon>{{ profesional.disponibilidad ? 'check_circle' : 'cancel' }}</mat-icon>
-                    <span>{{ profesional.disponibilidad ? 'Disponible' : 'No disponible' }}</span>
+                <div class="meta-item disponibilidad-switch" [class.available]="profesional.disponibilidad"
+                    [class.unavailable]="!profesional.disponibilidad"
+                    (click)="cambiarDisponibilidad(profesional, $event)"
+                    matTooltip="{{ profesional.disponibilidad ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
+                    matTooltipPosition="above">
+                    <mat-icon class="switch-icon">{{ profesional.disponibilidad ? 'toggle_on' : 'toggle_off'
+                        }}</mat-icon>
+                    <span class="switch-label">{{ profesional.disponibilidad ? 'Disponible' : 'No disponible' }}</span>
                 </div>
             </div>
         </mat-card-content>
 
         <mat-card-actions align="end">
+            <!-- Botón Editar -->
+            <a mat-stroked-button color="accent" [routerLink]="['/profesionales/editar', profesional.id]"
+                class="edit-button">
+                <mat-icon>edit</mat-icon>
+                Editar
+            </a>
+
+            <!-- Botón Detalle -->
             <a mat-stroked-button color="primary" [routerLink]="['/profesionales', profesional.id]"
                 class="view-icon-button">
-                Detalle<mat-icon>more_horiz</mat-icon>
+                Detalle
+                <mat-icon>more_horiz</mat-icon>
             </a>
         </mat-card-actions>
     </mat-card>

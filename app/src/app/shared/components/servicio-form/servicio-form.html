@@ -53,7 +53,7 @@
 
                     <mat-form-field appearance="outline">
                         <mat-label>Categoría</mat-label>
-                        <mat-select [formField]="servicioForm.id_categoria">
+                        <mat-select [formField]="servicioForm.categoria_id">
                             <mat-option [value]="0">
                                 Seleccione una categoría
                             </mat-option>
@@ -63,9 +63,9 @@
                             </mat-option>
                             }
                         </mat-select>
-                        @if (servicioForm.id_categoria().touched() && servicioForm.id_categoria().invalid()) {
+                        @if (servicioForm.categoria_id().touched() && servicioForm.categoria_id().invalid()) {
                         <mat-error>
-                            {{ servicioForm.id_categoria().errors()[0].message }}
+                            {{ servicioForm.categoria_id().errors()[0].message }}
                         </mat-error>
                         }
                     </mat-form-field>
@@ -75,9 +75,18 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Modalidad</mat-label>
                         <mat-select [formField]="servicioForm.modalidad">
-                            <mat-option value="VIRTUAL">💻 Virtual</mat-option>
-                            <mat-option value="PRESENCIAL">🏢 Presencial</mat-option>
-                            <mat-option value="HÍBRIDA">🔄 Híbrida</mat-option>
+                            <mat-option value="VIRTUAL">
+                                <mat-icon>devices</mat-icon>
+                                Virtual
+                            </mat-option>
+                            <mat-option value="PRESENCIAL">
+                                <mat-icon>people</mat-icon>
+                                Presencial
+                            </mat-option>
+                            <mat-option value="HÍBRIDA">
+                                <mat-icon>sync_alt</mat-icon>
+                                Híbrida
+                            </mat-option>
                         </mat-select>
                         @if (servicioForm.modalidad().touched() && servicioForm.modalidad().invalid()) {
                         <mat-error>
@@ -86,25 +95,26 @@
                         }
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline">
-                        <mat-label>Profesional</mat-label>
-                        <mat-select [formField]="servicioForm.id_profesional">
-                            <mat-option [value]="0">
-                                Seleccione un profesional
-                            </mat-option>
-                            @for (profesional of profesionales(); track profesional.id) {
-                            <mat-option [value]="profesional.id">
-                                {{ profesional.usuario?.nombre || 'Sin nombre' }}
-                            </mat-option>
+                    @if (!isEdit()){
+                        <mat-form-field appearance="outline">
+                            <mat-label>Profesional</mat-label>
+                            <mat-select [formField]="servicioForm.profesional_id">
+                                <mat-option [value]="0">
+                                    Seleccione un profesional
+                                </mat-option>
+                                @for (profesional of profesionales(); track profesional.id) {
+                                <mat-option [value]="profesional.id">
+                                    {{ profesional.usuario?.nombre || 'Sin nombre' }}
+                                </mat-option>
+                                }
+                            </mat-select>
+                            @if (servicioForm.profesional_id().touched() && servicioForm.profesional_id().invalid()) {
+                            <mat-error>
+                                {{ servicioForm.profesional_id().errors()[0].message }}
+                            </mat-error>
                             }
-                        </mat-select>
-                        @if (servicioForm.id_profesional().touched() && servicioForm.id_profesional().invalid()) {
-                        <mat-error>
-                            {{ servicioForm.id_profesional().errors()[0].message }}
-                        </mat-error>
-                        }
-                    </mat-form-field>
-
+                        </mat-form-field>
+                    }
                     <div class="estado-box">
                         <mat-checkbox [formField]="servicioForm.estado">
                             Servicio activo
