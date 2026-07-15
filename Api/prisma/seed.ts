@@ -207,7 +207,7 @@ async function main() {
             tarifa_por_hora: 16000,
             annos_experiencia: 8,
             telefono: "88884444",
-            imagen_profesional: "profesionalFranklin.jpg",
+            imagen_profesional: "profesionalFranklin.jpeg",
             disponibilidad: true,
             modalidad: Modalidad.VIRTUAL,
             id_usuario: userEmailMap["franklin@correo.com"],
