@@ -3,35 +3,39 @@
     width: 100%;
     box-sizing: border-box;
 
-    /* Paleta principal - Inspirada en las imágenes */
-    --primary-dark: #1a2332;
-    --primary-mid: #2b3d54;
-    --primary-light: #4a6a85;
+    /* Paleta oscura - Inspirada en las imágenes pero en modo dark */
+    --primary-dark: #0d1117;
+    --primary-mid: #161b22;
+    --primary-light: #21262d;
     
-    --accent-teal: #4a9e9e;
-    --accent-teal-light: #6db5b5;
-    --accent-blue: #5b7fa5;
-    --accent-blue-light: #8aaccc;
+    --accent-teal: #58a6a6;
+    --accent-teal-light: #79c0c0;
+    --accent-teal-dark: #3d7a7a;
+    --accent-blue: #58a6d6;
+    --accent-blue-light: #79c0ff;
+    --accent-blue-dark: #1f6f9e;
     
-    --surface-white: #ffffff;
-    --surface-gray: #f7f9fc;
-    --surface-light: #eef2f7;
+    --surface-white: #0d1117;
+    --surface-gray: #161b22;
+    --surface-light: #21262d;
+    --surface-hover: #30363d;
     
-    --text-dark: #1a2332;
-    --text-mid: #4a5a6e;
-    --text-light: #7a8a9e;
+    --text-dark: #f0f6fc;
+    --text-mid: #8b949e;
+    --text-light: #6e7681;
+    --text-white: #ffffff;
     
-    --border-light: #dce3eb;
-    --border-mid: #b0c0d0;
-    --border-dark: #7a8a9e;
+    --border-light: #30363d;
+    --border-mid: #484f58;
+    --border-dark: #6e7681;
     
-    --shadow-soft: 0 4px 20px rgba(26, 35, 50, 0.08);
-    --shadow-medium: 0 8px 30px rgba(26, 35, 50, 0.12);
-    --shadow-strong: 0 12px 40px rgba(26, 35, 50, 0.18);
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-medium: 0 8px 30px rgba(0, 0, 0, 0.6);
+    --shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.8);
     
-    --gradient-header: linear-gradient(135deg, #2b3d54 0%, #1a2332 100%);
-    --gradient-card: linear-gradient(135deg, #f7f9fc 0%, #eef2f7 100%);
-    --gradient-status: linear-gradient(135deg, #2b3d54 0%, #4a6a85 100%);
+    --gradient-header: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    --gradient-card: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    --gradient-status: linear-gradient(135deg, #161b22 0%, #21262d 100%);
     
     --radius-card: 16px;
     --radius-section: 12px;
@@ -55,47 +59,32 @@
     border: 1px solid var(--border-light);
 }
 
-/* Encabezado mejorado */
+/* Encabezado - OPACO (sin brillos ni gradientes) */
 .cita-form-card mat-card-header {
     position: relative;
     padding: 32px 36px 28px;
-    background: var(--gradient-header);
+    background: var(--primary-mid); /* Color sólido, sin gradiente */
     border-bottom: 3px solid var(--accent-teal);
-    overflow: hidden;
+    /* ELIMINADO: overflow: hidden; ya no es necesario */
 }
 
-.cita-form-card mat-card-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(74, 158, 158, 0.1), transparent 70%);
-    border-radius: 50%;
-}
+/* ELIMINADO el pseudo-elemento ::before que creaba el brillo */
 
 .cita-form-card mat-card-title {
     position: relative;
     z-index: 1;
-    margin: 0 0 6px;
+    margin: 0;
     color: #ffffff !important;
     font-size: clamp(1.6rem, 2.5vw, 2.2rem);
     font-weight: 800;
     letter-spacing: -0.5px;
     line-height: 1.2;
+    /* ELIMINADO: text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); */
 }
 
-.cita-form-card mat-card-subtitle {
-    position: relative;
-    z-index: 1;
-    color: rgba(255, 255, 255, 0.85) !important;
-    font-size: 0.95rem;
-    font-weight: 400;
-    line-height: 1.5;
-}
+/* ELIMINADO: el subtítulo ya no existe */
 
-/* Contenido */
+/* Contenido - Versión oscura */
 .cita-form-card mat-card-content {
     padding: 32px 36px 36px;
     background: var(--gradient-card);
@@ -107,11 +96,11 @@
     gap: 24px;
 }
 
-/* Secciones mejoradas */
+/* Secciones mejoradas - Versión oscura */
 .form-section {
     position: relative;
     padding: 24px 26px;
-    background: var(--surface-white);
+    background: var(--surface-gray);
     border: 1px solid var(--border-light);
     border-left: 5px solid var(--accent-blue);
     border-radius: var(--radius-section);
@@ -127,7 +116,7 @@
     width: 150px;
     height: 150px;
     background: radial-gradient(circle at top right, 
-        rgba(74, 158, 158, 0.05), 
+        rgba(88, 166, 166, 0.05), 
         transparent 70%
     );
     pointer-events: none;
@@ -138,9 +127,10 @@
     transform: translateY(-3px);
     border-color: var(--border-mid);
     box-shadow: var(--shadow-medium);
+    background: var(--surface-hover);
 }
 
-/* Títulos de sección */
+/* Títulos de sección - Versión oscura */
 .section-title {
     position: relative;
     z-index: 1;
@@ -155,7 +145,7 @@
     margin: 0 0 4px;
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--primary-dark);
+    color: var(--text-dark);
     letter-spacing: -0.3px;
 }
 
@@ -166,37 +156,37 @@
     line-height: 1.5;
 }
 
-/* Secciones con colores específicos */
+/* Secciones con colores específicos - Versión oscura */
 .section-client {
-    border-left-color: #4a9e9e;
+    border-left-color: var(--accent-teal);
 }
 
 .section-client .section-title h3 {
-    color: #4a9e9e;
+    color: var(--accent-teal-light);
 }
 
 .section-service {
-    border-left-color: #5b7fa5;
+    border-left-color: var(--accent-blue);
 }
 
 .section-service .section-title h3 {
-    color: #5b7fa5;
+    color: var(--accent-blue-light);
 }
 
 .section-schedule {
-    border-left-color: #8a6e9e;
+    border-left-color: #a78aba;
 }
 
 .section-schedule .section-title h3 {
-    color: #8a6e9e;
+    color: #a78aba;
 }
 
 .section-comment {
-    border-left-color: #7a8a9e;
+    border-left-color: var(--text-mid);
 }
 
 .section-comment .section-title h3 {
-    color: #7a8a9e;
+    color: var(--text-mid);
 }
 
 /* Grid y campos */
@@ -220,22 +210,24 @@ mat-form-field {
     width: 100%;
 }
 
-/* Estilos de Material mejorados */
+/* Estilos de Material mejorados - Versión oscura */
 .cita-form-card mat-form-field {
-    --mdc-outlined-text-field-container-color: var(--surface-white);
-    --mdc-outlined-text-field-outline-color: var(--border-mid);
-    --mdc-outlined-text-field-hover-outline-color: var(--primary-light);
+    --mdc-outlined-text-field-container-color: var(--surface-light);
+    --mdc-outlined-text-field-outline-color: var(--border-light);
+    --mdc-outlined-text-field-hover-outline-color: var(--border-mid);
     --mdc-outlined-text-field-focus-outline-color: var(--accent-blue);
     
     --mdc-outlined-text-field-input-text-color: var(--text-dark);
     --mdc-outlined-text-field-label-text-color: var(--text-light);
     --mdc-outlined-text-field-hover-label-text-color: var(--text-mid);
-    --mdc-outlined-text-field-focus-label-text-color: var(--accent-blue);
+    --mdc-outlined-text-field-focus-label-text-color: var(--accent-blue-light);
     
     --mat-select-enabled-trigger-text-color: var(--text-dark);
-    --mat-select-enabled-arrow-color: var(--accent-blue);
+    --mat-select-enabled-arrow-color: var(--accent-blue-light);
+    --mat-select-disabled-trigger-text-color: var(--text-light);
     
     --mat-form-field-state-layer-color: transparent;
+    --mdc-outlined-text-field-container-shape: var(--radius-field);
 }
 
 .cita-form-card mat-form-field .mdc-notched-outline {
@@ -244,12 +236,18 @@ mat-form-field {
 
 .cita-form-card mat-form-field.mat-focused .mdc-notched-outline {
     border-width: 2px;
+    border-color: var(--accent-blue) !important;
 }
 
 .cita-form-card input,
 .cita-form-card textarea {
     color: var(--text-dark);
-    caret-color: var(--accent-blue);
+    caret-color: var(--accent-blue-light);
+}
+
+.cita-form-card input::placeholder,
+.cita-form-card textarea::placeholder {
+    color: var(--text-light);
 }
 
 .cita-form-card mat-hint {
@@ -258,10 +256,23 @@ mat-form-field {
 }
 
 mat-icon[matSuffix] {
-    color: var(--accent-blue);
+    color: var(--accent-blue-light);
 }
 
-/* Status information mejorado */
+/* Ajustes para selects y dropdowns en modo oscuro */
+.cita-form-card mat-select {
+    color: var(--text-dark);
+}
+
+.cita-form-card .mat-mdc-select-value {
+    color: var(--text-dark);
+}
+
+.cita-form-card .mat-mdc-select-arrow {
+    color: var(--accent-blue-light);
+}
+
+/* Status information mejorado - Versión oscura */
 .status-information {
     display: flex;
     align-items: flex-start;
@@ -282,7 +293,7 @@ mat-icon[matSuffix] {
     right: -20%;
     width: 200px;
     height: 200px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent 70%);
+    background: radial-gradient(circle, rgba(88, 166, 166, 0.08), transparent 70%);
     border-radius: 50%;
 }
 
@@ -311,12 +322,12 @@ mat-icon[matSuffix] {
 
 .status-information p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 0.9rem;
     line-height: 1.5;
 }
 
-/* Botones mejorados */
+/* Botones mejorados - Versión oscura */
 .form-actions {
     display: flex;
     align-items: center;
@@ -339,49 +350,76 @@ mat-icon[matSuffix] {
     margin-right: 8px;
 }
 
-/* Botón Cancelar */
+/* Botón Cancelar - Versión oscura */
 .form-actions button[type='button'] {
     color: var(--text-mid);
-    border-color: var(--border-mid);
+    border: 1px solid var(--border-mid);
+    background: transparent;
 }
 
 .form-actions button[type='button']:hover:not(:disabled) {
-    color: var(--primary-dark);
-    background: var(--surface-gray);
+    color: var(--text-dark);
+    background: var(--surface-hover);
     border-color: var(--border-dark);
     transform: translateY(-2px);
 }
 
-/* Botón Registrar */
+/* Botón Registrar - DISCRETO Y ELEGANTE */
 .create-icon-button {
-    color: #ffffff !important;
-    background: var(--gradient-header) !important;
-    border: none !important;
-    box-shadow: 0 4px 12px rgba(26, 35, 50, 0.25);
+    color: var(--text-dark) !important;
+    background: var(--surface-light) !important;
+    border: 1px solid var(--border-mid) !important;
+    box-shadow: none !important;
 }
 
 .create-icon-button:not(:disabled):hover {
+    background: var(--surface-hover) !important;
+    border-color: var(--border-dark) !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(26, 35, 50, 0.35);
+    box-shadow: var(--shadow-soft) !important;
 }
 
 .create-icon-button:not(:disabled):active {
     transform: translateY(0);
 }
 
-.form-actions button:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
+.create-icon-button mat-icon {
+    color: var(--accent-blue-light);
 }
 
-/* Errores */
+.form-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+/* Errores - Versión oscura */
 mat-error {
-    color: #d32f2f;
+    color: #f85149;
     font-size: 0.78rem;
     font-weight: 500;
 }
 
-/* Responsive */
+/* Scrollbar personalizada para modo oscuro */
+.cita-form-card::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.cita-form-card::-webkit-scrollbar-track {
+    background: var(--surface-gray);
+    border-radius: 4px;
+}
+
+.cita-form-card::-webkit-scrollbar-thumb {
+    background: var(--border-mid);
+    border-radius: 4px;
+}
+
+.cita-form-card::-webkit-scrollbar-thumb:hover {
+    background: var(--border-dark);
+}
+
+/* Responsive - Versión oscura */
 @media (max-width: 800px) {
     .cita-form-card mat-card-header {
         padding: 24px 24px 20px;
