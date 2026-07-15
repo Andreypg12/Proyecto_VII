@@ -240,20 +240,6 @@ export class CitaForm {
         )
     );
 
-    /* serviciosDisponibles = computed(() => {
-        const idProfesional =
-            this.citaModel().id_profesional;
-
-        if (!idProfesional) {
-            return [];
-        }
-
-        return this.servicios().filter(
-            (servicio) =>
-                servicio.estado &&
-                servicio.id_profesional === idProfesional
-        );
-    }); */
 
     serviciosDisponibles = computed(() => {
         const idProfesional =

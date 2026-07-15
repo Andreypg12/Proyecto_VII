@@ -11,6 +11,7 @@ export class UsuarioRoutes {
 
         // GET
         router.get('/', asyncHandler(controller.listar));
+        router.get('/config',asyncHandler(controller.obtenerConfiguracion));
         router.get('/:id', asyncHandler(controller.obtenerPorId));
 
         // POST / PUT

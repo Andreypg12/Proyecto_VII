@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { ApiResponse } from '../models/api-response.model';
 import { Usuario } from '../models/usuario.model';
+import {UsuarioConfiguracion} from '../models/usuario.model';
 
 @Injectable({
     providedIn: 'root'
@@ -10,6 +11,8 @@ import { Usuario } from '../models/usuario.model';
 export class UsuarioService {
     private readonly http = inject(HttpClient);
     private apiUrl = `${environment.apiUrl}/usuario`;
+
+    obtenerConfiguracion() {return this.http.get<ApiResponse<UsuarioConfiguracion>>(`${this.apiUrl}/config`);}
 
     listar(buscar?: string, rol?: string) {
         const params: any = {};

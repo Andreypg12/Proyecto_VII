@@ -1,18 +1,17 @@
 import { prisma } from "../config/prisma";
-import { Rol } from "../../generated/prisma/enums";
+import { Rol, EstadoUsuario} from "../../generated/prisma/enums";
 import { ro } from "zod/locales";
 import { CreateUsuarioDto, UpdateUsuarioDto } from "../dtos/usuario.dto";
 import { AppError } from "../utils/app-error";
 
-
-
-// Declarar la interfaz arriba, Forma #1
-/* interface FiltrosUsuario {
-    buscar?: string;
-    rol?: Rol;
-} */
-
 export const usuarioService = {
+
+    async obtenerConfiguracion() {
+        return {
+            roles: Object.values(Rol),
+            estados: Object.values(EstadoUsuario),
+        };
+    },
 
     // Utilizar los filtros en el mismo metodo #2
     async listar(filtros?: { buscar?: string; rol?: Rol }) {
@@ -161,6 +160,8 @@ export const usuarioService = {
             },
         });
     },
+
+    
 
 
     

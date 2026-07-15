@@ -29,3 +29,8 @@ export interface UsuarioUpdateDto {
     rol?: Rol;
     estado?: EstadoUsuario;
 }
+
+export interface UsuarioConfiguracion {
+    roles: Rol[];
+    estados: EstadoUsuario[];
+}
