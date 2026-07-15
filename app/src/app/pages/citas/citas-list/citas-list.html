@@ -1,0 +1,175 @@
+<div class="page-container">
+
+    <a
+        class="back-btn"
+        routerLink="/"
+    >
+        ← Volver
+    </a>
+
+    <div class="page-header citas-header">
+
+        <div>
+            <h1>Citas</h1>
+
+            <p>
+                Administra las citas registradas
+                dentro de la plataforma.
+            </p>
+        </div>
+
+        <a
+            class="action-btn view create-cita-btn"
+            routerLink="/citas/nueva"
+        >
+            <mat-icon>add</mat-icon>
+            Registrar cita
+        </a>
+
+    </div>
+
+    <app-filtros-generales
+        [showSearch]="true"
+        [showStatus]="false"
+        (searchChange)="
+            onBuscarChange($event)
+        "
+    />
+
+    <div class="filter-card citas-filter-card">
+
+        <div class="filter-field">
+            <label for="estadoCita">
+                Estado
+            </label>
+
+            <select
+                id="estadoCita"
+                [value]="estadoFiltro()"
+                (change)="
+                    onEstadoChange($event)
+                "
+            >
+                <option value="">
+                    Todos los estados
+                </option>
+
+                @for (
+                    estado of estados;
+                    track estado
+                ) {
+                    <option [value]="estado">
+                        {{ estado }}
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="profesionalCita">
+                Profesional
+            </label>
+
+            <select
+                id="profesionalCita"
+                [value]="
+                    profesionalFiltro() ?? ''
+                "
+                (change)="
+                    onProfesionalChange($event)
+                "
+            >
+                <option value="">
+                    Todos los profesionales
+                </option>
+
+                @for (
+                    profesional of
+                        profesionalesFiltro();
+                    track profesional.id
+                ) {
+                    <option
+                        [value]="profesional.id"
+                    >
+                        {{ profesional.nombre }}
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-field">
+            <label for="fechaDesde">
+                Fecha desde
+            </label>
+
+            <input
+                id="fechaDesde"
+                type="date"
+                [value]="fechaDesde()"
+                (change)="
+                    onFechaDesdeChange($event)
+                "
+            />
+        </div>
+
+        <div class="filter-field">
+            <label for="fechaHasta">
+                Fecha hasta
+            </label>
+
+            <input
+                id="fechaHasta"
+                type="date"
+                [value]="fechaHasta()"
+                (change)="
+                    onFechaHastaChange($event)
+                "
+            />
+        </div>
+
+    </div>
+
+    @if (loading()) {
+
+        <div class="status-card">
+            Cargando citas...
+        </div>
+
+    }
+
+    @if (error()) {
+
+        <div class="status-card error">
+            {{ error() }}
+        </div>
+
+    }
+
+    @if (
+        !loading() &&
+        !error() &&
+        citasFiltradas().length === 0
+    ) {
+
+        <div class="status-card">
+            No se encontraron citas con los
+            filtros seleccionados.
+        </div>
+
+    }
+
+    @if (
+        !loading() &&
+        !error() &&
+        citasFiltradas().length > 0
+    ) {
+
+        <app-tabla-listado
+            [columnas]="columnas"
+            [datos]="citasFiltradas()"
+            rutaDetalle="/citas"
+        />
+
+    }
+
+</div>

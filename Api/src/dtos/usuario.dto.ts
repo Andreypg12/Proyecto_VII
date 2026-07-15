@@ -6,7 +6,6 @@ export const createUsuarioSchema = z.object ({
         .string()
         .trim()
         .toLowerCase()
-        .email("El formato del email no es válido")
         .min(3, "El email debe tener al menos 3 caracteres")
         .max(150, "El email no puede superar los 150 caracteres"),
 

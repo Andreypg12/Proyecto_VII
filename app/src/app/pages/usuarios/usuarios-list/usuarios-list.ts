@@ -31,43 +31,43 @@ export class UsuariosList {
     { titulo: 'Estado', campo: 'estado', tipo: 'estado-usuario' },
   ];
 
-  constructor(
-    private usuarioService: UsuarioService,
-    private notification: NotificationService
-  ) {
+  constructor( private usuarioService: UsuarioService, private notification: NotificationService) {
     this.cargarUsuarios();
   }
 
   usuariosFiltrados = computed(() => {
+
     const texto = this.buscar().trim().toLowerCase();
+    const rolSeleccionado = this.rol();
 
     return this.usuarios().filter((usuario) => {
       const nombre = usuario.nombreCompleto?.toLowerCase() ?? '';
       const email = usuario.email?.toLowerCase() ?? '';
-      const rol = usuario.rol?.toLowerCase() ?? '';
+      const rolUsuario = usuario.rol?.toLowerCase() ?? '';
 
-      return (
-        texto.length === 0 ||
-        nombre.includes(texto) ||
-        email.includes(texto) ||
-        rol.includes(texto)
-      );
+      //valida conicidencias para filtrar usuarios
+      const coincideBusqueda = texto.length === 0 || nombre.includes(texto) || email.includes(texto) || rolUsuario.includes(texto);
+      const coincideRol = rolSeleccionado === undefined || usuario.rol === rolSeleccionado;
+
+      //Si no estan bien las dos entonces rechaza al usuario (No lo muestra en la tabla) y sigue con los otros
+      return coincideBusqueda && coincideRol;
     });
   });
 
   cargarUsuarios(): void {
+
+    //Activa estado de carga y limpia errores
     this.loading.set(true);
     this.error.set(null);
 
     this.usuarioService.listar().subscribe({
       next: (res) => {
-        const data = res.data.map((usuario: any) => ({
-          ...usuario,
-          nombreCompleto: `${usuario.nombre} ${usuario.apellidos}`,
-        }));
 
+        //Traiga todo el objeto completo y ademas haga una nueva propieda en la cual une nombre y apellidos en un solo campo.
+        const data = res.data.map((usuario: any) => ({...usuario, nombreCompleto: `${usuario.nombre} ${usuario.apellidos}`,}));
         this.usuarios.set(data);
         this.loading.set(false);
+      
       },
       error: () => {
         this.error.set('Error al cargar usuarios');
@@ -77,14 +77,23 @@ export class UsuariosList {
     });
   }
 
+  //Disparadores del computed
   onBuscarChange(valor: string): void {
     this.buscar.set(valor);
   }
+  onRolChange(valor: string | undefined): void {
+    this.rol.set(valor);
+  }
+
 
   async cambiarEstado(usuario: any): Promise<void> {
+
+    // Si el usuario está 'BLOQUEADO', asumimos que el botón quiere hacer lo opuesto: 'activar'.
     const debeActivar = usuario.estado === 'BLOQUEADO';
+    //Se guarda en accion lo que esta en debeActivar
     const accion = debeActivar ? 'activar' : 'bloquear';
 
+    //Modal para confirmar que quiere hacer el proceso
     const confirmado = await this.notification.confirmar(
       `${debeActivar ? 'Activar' : 'Bloquear'} usuario`,
       `¿Desea ${accion} al usuario "${usuario.nombreCompleto}"?`,
@@ -93,21 +102,18 @@ export class UsuariosList {
 
     if (!confirmado) return;
 
-    const peticion = debeActivar
-      ? this.usuarioService.activar(usuario.id)
-      : this.usuarioService.bloquear(usuario.id);
+    //Dependiendo de lo que se dijo, activa / desactiva
+    const peticion = debeActivar ? this.usuarioService.activar(usuario.id) : this.usuarioService.bloquear(usuario.id);
 
+    //Se ejecuta lo de activar o desactivar
+    //Cuando termina si todo sale bien pasa por next y sino pasa por error.
     peticion.subscribe({
       next: () => {
-        this.notification.success(
-          `Usuario ${debeActivar ? 'activado' : 'bloqueado'} correctamente`
-        );
-
+        this.notification.success( `Usuario ${debeActivar ? 'activado' : 'bloqueado'} correctamente`);
         this.cargarUsuarios();
       },
-      error: () => {
-        this.notification.error(`Error al ${accion} el usuario`);
-      },
+
+      error: () => { this.notification.error(`Error al ${accion} el usuario`);},
     });
   }
 }

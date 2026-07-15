@@ -1,14 +1,129 @@
-.filter-card {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+:host {
+    display: block;
+    width: 100%;
 }
 
-.filter-card input,
-.filter-card select {
-    padding: .7rem 1rem;
-    border-radius: 10px;
-    border: 1px solid #334155;
-    background: #111827;
-    color: white;
+/* Contenedor principal de filtros */
+.filters-panel {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) minmax(190px, 230px);
+    align-items: end;
+    gap: 18px;
+
+    width: 100%;
+    margin: 24px 0;
+    padding: 18px 20px;
+
+    background: #161a1d;
+    border: 1px solid #2c3238;
+    border-radius: 14px;
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Cuando hay más filtros, Angular los acomoda automáticamente */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.filter-group label {
+    color: #e5e7eb;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+/* Input y select */
+.filter-control {
+    width: 100%;
+    height: 44px;
+    box-sizing: border-box;
+
+    padding: 0 14px;
+
+    color: #f8fafc;
+    background-color: #0f1316;
+
+    border: 1px solid #3a424a;
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.filter-control::placeholder {
+    color: #7f8a96;
+}
+
+.filter-control:hover {
+    border-color: #56616d;
+    background-color: #12171b;
+}
+
+.filter-control:focus {
+    border-color: #60a5fa;
+    background-color: #12171b;
+
+    box-shadow:
+        0 0 0 3px rgba(96, 165, 250, 0.14);
+}
+
+/* Select */
+.select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.filter-select {
+    appearance: none;
+    -webkit-appearance: none;
+
+    cursor: pointer;
+    padding-right: 42px;
+}
+
+/* Flecha personalizada */
+.select-wrapper::after {
+    content: "";
+    position: absolute;
+
+    top: 50%;
+    right: 16px;
+
+    width: 8px;
+    height: 8px;
+
+    border-right: 2px solid #9ca3af;
+    border-bottom: 2px solid #9ca3af;
+
+    transform: translateY(-70%) rotate(45deg);
+
+    pointer-events: none;
+}
+
+/* Colores del menú desplegable */
+.filter-select option {
+    color: #f8fafc;
+    background-color: #161a1d;
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 720px) {
+    .filters-panel {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+    }
 }

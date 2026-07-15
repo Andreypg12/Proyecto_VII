@@ -1,9 +1,16 @@
 <div class="table-card">
-    <table class="data-table">
+
+    <table class="data-table" [class.compact-table]="columnas().length <= 3">
+
         <thead>
             <tr>
-                @for (columna of columnas(); track columna.campo) {
-                    <th>{{ columna.titulo }}</th>
+                @for (
+                columna of columnas();
+                track columna.campo
+                ) {
+                <th>
+                    {{ columna.titulo }}
+                </th>
                 }
 
                 <th>Acciones</th>
@@ -11,101 +18,147 @@
         </thead>
 
         <tbody>
-            @for (item of datos(); track item.id) {
-                <tr>
-                    @for (columna of columnas(); track columna.campo) {
-                        <td>
 
-                            @if (columna.tipo === 'estado') {
-                                <span
-                                    class="badge"
-                                    [class.active]="item[columna.campo]"
-                                    [class.inactive]="!item[columna.campo]">
+            @for (
+            item of datos();
+            track item.id
+            ) {
+            <tr>
 
-                                    {{ item[columna.campo] ? 'Activo' : 'Inactivo' }}
+                @for (
+                columna of columnas();
+                track columna.campo
+                ) {
+                <td>
 
-                                </span>
-                            }
+                    <!-- Estado booleano -->
+                    @if (columna.tipo === 'estado') {
 
-                            @else if (columna.tipo === 'estado-usuario') {
-                                <span
-                                    class="badge"
-                                    [class.active]="item[columna.campo] === 'ACTIVO'"
-                                    [class.inactive]="item[columna.campo] === 'BLOQUEADO'">
+                    <span class="badge" [class.active]="item[columna.campo]" [class.inactive]="!item[columna.campo]">
+                        {{
+                        item[columna.campo]
+                        ? 'Activo'
+                        : 'Inactivo'
+                        }}
+                    </span>
 
-                                    {{ item[columna.campo] === 'ACTIVO' ? 'Activo' : 'Bloqueado' }}
-
-                                </span>
-                            }
-
-                            @else {
-                                {{ item[columna.campo] }}
-                            }
-
-                        </td>
                     }
 
-                    <td class="actions">
-                        <a
-                            class="action-btn view"
-                            [routerLink]="[rutaDetalle(), item.id]">
+                    <!-- Estado de usuario -->
+                    @else if (
+                    columna.tipo === 'estado-usuario'
+                    ) {
 
+                    <span class="badge" [class.active]="
+                                        item[columna.campo] === 'ACTIVO'
+                                    " [class.inactive]="
+                                        item[columna.campo] === 'BLOQUEADO'
+                                    ">
+                        {{
+                        item[columna.campo] === 'ACTIVO'
+                        ? 'Activo'
+                        : 'Bloqueado'
+                        }}
+                    </span>
+
+                    }
+
+                    <!-- Estado de cita -->
+                    @else if (
+                    columna.tipo === 'estado-cita'
+                    ) {
+
+                    <span class="badge" [class.cita-pendiente]="
+                                        item[columna.campo] === 'PENDIENTE'
+                                    " [class.cita-aceptada]="
+                                        item[columna.campo] === 'ACEPTADA'
+                                    " [class.cita-rechazada]="
+                                        item[columna.campo] === 'RECHAZADA'
+                                    " [class.cita-cancelada]="
+                                        item[columna.campo] === 'CANCELADA'
+                                    " [class.cita-completada]="
+                                        item[columna.campo] === 'COMPLETADA'
+                                    ">
+                        {{
+                        formatearEstadoCita(
+                        item[columna.campo]
+                        )
+                        }}
+                    </span>
+
+                    }
+
+                    <!-- Texto normal -->
+                    @else {
+                    {{ item[columna.campo] }}
+                    }
+
+                </td>
+                }
+
+                <td class="actions-cell">
+
+                    <div class="actions">
+
+                        <a class="action-btn view" [routerLink]="[rutaDetalle(), item.id ]">
                             <mat-icon>visibility</mat-icon>
                             Ver
-
                         </a>
 
-                        <!-- Caso categorías / especialidades / booleanos -->
+                        <!-- Categorías y especialidades -->
                         @if (typeof item.estado === 'boolean') {
 
-                            @if (item.estado) {
-                                <button
-                                    class="action-btn deactivate"
-                                    (click)="cambiarEstado.emit(item)">
+                        @if (item.estado) {
 
-                                    <mat-icon>toggle_off</mat-icon>
-                                    Desactivar
+                        <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>toggle_off</mat-icon>
+                            Desactivar
+                        </button>
 
-                                </button>
-                            } @else {
-                                <button
-                                    class="action-btn activate"
-                                    (click)="cambiarEstado.emit(item)">
+                        } @else {
 
-                                    <mat-icon>toggle_on</mat-icon>
-                                    Activar
+                        <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>toggle_on</mat-icon>
+                            Activar
+                        </button>
 
-                                </button>
-                            }
                         }
 
-                        <!-- Caso usuarios -->
-                        @else if (item.estado === 'ACTIVO' || item.estado === 'BLOQUEADO') {
-
-                            @if (item.estado === 'ACTIVO') {
-                                <button
-                                    class="action-btn deactivate"
-                                    (click)="cambiarEstado.emit(item)">
-
-                                    <mat-icon>lock</mat-icon>
-                                    Bloquear
-
-                                </button>
-                            } @else {
-                                <button
-                                    class="action-btn activate"
-                                    (click)="cambiarEstado.emit(item)">
-
-                                    <mat-icon>lock_open</mat-icon>
-                                    Activar
-
-                                </button>
-                            }
                         }
 
-                    </td>
-                </tr>
+                        <!-- Usuarios -->
+                        @else if (
+                        item.estado === 'ACTIVO' ||
+                        item.estado === 'BLOQUEADO'
+                        ) {
+
+                        @if (item.estado === 'ACTIVO') {
+
+                        <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>lock</mat-icon>
+                            Bloquear
+                        </button>
+
+                        } @else {
+
+                        <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>lock_open</mat-icon>
+                            Activar
+                        </button>
+
+                        }
+
+                        }
+
+                    </div>
+
+                </td>
+
+            </tr>
             }
+
         </tbody>
+
     </table>
+
 </div>

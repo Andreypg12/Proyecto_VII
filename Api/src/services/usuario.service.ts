@@ -4,14 +4,26 @@ import { ro } from "zod/locales";
 import { CreateUsuarioDto, UpdateUsuarioDto } from "../dtos/usuario.dto";
 import { AppError } from "../utils/app-error";
 
+
+
+// Declarar la interfaz arriba, Forma #1
+/* interface FiltrosUsuario {
+    buscar?: string;
+    rol?: Rol;
+} */
+
 export const usuarioService = {
 
+    // Utilizar los filtros en el mismo metodo #2
     async listar(filtros?: { buscar?: string; rol?: Rol }) {
+
+        // Objeto donde se construyen dinámicamente los filtros de Prisma
         const where: any = {};
 
         if (filtros?.buscar) {
             const textoBusqueda = filtros.buscar.trim();
 
+            // Buscar coincidencias por nombre, apellidos o correo
             where.OR = [
                 { nombre: { contains: textoBusqueda } },
                 { apellidos: { contains: textoBusqueda } },
@@ -19,12 +31,16 @@ export const usuarioService = {
             ];
         }
 
+         // Aplicar filtro por rol cuando fue enviado
         if (filtros?.rol) {
             where.rol = filtros.rol;
         }
 
+        // Consultar los usuarios en la base de datos
         return await prisma.usuario.findMany({
             where,
+
+            // Seleccionar únicamente los campos necesarios
             select: {
                 id: true,
                 nombre: true,
@@ -46,53 +62,6 @@ export const usuarioService = {
             }
         })
     },
-
-    async crear(data: CreateUsuarioDto) {
-
-        return await prisma.usuario.create({
-
-            data: {
-                email: data.email,
-                nombre: data.nombre,
-                apellidos: data.apellidos,
-                password: data.password,
-                rol: data.rol ?? "CLIENTE",
-                estado: data.estado ?? "ACTIVO",
-            },
-            select: {
-                id: true,
-                email: true,
-                nombre: true,
-                apellidos: true,
-                rol: true,
-                estado: true,
-            },
-        });
-    },
-
-    async actualizar(id: number, data: UpdateUsuarioDto) {
-
-        return await prisma.usuario.update({
-            where: { id },
-            data: {
-                email: data.email,
-                nombre: data.nombre,
-                apellidos: data.apellidos,
-                password: data.password,
-                rol: data.rol,
-                estado: data.estado,
-            },
-            select: {
-                id: true,
-                email: true,
-                nombre: true,
-                apellidos: true,
-                rol: true,
-                estado: true,
-            },
-        });
-    },
-
 
     async activar(id: number) {
 
@@ -143,4 +112,56 @@ export const usuarioService = {
             }
         });
     },
+
+    
+    //Estos por el momento, no se utilizarán
+    
+    async crear(data: CreateUsuarioDto) {
+
+        return await prisma.usuario.create({
+
+            data: {
+                email: data.email,
+                nombre: data.nombre,
+                apellidos: data.apellidos,
+                password: data.password,
+                rol: data.rol ?? "CLIENTE",
+                estado: data.estado ?? "ACTIVO",
+            },
+            select: {
+                id: true,
+                email: true,
+                nombre: true,
+                apellidos: true,
+                rol: true,
+                estado: true,
+            },
+        });
+    },
+
+    async actualizar(id: number, data: UpdateUsuarioDto) {
+
+        return await prisma.usuario.update({
+            where: { id },
+            data: {
+                email: data.email,
+                nombre: data.nombre,
+                apellidos: data.apellidos,
+                password: data.password,
+                rol: data.rol,
+                estado: data.estado,
+            },
+            select: {
+                id: true,
+                email: true,
+                nombre: true,
+                apellidos: true,
+                rol: true,
+                estado: true,
+            },
+        });
+    },
+
+
+    
 }

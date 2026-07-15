@@ -1,0 +1,1 @@
+{"level":"warn","message":"Error al listar servicios","method":"GET","name":"BadRequestError","path":"/servicio","statusCode":400,"timestamp":"2026-07-07 22:34:38.744"}
