@@ -46,22 +46,11 @@
 
             <span
                 class="badge detail-status"
-                [class.cita-pendiente]="
-                    citaActual.estado === 'PENDIENTE'
-                "
-                [class.cita-aceptada]="
-                    citaActual.estado === 'ACEPTADA'
-                "
-                [class.cita-rechazada]="
-                    citaActual.estado === 'RECHAZADA'
-                "
-                [class.cita-cancelada]="
-                    citaActual.estado === 'CANCELADA'
-                "
-                [class.cita-completada]="
-                    citaActual.estado === 'COMPLETADA'
-                "
-            >
+                [class.cita-pendiente]="citaActual.estado === 'PENDIENTE'"
+                [class.cita-aceptada]="citaActual.estado === 'ACEPTADA'"
+                [class.cita-rechazada]="citaActual.estado === 'RECHAZADA'"
+                [class.cita-cancelada]="citaActual.estado === 'CANCELADA'"
+                [class.cita-completada]="citaActual.estado === 'COMPLETADA'">
                 {{
                     formatearEstado(
                         citaActual.estado

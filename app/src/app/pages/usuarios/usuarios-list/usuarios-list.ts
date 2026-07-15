@@ -8,6 +8,8 @@ import { TablaListado, ColumnaTabla } from '../../../shared/components/tabla-lis
 import { UsuarioService } from '../../../core/services/usuarios.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
+import {Rol} from '../../../core/models/usuario.model';
+
 @Component({
   selector: 'app-usuarios-list',
   standalone: true,
@@ -17,6 +19,7 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class UsuariosList {
   usuarios = signal<any[]>([]);
+  roles = signal<Rol[]>([]);
 
   buscar = signal('');
   rol = signal<string | undefined>(undefined);
@@ -33,6 +36,7 @@ export class UsuariosList {
 
   constructor( private usuarioService: UsuarioService, private notification: NotificationService) {
     this.cargarUsuarios();
+    this.cargarConfiguracion();
   }
 
   usuariosFiltrados = computed(() => {
@@ -114,6 +118,30 @@ export class UsuariosList {
       },
 
       error: () => { this.notification.error(`Error al ${accion} el usuario`);},
+    });
+  }
+
+  cargarConfiguracion(): void {
+    this.usuarioService.obtenerConfiguracion().subscribe({
+      next: (res) => {
+        console.log('Respuesta de configuración:', res);
+        console.log('Roles recibidos:', res.data.roles);
+
+        this.roles.set(res.data.roles);
+
+        console.log('Signal roles:', this.roles());
+      },
+
+      error: (error) => {
+        console.error(
+          'Error cargando configuración:',
+          error
+        );
+
+        this.notification.error(
+          'No se pudieron cargar los roles'
+        );
+      },
     });
   }
 }

@@ -7,6 +7,19 @@ import { sendSuccess } from "../utils/http-response";
 import { Rol } from "../../generated/prisma/enums";
 
 export class usuarioController {
+
+    obtenerConfiguracion = async (request: Request,response: Response,next: NextFunction) => {
+        const configuracion =
+            await usuarioService.obtenerConfiguracion();
+
+        return sendSuccess(
+            response,
+            configuracion,
+            'Configuración de usuarios obtenida correctamente'
+        );
+    };
+
+
     listar = async (req: Request, res: Response, next: NextFunction) => {
         try {
 

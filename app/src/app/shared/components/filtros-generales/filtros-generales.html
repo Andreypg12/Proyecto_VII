@@ -17,6 +17,7 @@
         </div>
     }
 
+
     @if (showStatus()) {
         <div class="filter-group">
             <label for="status">
@@ -30,13 +31,22 @@
                     [ngModel]="status()?.toString() ?? ''"
                     (ngModelChange)="onStatusChange($event)"
                 >
-                    <option value="">Todos los estados</option>
-                    <option value="true">Activos</option>
-                    <option value="false">Inactivos</option>
+                    <option value="">
+                        Todos los estados
+                    </option>
+
+                    <option value="true">
+                        Activos
+                    </option>
+
+                    <option value="false">
+                        Inactivos
+                    </option>
                 </select>
             </div>
         </div>
     }
+
 
     @if (showRole()) {
         <div class="filter-group">
@@ -51,10 +61,15 @@
                     [ngModel]="role() ?? ''"
                     (ngModelChange)="onRolChange($event)"
                 >
-                    <option value="">Todos los roles</option>
-                    <option value="ADMINISTRADOR">Administrador</option>
-                    <option value="PROFESIONAL">Profesional</option>
-                    <option value="CLIENTE">Cliente</option>
+                    <option value="">
+                        Todos los roles
+                    </option>
+
+                    @for (rolItem of roles(); track rolItem) {
+                        <option [value]="rolItem">
+                            {{ formatearEtiqueta(rolItem) }}
+                        </option>
+                    }
                 </select>
             </div>
         </div>

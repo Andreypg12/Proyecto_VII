@@ -14,6 +14,8 @@ export class FiltrosGenerales {
   showStatus = input<boolean>(true);
   showRole = input<boolean>(false);
 
+  roles = input<string[]>([]);
+
   // Outputs
   searchChange = output<string>();
   statusChange = output<boolean | undefined>();
@@ -23,6 +25,8 @@ export class FiltrosGenerales {
   search = signal('');
   status = signal<boolean | undefined>(undefined);
   role = signal<string | undefined>(undefined);
+
+  
 
   onSearchChange(value: string): void {
     this.search.set(value);
@@ -48,5 +52,13 @@ export class FiltrosGenerales {
 
     this.role.set(rolSeleccionado);
     this.roleChange.emit(rolSeleccionado);
+  }
+
+  formatearEtiqueta(value: string): string {
+    const texto = value
+      .toLowerCase()
+      .replaceAll('_', ' ');
+
+    return texto.charAt(0).toUpperCase() + texto.slice(1);
   }
 }
