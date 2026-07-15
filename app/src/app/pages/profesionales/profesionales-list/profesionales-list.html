@@ -1,0 +1,138 @@
+<section class="page-header">
+    <div class="header-content">
+        <div class="header-text">
+            <span class="eyebrow">Catálogo</span>
+            <h1>Profesionales de Software disponibles</h1>
+            <p>
+                Listado de profesionales ofrecidos por desarrolladores de software.
+            </p>
+        </div>
+        <div class="header-actions">
+            <button mat-flat-button color="primary" class="add-button" [routerLink]="['/profesionales/crear']">
+                <mat-icon>add</mat-icon>
+                Nuevo Profesional
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="filters">
+    <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar profesional</mat-label>
+        <input matInput [ngModel]="search()" (ngModelChange)="search.set($event)"
+            placeholder="Ejemplo: Juan, desarrollador, frontend" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Modalidad</mat-label>
+        <mat-select [(ngModel)]="modalidad">
+            <mat-option [value]="null">Todas</mat-option>
+            <mat-option value="PRESENCIAL">Presencial</mat-option>
+            <mat-option value="VIRTUAL">Virtual</mat-option>
+            <mat-option value="HÍBRIDA">Híbrida</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Disponibilidad</mat-label>
+        <mat-select [(ngModel)]="disponibilidad">
+            <mat-option [value]="null">Todas</mat-option>
+            <mat-option [value]="true">Disponible</mat-option>
+            <mat-option [value]="false">No disponible</mat-option>
+        </mat-select>
+
+    </mat-form-field>
+
+    <button mat-stroked-button class="clear-button" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar
+    </button>
+</section>
+
+<div class="result-summary">
+    <span class="result-count">
+        <mat-icon>list_alt</mat-icon>
+        {{ totalProfesionales() }} profesionales encontrados
+    </span>
+    @if(filtrosActivos()) {
+    <span class="filter-badge">Filtros activos</span>
+    }
+</div>
+
+@if(loading()){
+<div class="state loading">
+    <mat-spinner diameter="42" />
+    <p>Cargando profesionales...</p>
+</div>
+}@else if (error()) {
+<div class="state error">
+    <mat-icon>error</mat-icon>
+    <p>{{ error() }} </p>
+</div>
+} @else if (profesionalesFiltrados().length === 0) {
+<div class="state empty">
+    <mat-icon>search_off</mat-icon>
+    <p>No hay profesionales disponibles con los filtros seleccionados.</p>
+</div>
+}
+
+<section class="professionals-grid">
+    @for (profesional of profesionalesFiltrados(); track profesional.id) {
+    <mat-card class="professional-card">
+
+        <mat-card-content>
+            <!-- Imagen del profesional -->
+            <div class="professional-image">
+                @if(profesional.imagen_profesional) {
+                <img [src]="getImageUrl(profesional.imagen_profesional)"
+                    [alt]="profesional.usuario.nombre || 'Profesional'" (error)="handleImageError($event)" />
+                } @else {
+                <div class="image-placeholder">
+                    <mat-icon>person</mat-icon>
+                </div>
+                }
+            </div>
+
+            <div class="professional-header">
+                <h2>{{ profesional.usuario.nombre || 'Sin nombre' }}</h2>
+                <span class="modalidad-badge">{{ profesional.modalidad || 'No especificada' }}</span>
+            </div>
+
+            <p class="titulo">{{ profesional.titulo || 'Sin título' }}</p>
+
+            <div class="professional-meta">
+                <div class="meta-item">
+                    <mat-icon>attach_money</mat-icon>
+                    <span><strong>${{ profesional.tarifa_por_hora | number }}</strong> / hora</span>
+                </div>
+                <div class="meta-item disponibilidad-switch" [class.available]="profesional.disponibilidad"
+                    [class.unavailable]="!profesional.disponibilidad"
+                    (click)="cambiarDisponibilidad(profesional, $event)"
+                    matTooltip="{{ profesional.disponibilidad ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
+                    matTooltipPosition="above">
+                    <mat-icon class="switch-icon">{{ profesional.disponibilidad ? 'toggle_on' : 'toggle_off'
+                        }}</mat-icon>
+                    <span class="switch-label">{{ profesional.disponibilidad ? 'Disponible' : 'No disponible' }}</span>
+                </div>
+            </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+            <!-- Botón Editar -->
+            <a mat-stroked-button color="accent" [routerLink]="['/profesionales/editar', profesional.id]"
+                class="edit-button">
+                <mat-icon>edit</mat-icon>
+                Editar
+            </a>
+
+            <!-- Botón Detalle -->
+            <a mat-stroked-button color="primary" [routerLink]="['/profesionales', profesional.id]"
+                class="view-icon-button">
+                Detalle
+                <mat-icon>more_horiz</mat-icon>
+            </a>
+        </mat-card-actions>
+    </mat-card>
+    }
+</section>

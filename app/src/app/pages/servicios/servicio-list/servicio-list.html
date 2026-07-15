@@ -1,0 +1,163 @@
+<section class="page-header">
+    <div class="header-content">
+        <div class="header-text">
+            <span class="eyebrow">Catálogo</span>
+            <h1>Servicios de Software disponibles</h1>
+            <p>
+                Listado de servicios ofrecidos por profesionales de software.
+            </p>
+        </div>
+        <div class="header-actions">
+            <button mat-flat-button color="primary" class="add-button" [routerLink]="['/servicios/crear']">
+                <mat-icon>add</mat-icon>
+                Nuevo Servicio
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="filters">
+    <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar servicio</mat-label>
+        <input matInput [ngModel]="search()" (ngModelChange)="search.set($event)"
+            placeholder="Ejemplo: Desarrollo web, móvil, IA" />
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Categoría</mat-label>
+        <mat-select [(ngModel)]="categoriaId">
+            <mat-option [value]="null">Todas</mat-option>
+            @for (categoria of categorias(); track categoria.id) {
+            <mat-option [value]="categoria.id">
+                {{categoria.categoria}}
+            </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Modalidad</mat-label>
+        <mat-select [(ngModel)]="modalidad">
+            <mat-option [value]="null">Todas</mat-option>
+            <mat-option value="PRESENCIAL">Presencial</mat-option>
+            <mat-option value="VIRTUAL">Virtual</mat-option>
+            <mat-option value="HÍBRIDA">Híbrida</mat-option>
+        </mat-select>
+
+    </mat-form-field>
+    <div class="price-filter">
+        <div class="price-header">
+            <span class="price-label">Rango de precio</span>
+            <div class="price-values">
+                <span class="price-min">${{ precioMin() | number }}</span>
+                <span class="price-separator">—</span>
+                <span class="price-max">${{ precioMax() | number }}</span>
+            </div>
+        </div>
+        <mat-slider [min]="precioMinimoGlobal" [max]="precioMaximoGlobal" [step]="1000" class="price-slider">
+            <input matSliderStartThumb [(ngModel)]="precioMin" (ngModelChange)="onPriceChange()">
+            <input matSliderEndThumb [(ngModel)]="precioMax" (ngModelChange)="onPriceChange()">
+        </mat-slider>
+    </div>
+
+    <button mat-stroked-button class="clear-button" (click)="clearFilters()">
+        <mat-icon>clear</mat-icon>
+        Limpiar
+    </button>
+</section>
+
+<div class="result-summary">
+    <span class="result-count">
+        <mat-icon>list_alt</mat-icon>
+        {{ totalServicios() }} servicios encontrados
+    </span>
+    @if(filtrosActivos()) {
+    <span class="filter-badge">Filtros activos</span>
+    }
+</div>
+
+@if(loading()){
+<div class="state loading">
+    <mat-spinner diameter="42" />
+    <p>Cargando servicios...</p>
+</div>
+}@else if (error()) {
+<div class="state error">
+    <mat-icon>error</mat-icon>
+    <p>{{ error() }} </p>
+</div>
+} @else if (serviciosFiltrados().length === 0) {
+<div class="state empty">
+    <mat-icon>search_off</mat-icon>
+    <p>No hay servicios disponibles con los filtros seleccionados.</p>
+</div>
+}
+
+<section class="services-grid">
+    @for (service of serviciosFiltrados(); track service.id) {
+    <mat-card class="service-card" [class.inactive]="!service.estado">
+        <!-- Badge de estado en esquina -->
+        <div class="status-indicator" [class.active]="service.estado" [class.inactive]="!service.estado"
+            matTooltip="{{ service.estado ? 'Disponible' : 'No disponible' }}" matTooltipPosition="above">
+            <mat-icon>{{ service.estado ? 'check_circle' : 'block' }}</mat-icon>
+        </div>
+
+        <mat-card-content>
+            <div class="service-header">
+                <span class="category">
+                    {{service.categoria?.categoria || 'Sin Categoría'}}
+                </span>
+            </div>
+
+            <!-- Línea separadora -->
+            <div class="category-divider"></div>
+
+            <h2>{{ service.servicio }}</h2>
+            <p>{{ service.descripcion }}</p>
+
+            <div class="service-meta">
+                <div class="meta-item">
+                    <mat-icon>person</mat-icon>
+                    <span>{{ service.profesional.usuario.nombre || 'Sin profesional' }}</span>
+                </div>
+                <div class="meta-item">
+                    <mat-icon>devices</mat-icon>
+                    <span>{{ service.modalidad || 'No especificada' }}</span>
+                </div>
+                <div class="meta-item price">
+                    <strong>${{ service.precio | number }}</strong>
+                </div>
+                <div class="meta-item estado-switch" [class.active]="service.estado" [class.inactive]="!service.estado"
+                    (click)="cambiarEstado(service, $event)"
+                    matTooltip="{{ service.estado ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
+                    matTooltipPosition="above">
+                    <mat-icon class="switch-icon">{{ service.estado ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                    <span class="switch-label">{{ service.estado ? 'Activo' : 'Inactivo' }}</span>
+                </div>
+            </div>
+
+            @if(service.especialidades && service.especialidades.length > 0) {
+            <div class="especialidades">
+                @for (esp of service.especialidades; track esp.id) {
+                @if(esp.estado === true) {
+                <span class="especialidad-tag">{{ esp.especialidad }}</span>
+                }
+                }
+            </div>
+            }
+        </mat-card-content>
+
+        <mat-card-actions align="end">
+            <a mat-stroked-button color="accent" [routerLink]="['/servicios/editar', service.id]" class="edit-button">
+                <mat-icon>edit</mat-icon>
+                Editar
+            </a>
+
+            <a mat-stroked-button color="primary" [routerLink]="['/servicios', service.id]" class="view-icon-button">
+                Detalle<mat-icon>more_horiz</mat-icon>
+            </a>
+        </mat-card-actions>
+    </mat-card>
+    }
+</section>

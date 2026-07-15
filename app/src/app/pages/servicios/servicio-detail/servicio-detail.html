@@ -1,0 +1,189 @@
+<div class="detail-container">
+    <!-- Header con botón volver -->
+    <div class="detail-header">
+        <button mat-stroked-button (click)="volver()" class="back-button">
+            <mat-icon>arrow_back</mat-icon>
+            Volver
+        </button>
+        <div class="header-actions">
+            @if (servicio(); as service) {
+            <button mat-flat-button color="primary" (click)="editar()" class="edit-button">
+                <mat-icon>edit</mat-icon>
+                Editar
+            </button>
+            }
+        </div>
+    </div>
+
+    <!-- Loading -->
+    @if (loading()) {
+    <div class="state loading">
+        <mat-spinner diameter="48" />
+        <p>Cargando servicio...</p>
+    </div>
+    }
+
+    <!-- Error -->
+    @else if (error()) {
+    <div class="state error">
+        <mat-icon>error</mat-icon>
+        <p>{{ error() }}</p>
+        <button mat-stroked-button color="primary" (click)="volver()">
+            <mat-icon>arrow_back</mat-icon>
+            Volver
+        </button>
+    </div>
+    }
+
+    <!-- Detalle -->
+    @else if (servicio(); as service) {
+    <mat-card class="detail-card">
+        <!-- Badge de estado -->
+        <div class="status-badge" [class.active]="service.estado" [class.inactive]="!service.estado">
+            <mat-icon>{{ service.estado ? 'check_circle' : 'block' }}</mat-icon>
+            <span>{{ service.estado ? 'Activo' : 'Inactivo' }}</span>
+        </div>
+
+        <mat-card-content>
+            <!-- Título y categoría -->
+            <div class="service-header">
+                <div>
+                    <span class="category-badge">
+                        {{ service.categoria?.categoria || 'Sin categoría' }}
+                    </span>
+                    <h1>{{ service.servicio }}</h1>
+                </div>
+                <div class="price-badge">
+                    <span class="price-amount">${{ service.precio | number }}</span>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Descripción -->
+            <div class="info-section">
+                <h3>
+                    <mat-icon class="section-icon">description</mat-icon>
+                    Descripción
+                </h3>
+                <p class="descripcion">{{ service.descripcion }}</p>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Datos principales -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <mat-icon>schedule</mat-icon>
+                    <div>
+                        <span class="label">Duración estimada</span>
+                        <span class="value">{{ service.duracion_estimada }} minutos</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div>
+                        <span class="label">Modalidad</span>
+                        <span class="value">
+                            <mat-icon class="modalidad-icon">{{ getModalidadInfo(service.modalidad).icon }}</mat-icon>
+                            {{ getModalidadInfo(service.modalidad).label }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Profesional -->
+            <div class="info-section">
+                <h3>
+                    <mat-icon class="section-icon">person</mat-icon>
+                    Profesional
+                </h3>
+                <div class="professional-card">
+                    <div class="professional-info">
+                        <div class="professional-avatar">
+                            <mat-icon>person</mat-icon>
+                        </div>
+                        <div class="professional-details">
+                            <span class="professional-name">
+                                {{ service.profesional.usuario.nombre || 'Sin nombre' }}
+                                {{ service.profesional.usuario.apellidos || '' }}
+                            </span>
+                            <span class="professional-email">{{ service.profesional.usuario.email }}</span>
+                            <div class="professional-meta">
+                                <span class="meta-tag">
+                                    <mat-icon>work</mat-icon>
+                                    {{ service.profesional.titulo || 'Sin título' }}
+                                </span>
+                                <span class="meta-tag">
+                                    <mat-icon>attach_money</mat-icon>
+                                    {{ service.profesional.tarifa_por_hora | number }}/hora
+                                </span>
+                                <span class="meta-tag" [class.available]="service.profesional.disponibilidad"
+                                    [class.unavailable]="!service.profesional.disponibilidad">
+                                    <mat-icon>{{ service.profesional.disponibilidad ? 'check_circle' : 'cancel'
+                                        }}</mat-icon>
+                                    {{ service.profesional.disponibilidad ? 'Disponible' : 'No disponible' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <a mat-stroked-button [routerLink]="['/profesionales', service.id_profesional]"
+                        class="view-professional-btn">
+                        Ver perfil
+                        <mat-icon>arrow_forward</mat-icon>
+                    </a>
+                </div>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Especialidades -->
+            <div class="info-section">
+                <h3>
+                    <mat-icon class="section-icon">local_offer</mat-icon>
+                    Especialidades
+                </h3>
+                @if (service.especialidades && service.especialidades.length > 0) {
+                <div class="especialidades-list">
+                    @for (esp of service.especialidades; track esp.id) {
+                    <div class="especialidad-chip" [class.inactive-chip]="!esp.estado">
+                        <mat-icon>{{ esp.estado ? 'verified' : 'disabled' }}</mat-icon>
+                        <span>{{ esp.especialidad }}</span>
+                    </div>
+                    }
+                </div>
+                } @else {
+                <p class="no-data">No hay especialidades asociadas</p>
+                }
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Categoría detalle -->
+            <div class="info-section">
+                <h3>
+                    <mat-icon class="section-icon">folder</mat-icon>
+                    Categoría
+                </h3>
+                <div class="category-detail">
+                    <span class="category-name">{{ service.categoria?.categoria || 'Sin categoría' }}</span>
+                    <span class="category-desc">{{ service.categoria?.descripcion || '' }}</span>
+                </div>
+            </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end" class="card-actions">
+            <button mat-stroked-button (click)="volver()" class="back-action-btn">
+                <mat-icon>arrow_back</mat-icon>
+                Volver
+            </button>
+            <button mat-flat-button color="primary" (click)="editar()" class="edit-action-btn">
+                <mat-icon>edit</mat-icon>
+                Editar servicio
+            </button>
+        </mat-card-actions>
+    </mat-card>
+    }
+</div>

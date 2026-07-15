@@ -1,0 +1,398 @@
+<div class="page-container">
+
+    <a
+        class="back-btn"
+        routerLink="/citas"
+    >
+        ← Volver a citas
+    </a>
+
+    @if (loading()) {
+
+        <div class="status-card">
+            Cargando información de la cita...
+        </div>
+
+    }
+
+    @if (error()) {
+
+        <div class="status-card error">
+            {{ error() }}
+        </div>
+
+    }
+
+    @if (
+        !loading() &&
+        !error() &&
+        cita();
+        as citaActual
+    ) {
+
+        <div class="detail-header">
+
+            <div>
+                <h1>
+                    Detalle de cita
+                    #{{ citaActual.id }}
+                </h1>
+
+                <p>
+                    Información completa de la cita
+                    registrada.
+                </p>
+            </div>
+
+            <span
+                class="badge detail-status"
+                [class.cita-pendiente]="citaActual.estado === 'PENDIENTE'"
+                [class.cita-aceptada]="citaActual.estado === 'ACEPTADA'"
+                [class.cita-rechazada]="citaActual.estado === 'RECHAZADA'"
+                [class.cita-cancelada]="citaActual.estado === 'CANCELADA'"
+                [class.cita-completada]="citaActual.estado === 'COMPLETADA'">
+                {{
+                    formatearEstado(
+                        citaActual.estado
+                    )
+                }}
+            </span>
+
+        </div>
+
+        <div class="detail-card">
+
+            <!-- PROGRAMACIÓN -->
+            <section class="detail-section">
+
+                <h2>
+                    <mat-icon>
+                        calendar_month
+                    </mat-icon>
+
+                    Programación
+                </h2>
+
+                <div class="detail-grid">
+
+                    <div class="detail-item">
+                        <span>Fecha</span>
+
+                        <strong>
+                            {{
+                                formatearFecha(
+                                    citaActual
+                                        .fecha_hora_inicio
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Hora</span>
+
+                        <strong>
+                            {{
+                                formatearHora(
+                                    citaActual
+                                        .fecha_hora_inicio
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Modalidad</span>
+
+                        <strong>
+                            {{
+                                formatearModalidad(
+                                    citaActual.modalidad
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Estado</span>
+
+                        <strong>
+                            {{
+                                formatearEstado(
+                                    citaActual.estado
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>
+                            Finalización esperada
+                        </span>
+
+                        <strong>
+                            {{
+                                formatearFechaHora(
+                                    citaActual
+                                        .fecha_hora_finalizacion_esperada
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>
+                            Finalización real
+                        </span>
+
+                        <strong>
+                            @if (
+                                citaActual
+                                    .fecha_hora_finalizacion_real
+                            ) {
+                                {{
+                                    formatearFechaHora(
+                                        citaActual
+                                            .fecha_hora_finalizacion_real
+                                    )
+                                }}
+                            } @else {
+                                No registrada
+                            }
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Monto estimado</span>
+
+                        <strong>
+                            {{
+                                formatearMonto(
+                                    citaActual
+                                        .monto_estimado
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- CLIENTE -->
+            <section class="detail-section">
+
+                <h2>
+                    <mat-icon>person</mat-icon>
+                    Cliente
+                </h2>
+
+                <div class="detail-grid">
+
+                    <div class="detail-item">
+                        <span>Nombre completo</span>
+
+                        <strong>
+                            {{
+                                citaActual.cliente.nombre
+                            }}
+
+                            {{
+                                citaActual.cliente.apellidos
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Correo electrónico</span>
+
+                        <strong>
+                            {{
+                                citaActual.cliente.email
+                            }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- PROFESIONAL -->
+            <section class="detail-section">
+
+                <h2>
+                    <mat-icon>badge</mat-icon>
+                    Profesional
+                </h2>
+
+                <div class="detail-grid">
+
+                    <div class="detail-item">
+                        <span>Nombre completo</span>
+
+                        <strong>
+                            {{
+                                citaActual
+                                    .profesional
+                                    .usuario
+                                    .nombre
+                            }}
+
+                            {{
+                                citaActual
+                                    .profesional
+                                    .usuario
+                                    .apellidos
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Título profesional</span>
+
+                        <strong>
+                            {{
+                                citaActual
+                                    .profesional
+                                    .titulo
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Correo electrónico</span>
+
+                        <strong>
+                            {{
+                                citaActual
+                                    .profesional
+                                    .usuario
+                                    .email
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Teléfono</span>
+
+                        <strong>
+                            {{
+                                citaActual
+                                    .profesional
+                                    .telefono ||
+                                'No disponible'
+                            }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- SERVICIO -->
+            <section class="detail-section">
+
+                <h2>
+                    <mat-icon>
+                        miscellaneous_services
+                    </mat-icon>
+
+                    Servicio
+                </h2>
+
+                <div class="detail-grid">
+
+                    <div class="detail-item">
+                        <span>Servicio</span>
+
+                        <strong>
+                            {{
+                                citaActual
+                                    .servicio
+                                    .servicio
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>
+                            Duración estimada
+                        </span>
+
+                        <strong>
+                            {{
+                                formatearDuracion(
+                                    citaActual
+                                        .servicio
+                                        .duracion_estimada
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>
+                            Precio del servicio
+                        </span>
+
+                        <strong>
+                            {{
+                                formatearMonto(
+                                    citaActual
+                                        .servicio
+                                        .precio
+                                )
+                            }}
+                        </strong>
+                    </div>
+
+                    <div class="detail-item full">
+                        <span>
+                            Descripción del servicio
+                        </span>
+
+                        <strong>
+                            {{
+                                citaActual
+                                    .servicio
+                                    .descripcion ||
+                                'Sin descripción'
+                            }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- COMENTARIO -->
+            <section class="detail-section">
+
+                <h2>
+                    <mat-icon>comment</mat-icon>
+                    Comentario del cliente
+                </h2>
+
+                <div class="detail-item full comment-box">
+
+                    <span>
+                        Descripción o comentario
+                    </span>
+
+                    <p>
+                        {{
+                            citaActual
+                                .comentario_cliente ||
+                            'No se registraron comentarios.'
+                        }}
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    }
+
+</div>

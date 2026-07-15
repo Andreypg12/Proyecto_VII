@@ -21,7 +21,6 @@ enum Rol {
 
 enum EstadoUsuario {
   ACTIVO
-  INACTIVO
   BLOQUEADO
 }
 
@@ -69,6 +68,7 @@ model PerfilProfesional {
   annos_experiencia  Int     @db.TinyInt
   imagen_profesional String  @default("image-not-found.jpg") @db.VarChar(255)
   disponibilidad     Boolean @default(true)
+  telefono           String  @db.VarChar(100)
 
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now()) @updatedAt
@@ -78,8 +78,7 @@ model PerfilProfesional {
   id_usuario Int
   usuario    Usuario @relation(fields: [id_usuario], references: [id])
 
-  id_ubicacion Int
-  ubicacion    UbicacionProfesional @relation(fields: [id_ubicacion], references: [id])
+  ubicaciones UbicacionProfesional[]
 
   especialidades Especialidad[]
   citas          Cita[]
@@ -107,6 +106,7 @@ model Especialidad {
 model Servicio {
   id                Int     @id @default(autoincrement())
   servicio          String  @db.VarChar(100)
+  descripcion       String? @db.VarChar(500)
   precio            Decimal @db.Decimal(10, 2)
   duracion_estimada Int     @db.SmallInt
   estado            Boolean @default(true)
@@ -123,6 +123,8 @@ model Servicio {
   categoria    CategoriaServicio @relation(fields: [id_categoria], references: [id])
 
   especialidades Especialidad[]
+
+  citas Cita[]
 
   @@map("servicio")
 }
@@ -142,24 +144,27 @@ model CategoriaServicio {
 }
 
 model Cita {
-  id                               Int      @id @default(autoincrement())
+  id                               Int       @id @default(autoincrement())
   fecha_hora_inicio                DateTime
   fecha_hora_finalizacion_esperada DateTime
-  fecha_hora_finalizacion_real     DateTime
-  comentario_cliente               String?  @db.VarChar(500)
-  monto_estimado                   Decimal  @db.Decimal(10, 2)
+  fecha_hora_finalizacion_real     DateTime?
+  comentario_cliente               String?   @db.VarChar(500)
+  monto_estimado                   Decimal   @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now()) @updatedAt
 
   modalidad Modalidad
-  estado    EstadoCita
+  estado    EstadoCita @default(PENDIENTE)
 
   id_cliente Int
   cliente    Usuario @relation(fields: [id_cliente], references: [id])
 
   id_profesional Int
   profesional    PerfilProfesional @relation(fields: [id_profesional], references: [id])
+
+  id_servicio Int
+  servicio    Servicio @relation(fields: [id_servicio], references: [id])
 
   valoracion Valoracion[]
 
@@ -188,45 +193,15 @@ model Valoracion {
 
 model UbicacionProfesional {
   id          Int    @id @default(autoincrement())
+  id_distrito Int
   descripcion String @db.VarChar(500)
 
-  id_distrito Int
-  distrito    Distrito @relation(fields: [id_distrito], references: [id])
+  distrito String @db.VarChar(200)
+  canton   String @db.VarChar(200)
+  ciudad   String @db.VarChar(200)
 
-  profesionales PerfilProfesional[]
+  id_profesional Int
+  profesional    PerfilProfesional @relation(fields: [id_profesional], references: [id])
 
   @@map("ubicacion_profesional")
-}
-
-model Distrito {
-  id       Int    @id @default(autoincrement())
-  distrito String @db.VarChar(100)
-
-  id_canton Int
-  canton    Canton @relation(fields: [id_canton], references: [id])
-
-  ubicacion_profesionales UbicacionProfesional[]
-
-  @@map("distrito")
-}
-
-model Canton {
-  id     Int    @id @default(autoincrement())
-  canton String @db.VarChar(100)
-
-  id_ciudad Int
-  ciudad    Ciudad @relation(fields: [id_ciudad], references: [id])
-
-  distritos Distrito[]
-
-  @@map("canton")
-}
-
-model Ciudad {
-  id     Int    @id @default(autoincrement())
-  ciudad String @db.VarChar(100)
-
-  cantones Canton[]
-
-  @@map("ciudad")
 }

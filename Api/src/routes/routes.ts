@@ -4,6 +4,9 @@ import { CategoriaServicioRoutes } from "./categoriaServicio.routes";
 import { UsuarioRoutes } from "./usuario.routes";
 import { ProfesionalRoutes } from "./profesional.routes";
 import { ServicioRoutes } from "./servicio.routes";
+import { UbicacionProfesionalRoutes } from "./ubicacionProfesional.routes";
+import { ImageRoutes } from "./image.routes";
+import { CitaRoutes } from "./cita.routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -13,7 +16,10 @@ export class AppRoutes {
         router.use('/categoriaServicio', CategoriaServicioRoutes.routes)
         router.use('/usuario', UsuarioRoutes.routes)
         router.use('/profesional', ProfesionalRoutes.routes)
-        router.use('/servicio', ProfesionalRoutes.routes)
+        router.use('/servicio', ServicioRoutes.routes)
+        router.use('/ubicacionProfesional', UbicacionProfesionalRoutes.routes)
+        router.use('/images', ImageRoutes.routes)
+        router.use('/cita', CitaRoutes.routes)
         return router;
     }
 }

@@ -1,0 +1,449 @@
+:host {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+
+    /* Paleta principal - Inspirada en las imágenes */
+    --primary-dark: #1a2332;
+    --primary-mid: #2b3d54;
+    --primary-light: #4a6a85;
+    
+    --accent-teal: #4a9e9e;
+    --accent-teal-light: #6db5b5;
+    --accent-blue: #5b7fa5;
+    --accent-blue-light: #8aaccc;
+    
+    --surface-white: #ffffff;
+    --surface-gray: #f7f9fc;
+    --surface-light: #eef2f7;
+    
+    --text-dark: #1a2332;
+    --text-mid: #4a5a6e;
+    --text-light: #7a8a9e;
+    
+    --border-light: #dce3eb;
+    --border-mid: #b0c0d0;
+    --border-dark: #7a8a9e;
+    
+    --shadow-soft: 0 4px 20px rgba(26, 35, 50, 0.08);
+    --shadow-medium: 0 8px 30px rgba(26, 35, 50, 0.12);
+    --shadow-strong: 0 12px 40px rgba(26, 35, 50, 0.18);
+    
+    --gradient-header: linear-gradient(135deg, #2b3d54 0%, #1a2332 100%);
+    --gradient-card: linear-gradient(135deg, #f7f9fc 0%, #eef2f7 100%);
+    --gradient-status: linear-gradient(135deg, #2b3d54 0%, #4a6a85 100%);
+    
+    --radius-card: 16px;
+    --radius-section: 12px;
+    --radius-field: 8px;
+}
+
+/* Contenedor principal */
+.page-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Tarjeta principal */
+.cita-form-card {
+    overflow: hidden;
+    background: var(--surface-white);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-strong);
+    border: 1px solid var(--border-light);
+}
+
+/* Encabezado mejorado */
+.cita-form-card mat-card-header {
+    position: relative;
+    padding: 32px 36px 28px;
+    background: var(--gradient-header);
+    border-bottom: 3px solid var(--accent-teal);
+    overflow: hidden;
+}
+
+.cita-form-card mat-card-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(74, 158, 158, 0.1), transparent 70%);
+    border-radius: 50%;
+}
+
+.cita-form-card mat-card-title {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 6px;
+    color: #ffffff !important;
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+}
+
+.cita-form-card mat-card-subtitle {
+    position: relative;
+    z-index: 1;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* Contenido */
+.cita-form-card mat-card-content {
+    padding: 32px 36px 36px;
+    background: var(--gradient-card);
+}
+
+.cita-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Secciones mejoradas */
+.form-section {
+    position: relative;
+    padding: 24px 26px;
+    background: var(--surface-white);
+    border: 1px solid var(--border-light);
+    border-left: 5px solid var(--accent-blue);
+    border-radius: var(--radius-section);
+    box-shadow: var(--shadow-soft);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.form-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle at top right, 
+        rgba(74, 158, 158, 0.05), 
+        transparent 70%
+    );
+    pointer-events: none;
+    border-radius: 0 0 0 150px;
+}
+
+.form-section:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-mid);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Títulos de sección */
+.section-title {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.section-title h3 {
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    letter-spacing: -0.3px;
+}
+
+.section-title p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+/* Secciones con colores específicos */
+.section-client {
+    border-left-color: #4a9e9e;
+}
+
+.section-client .section-title h3 {
+    color: #4a9e9e;
+}
+
+.section-service {
+    border-left-color: #5b7fa5;
+}
+
+.section-service .section-title h3 {
+    color: #5b7fa5;
+}
+
+.section-schedule {
+    border-left-color: #8a6e9e;
+}
+
+.section-schedule .section-title h3 {
+    color: #8a6e9e;
+}
+
+.section-comment {
+    border-left-color: #7a8a9e;
+}
+
+.section-comment .section-title h3 {
+    color: #7a8a9e;
+}
+
+/* Grid y campos */
+.form-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.form-grid.two-columns {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.programming-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.full-width,
+mat-form-field {
+    width: 100%;
+}
+
+/* Estilos de Material mejorados */
+.cita-form-card mat-form-field {
+    --mdc-outlined-text-field-container-color: var(--surface-white);
+    --mdc-outlined-text-field-outline-color: var(--border-mid);
+    --mdc-outlined-text-field-hover-outline-color: var(--primary-light);
+    --mdc-outlined-text-field-focus-outline-color: var(--accent-blue);
+    
+    --mdc-outlined-text-field-input-text-color: var(--text-dark);
+    --mdc-outlined-text-field-label-text-color: var(--text-light);
+    --mdc-outlined-text-field-hover-label-text-color: var(--text-mid);
+    --mdc-outlined-text-field-focus-label-text-color: var(--accent-blue);
+    
+    --mat-select-enabled-trigger-text-color: var(--text-dark);
+    --mat-select-enabled-arrow-color: var(--accent-blue);
+    
+    --mat-form-field-state-layer-color: transparent;
+}
+
+.cita-form-card mat-form-field .mdc-notched-outline {
+    border-radius: var(--radius-field);
+}
+
+.cita-form-card mat-form-field.mat-focused .mdc-notched-outline {
+    border-width: 2px;
+}
+
+.cita-form-card input,
+.cita-form-card textarea {
+    color: var(--text-dark);
+    caret-color: var(--accent-blue);
+}
+
+.cita-form-card mat-hint {
+    color: var(--text-light);
+    font-size: 0.8rem;
+}
+
+mat-icon[matSuffix] {
+    color: var(--accent-blue);
+}
+
+/* Status information mejorado */
+.status-information {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--gradient-status);
+    border-radius: var(--radius-section);
+    border-left: 6px solid var(--accent-teal);
+    box-shadow: var(--shadow-soft);
+    position: relative;
+    overflow: hidden;
+}
+
+.status-information::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent 70%);
+    border-radius: 50%;
+}
+
+.status-information > mat-icon {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    color: var(--accent-teal-light);
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.status-information > div {
+    position: relative;
+    z-index: 1;
+}
+
+.status-information strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.status-information p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Botones mejorados */
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    padding-top: 8px;
+}
+
+.form-actions button {
+    min-width: 150px;
+    min-height: 48px;
+    border-radius: var(--radius-field);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+}
+
+.form-actions button mat-icon {
+    margin-right: 8px;
+}
+
+/* Botón Cancelar */
+.form-actions button[type='button'] {
+    color: var(--text-mid);
+    border-color: var(--border-mid);
+}
+
+.form-actions button[type='button']:hover:not(:disabled) {
+    color: var(--primary-dark);
+    background: var(--surface-gray);
+    border-color: var(--border-dark);
+    transform: translateY(-2px);
+}
+
+/* Botón Registrar */
+.create-icon-button {
+    color: #ffffff !important;
+    background: var(--gradient-header) !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(26, 35, 50, 0.25);
+}
+
+.create-icon-button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 35, 50, 0.35);
+}
+
+.create-icon-button:not(:disabled):active {
+    transform: translateY(0);
+}
+
+.form-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Errores */
+mat-error {
+    color: #d32f2f;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+    .cita-form-card mat-card-header {
+        padding: 24px 24px 20px;
+    }
+    
+    .cita-form-card mat-card-content {
+        padding: 24px;
+    }
+    
+    .form-section {
+        padding: 20px;
+    }
+    
+    .form-grid.two-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .programming-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .cita-form-card {
+        border-radius: 12px;
+    }
+    
+    .cita-form-card mat-card-header {
+        padding: 18px 16px 16px;
+    }
+    
+    .cita-form-card mat-card-content {
+        padding: 16px;
+    }
+    
+    .cita-form {
+        gap: 16px;
+    }
+    
+    .form-section {
+        padding: 16px;
+    }
+    
+    .section-title {
+        margin-bottom: 16px;
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+    
+    .form-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+    
+    .status-information {
+        padding: 16px;
+    }
+    
+    .programming-grid {
+        grid-template-columns: 1fr;
+    }
+}

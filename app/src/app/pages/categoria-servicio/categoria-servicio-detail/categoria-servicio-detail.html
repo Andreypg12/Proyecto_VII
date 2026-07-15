@@ -1,0 +1,24 @@
+<div class="page-container">
+
+    <a class="back-btn" routerLink="/categoria-servicio">
+        ← Volver
+    </a>
+
+    @if (loading()) {
+    <div class="status-card">
+        Cargando categoría...
+    </div>
+    }
+
+    @if (error()) {
+    <div class="status-card error">
+        {{ error() }}
+    </div>
+    }
+
+    @if (categoria()) {
+    <app-detalle-objeto titulo="Categoría de servicio" descripcion="Detalle de la categoría seleccionada."
+        [objeto]="categoria()" [campos]="campos" />
+    }
+
+</div>

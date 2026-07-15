@@ -1,0 +1,546 @@
+:host {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+
+    /* Paleta oscura pero vibrante */
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #1c2333;
+    --bg-card: #1a1f2e;
+    --bg-section: #161c2b;
+    
+    --text-primary: #e6edf3;
+    --text-secondary: #b0c4d9;
+    --text-muted: #7a8fa6;
+    
+    --border-primary: #30363d;
+    --border-secondary: #3d4a5a;
+    --border-accent: #4a6a85;
+    
+    --accent-1: #58a6ff;
+    --accent-2: #7ee8b0;
+    --accent-3: #f0888a;
+    --accent-4: #d2a8ff;
+    
+    --accent-1-dim: rgba(88, 166, 255, 0.15);
+    --accent-2-dim: rgba(126, 232, 176, 0.15);
+    --accent-3-dim: rgba(240, 136, 138, 0.15);
+    --accent-4-dim: rgba(210, 168, 255, 0.15);
+    
+    --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-section: 0 4px 16px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+    
+    --radius-card: 16px;
+    --radius-section: 12px;
+    --radius-field: 8px;
+    
+    --glow-primary: 0 0 30px rgba(88, 166, 255, 0.1);
+    --glow-secondary: 0 0 30px rgba(126, 232, 176, 0.08);
+}
+
+/* Contenedor principal */
+.page-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Tarjeta principal */
+.cita-form-card {
+    overflow: hidden;
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--border-primary);
+    backdrop-filter: blur(10px);
+}
+
+/* Encabezado con gradiente vibrante */
+.cita-form-card mat-card-header {
+    position: relative;
+    padding: 36px 40px 30px;
+    background: linear-gradient(135deg, #1a2a3a 0%, #0d1520 50%, #1a2a3a 100%);
+    border-bottom: 2px solid var(--accent-1);
+    overflow: hidden;
+}
+
+.cita-form-card mat-card-header::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(88, 166, 255, 0.12), transparent 70%);
+    border-radius: 50%;
+    animation: pulseGlow 4s ease-in-out infinite;
+}
+
+.cita-form-card mat-card-header::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    left: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(126, 232, 176, 0.08), transparent 70%);
+    border-radius: 50%;
+    animation: pulseGlow 6s ease-in-out infinite reverse;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+.cita-form-card mat-card-title {
+    position: relative;
+    z-index: 1;
+    margin: 0 0 8px;
+    color: var(--text-primary) !important;
+    font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 20px rgba(88, 166, 255, 0.2);
+}
+
+.cita-form-card mat-card-subtitle {
+    position: relative;
+    z-index: 1;
+    color: var(--text-secondary) !important;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+/* Contenido */
+.cita-form-card mat-card-content {
+    padding: 32px 36px 36px;
+    background: var(--bg-secondary);
+    position: relative;
+}
+
+.cita-form-card mat-card-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--accent-1), 
+        var(--accent-2), 
+        var(--accent-1), 
+        transparent
+    );
+    opacity: 0.5;
+}
+
+.cita-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Secciones con bordes luminosos */
+.form-section {
+    position: relative;
+    padding: 24px 26px;
+    background: var(--bg-section);
+    border: 1px solid var(--border-primary);
+    border-left: 4px solid var(--accent-1);
+    border-radius: var(--radius-section);
+    box-shadow: var(--shadow-section);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 0% 0%, var(--accent-1-dim), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-section:hover::before {
+    opacity: 1;
+}
+
+.form-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle at top right, rgba(88, 166, 255, 0.05), transparent 70%);
+    pointer-events: none;
+    border-radius: 0 0 0 200px;
+}
+
+.form-section:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-secondary);
+    box-shadow: var(--shadow-hover), var(--glow-primary);
+    border-left-width: 4px;
+}
+
+/* Títulos de sección */
+.section-title {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.section-title h3 {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+
+.section-title p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+/* Secciones con colores específicos y brillo */
+.section-client {
+    border-left-color: var(--accent-2);
+}
+
+.section-client .section-title h3 {
+    color: var(--accent-2);
+}
+
+.section-client::before {
+    background: radial-gradient(circle at 0% 0%, var(--accent-2-dim), transparent 60%) !important;
+}
+
+.section-service {
+    border-left-color: var(--accent-1);
+}
+
+.section-service .section-title h3 {
+    color: var(--accent-1);
+}
+
+.section-service::before {
+    background: radial-gradient(circle at 0% 0%, var(--accent-1-dim), transparent 60%) !important;
+}
+
+.section-schedule {
+    border-left-color: var(--accent-4);
+}
+
+.section-schedule .section-title h3 {
+    color: var(--accent-4);
+}
+
+.section-schedule::before {
+    background: radial-gradient(circle at 0% 0%, var(--accent-4-dim), transparent 60%) !important;
+}
+
+.section-comment {
+    border-left-color: var(--accent-3);
+}
+
+.section-comment .section-title h3 {
+    color: var(--accent-3);
+}
+
+.section-comment::before {
+    background: radial-gradient(circle at 0% 0%, var(--accent-3-dim), transparent 60%) !important;
+}
+
+/* Grid y campos */
+.form-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.form-grid.two-columns {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.programming-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.full-width,
+mat-form-field {
+    width: 100%;
+}
+
+/* Estilos de Material en modo oscuro */
+.cita-form-card mat-form-field {
+    --mdc-outlined-text-field-container-color: var(--bg-tertiary);
+    --mdc-outlined-text-field-outline-color: var(--border-primary);
+    --mdc-outlined-text-field-hover-outline-color: var(--accent-1);
+    --mdc-outlined-text-field-focus-outline-color: var(--accent-1);
+    
+    --mdc-outlined-text-field-input-text-color: var(--text-primary);
+    --mdc-outlined-text-field-label-text-color: var(--text-muted);
+    --mdc-outlined-text-field-hover-label-text-color: var(--text-secondary);
+    --mdc-outlined-text-field-focus-label-text-color: var(--accent-1);
+    
+    --mat-select-enabled-trigger-text-color: var(--text-primary);
+    --mat-select-enabled-arrow-color: var(--accent-1);
+    
+    --mat-form-field-state-layer-color: transparent;
+}
+
+.cita-form-card mat-form-field .mdc-notched-outline {
+    border-radius: var(--radius-field);
+}
+
+.cita-form-card mat-form-field.mat-focused .mdc-notched-outline {
+    border-width: 2px;
+    box-shadow: 0 0 20px rgba(88, 166, 255, 0.15);
+}
+
+.cita-form-card input,
+.cita-form-card textarea {
+    color: var(--text-primary);
+    caret-color: var(--accent-1);
+}
+
+.cita-form-card input::placeholder,
+.cita-form-card textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.cita-form-card mat-hint {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+mat-icon[matSuffix] {
+    color: var(--accent-1);
+}
+
+/* Status information con brillo */
+.status-information {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #1a2a3a, #0d1520);
+    border-radius: var(--radius-section);
+    border-left: 4px solid var(--accent-2);
+    box-shadow: var(--shadow-section), var(--glow-secondary);
+    position: relative;
+    overflow: hidden;
+}
+
+.status-information::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 250px;
+    height: 250px;
+    background: radial-gradient(circle, rgba(126, 232, 176, 0.08), transparent 70%);
+    border-radius: 50%;
+}
+
+.status-information > mat-icon {
+    position: relative;
+    z-index: 1;
+    flex: 0 0 auto;
+    color: var(--accent-2);
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 10px rgba(126, 232, 176, 0.3));
+}
+
+.status-information > div {
+    position: relative;
+    z-index: 1;
+}
+
+.status-information strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.status-information p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Botones con estilo oscuro llamativo */
+.form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    padding-top: 8px;
+}
+
+.form-actions button {
+    min-width: 150px;
+    min-height: 48px;
+    border-radius: var(--radius-field);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-actions button mat-icon {
+    margin-right: 8px;
+}
+
+/* Botón Cancelar */
+.form-actions button[type='button'] {
+    color: var(--text-secondary);
+    border-color: var(--border-primary);
+    background: transparent;
+}
+
+.form-actions button[type='button']:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    border-color: var(--border-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Botón Registrar con gradiente y brillo */
+.create-icon-button {
+    color: var(--text-primary) !important;
+    background: linear-gradient(135deg, #1a2a3a, #2a4050) !important;
+    border: 1px solid var(--accent-1) !important;
+    box-shadow: 0 4px 20px rgba(88, 166, 255, 0.2);
+}
+
+.create-icon-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.create-icon-button:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.create-icon-button:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(88, 166, 255, 0.3);
+    border-color: var(--accent-1) !important;
+}
+
+.create-icon-button:not(:disabled):active {
+    transform: translateY(0);
+}
+
+.form-actions button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+/* Errores */
+mat-error {
+    color: #f0888a;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+    .cita-form-card mat-card-header {
+        padding: 24px 24px 20px;
+    }
+    
+    .cita-form-card mat-card-content {
+        padding: 24px;
+    }
+    
+    .form-section {
+        padding: 20px;
+    }
+    
+    .form-grid.two-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .programming-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .cita-form-card {
+        border-radius: 12px;
+    }
+    
+    .cita-form-card mat-card-header {
+        padding: 18px 16px 16px;
+    }
+    
+    .cita-form-card mat-card-content {
+        padding: 16px;
+    }
+    
+    .cita-form {
+        gap: 16px;
+    }
+    
+    .form-section {
+        padding: 16px;
+    }
+    
+    .section-title {
+        margin-bottom: 16px;
+    }
+    
+    .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+    
+    .form-actions button {
+        width: 100%;
+        min-height: 44px;
+    }
+    
+    .status-information {
+        padding: 16px;
+    }
+    
+    .programming-grid {
+        grid-template-columns: 1fr;
+    }
+}

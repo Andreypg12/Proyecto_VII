@@ -1,0 +1,40 @@
+<div class="detail-card">
+    <div class="detail-header">
+        <div>
+            <h1>{{ titulo() }}</h1>
+            @if (descripcion()) {
+                <p>{{ descripcion() }}</p>
+            }
+        </div>
+    </div>
+
+    <div class="detail-grid">
+        @for (campo of campos(); track campo.campo) {
+            <div class="detail-item">
+                <span>{{ campo.etiqueta }}</span>
+
+                @if (campo.tipo === 'estado') {
+                    <strong>
+                        <span
+                            class="badge"
+                            [class.active]="objeto()?.[campo.campo]"
+                            [class.inactive]="!objeto()?.[campo.campo]">
+                            {{ objeto()?.[campo.campo] ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </strong>
+                } @else if (campo.tipo === 'estado-usuario') {
+                    <strong>
+                        <span
+                            class="badge"
+                            [class.active]="objeto()?.[campo.campo] === 'ACTIVO'"
+                            [class.inactive]="objeto()?.[campo.campo] !== 'ACTIVO'">
+                            {{ objeto()?.[campo.campo] === 'ACTIVO' ? 'Activo' : 'Bloqueado' }}
+                        </span>
+                    </strong>
+                } @else {
+                    <strong>{{ objeto()?.[campo.campo] ?? '—' }}</strong>
+                }
+            </div>
+        }
+    </div>
+</div>

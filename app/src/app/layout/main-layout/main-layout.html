@@ -1,0 +1,13 @@
+<div class="app-shell">
+
+    <app-header
+    [publicMenu]="publicMenu()"
+    [menuListados]="menuListados()"
+    
+    />
+
+    <main class="content">
+        <router-outlet />
+    </main>
+    <app-footer />
+</div>

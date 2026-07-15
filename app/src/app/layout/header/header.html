@@ -1,0 +1,70 @@
+<header class="site-header">
+    <mat-toolbar class="toolbar">
+
+        <a class="brand" routerLink="/">
+            <img src="http://localhost:3000/images/logo.png" class="logo-img">
+        </a>
+
+        <nav class="desktop-nav">
+
+            @for (item of publicMenu(); track item.path) {
+                <a
+                    mat-button
+                    [routerLink]="item.path"
+                    routerLinkActive="active-link"
+                    [routerLinkActiveOptions]="{ exact: item.path === '/' }">
+
+                    <mat-icon>{{ item.icon }}</mat-icon>
+                    <span>{{ item.label }}</span>
+                </a>
+            }
+
+            <button mat-button [matMenuTriggerFor]="ListMenu">
+                <mat-icon>list</mat-icon>
+                <span>Listados</span>
+            </button>
+
+        </nav>
+
+        <span class="spacer"></span>
+
+        <!-- <button class="mobile-menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu">
+            <mat-icon>menu</mat-icon>
+        </button> -->
+
+    </mat-toolbar>
+</header>
+
+<!-- <mat-menu #maintenanceMenu="matMenu">
+    @for (item of publicMenu(); track item.path) {
+    <a mat-menu-item [routerLink]="item.path">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+    </a>
+    }
+</mat-menu>
+    -->
+
+<mat-menu #ListMenu="matMenu">
+    @for (item of menuListados(); track item.path) {
+    <a mat-menu-item [routerLink]="item.path">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+    </a>
+    }
+</mat-menu>
+
+<!-- 
+<mat-menu #mobileMenu="matMenu">
+    <a mat-menu-item routerLink="/">
+        <mat-icon>home</mat-icon>
+        <span>Inicio</span>
+    </a>
+
+    @for (item of listados; track item.ruta) {
+    <a mat-menu-item [routerLink]="item.ruta">
+        <mat-icon>{{ item.icono }}</mat-icon>
+        <span>{{ item.nombre }}</span>
+    </a>
+    }
+</mat-menu> -->

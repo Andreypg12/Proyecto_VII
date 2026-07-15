@@ -1,0 +1,26 @@
+.app-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--mat-sys-background);
+    color: var(--mat-sys-on-background);
+}
+
+.content {
+    width: 100%;
+    flex: 1;
+    box-sizing: border-box;
+    padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 0 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: 0 0.75rem;
+    }
+}

@@ -1,0 +1,13 @@
+<section class="page-container">
+
+    <app-cita-form
+        [clientes]="clientes()"
+        [profesionales]="profesionales()"
+        [servicios]="servicios()"
+        [modalidades]="modalidades()"
+        [saving]="saving()"
+        (guardar)="guardarCita($event)"
+        (cancelar)="cancelar()"
+    />
+
+</section>

@@ -1,0 +1,3 @@
+{"error":{"clientVersion":"7.8.0","name":"PrismaClientValidationError"},"level":"error","message":"Error no controlado","method":"GET","path":"/cita","timestamp":"2026-07-14 19:28:02.758"}
+{"error":{"clientVersion":"7.8.0","name":"PrismaClientValidationError"},"level":"error","message":"Error no controlado","method":"GET","path":"/cita","timestamp":"2026-07-14 20:46:54.526"}
+{"error":{"clientVersion":"7.8.0","name":"PrismaClientValidationError"},"level":"error","message":"Error no controlado","method":"GET","path":"/cita","timestamp":"2026-07-14 20:47:08.460"}

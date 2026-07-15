@@ -1,0 +1,297 @@
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(20px);
+    background: color-mix(in srgb, var(--mat-sys-surface) 92%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--mat-sys-outline) 12%, transparent);
+}
+
+.toolbar {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    height: 72px;
+    padding: 0;
+    background: transparent;
+    gap: 0.75rem;
+}
+
+/* ── BRAND ─────────────────────────────────── */
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: inherit;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.brand:hover {
+    opacity: 0.85;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: var(--mat-sys-on-primary);
+    background: var(--mat-sys-primary);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--mat-sys-primary) 30%, transparent);
+    transition: transform 0.2s;
+}
+
+.brand-icon mat-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+
+.brand:hover .brand-icon {
+    transform: scale(1.05);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
+
+.brand-text strong {
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--mat-sys-on-surface);
+}
+
+.brand-text small {
+    font-size: 0.7rem;
+    opacity: 0.6;
+    letter-spacing: 0.02em;
+    color: var(--mat-sys-on-surface-variant);
+}
+
+/* ── NAV ─────────────────────────────────── */
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 1.5rem;
+}
+
+.desktop-nav a,
+.desktop-nav button {
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0 0.75rem;
+    height: 40px;
+    color: var(--mat-sys-on-surface-variant);
+    transition: all 0.2s;
+}
+
+.desktop-nav a:hover,
+.desktop-nav button:hover {
+    background: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+    color: var(--mat-sys-on-surface);
+}
+
+.desktop-nav a mat-icon,
+.desktop-nav button mat-icon {
+    margin-right: 0.35rem;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.active-link {
+    background: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent) !important;
+    color: var(--mat-sys-primary) !important;
+    font-weight: 600;
+}
+
+.spacer {
+    flex: 1;
+}
+
+/* ── USER CHIP ────────────────────────────── */
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.75rem 0.3rem 0.5rem;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--mat-sys-surface-container-high) 80%, transparent);
+    border: 1px solid color-mix(in srgb, var(--mat-sys-outline) 15%, transparent);
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface);
+}
+
+.user-chip mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+}
+
+.user-chip strong {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    color: var(--mat-sys-on-primary);
+    background: var(--mat-sys-primary);
+    letter-spacing: 0.04em;
+}
+
+/* ── BUTTONS ──────────────────────────────── */
+.btn-primary {
+    border-radius: 8px !important;
+    padding: 0 1.25rem !important;
+    height: 38px !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    background: var(--mat-sys-primary) !important;
+    color: var(--mat-sys-on-primary) !important;
+    box-shadow: 0 2px 12px color-mix(in srgb, var(--mat-sys-primary) 25%, transparent) !important;
+    transition: all 0.2s !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px color-mix(in srgb, var(--mat-sys-primary) 35%, transparent) !important;
+}
+
+.btn-outline {
+    border-radius: 8px !important;
+    padding: 0 1.25rem !important;
+    height: 38px !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    border-color: color-mix(in srgb, var(--mat-sys-outline) 30%, transparent) !important;
+    color: var(--mat-sys-on-surface) !important;
+}
+
+.btn-outline:hover {
+    background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent) !important;
+}
+
+/* ── CART BUTTON ───────────────────────────── */
+.toolbar > button[routerLink="/carrito"] {
+    color: var(--mat-sys-on-surface-variant);
+}
+
+.toolbar > button[routerLink="/carrito"]:hover {
+    color: var(--mat-sys-primary);
+}
+
+/* ── MOBILE MENU ───────────────────────────── */
+.mobile-menu-button {
+    display: none;
+    color: var(--mat-sys-on-surface);
+}
+
+/* ── MAT MENU OVERRIDES ────────────────────── */
+::ng-deep .mat-mdc-menu-panel {
+    background: var(--mat-sys-surface-container) !important;
+    border-radius: 12px !important;
+    border: 1px solid color-mix(in srgb, var(--mat-sys-outline) 12%, transparent) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
+}
+
+::ng-deep .mat-mdc-menu-item {
+    color: var(--mat-sys-on-surface) !important;
+    font-size: 0.85rem !important;
+}
+
+::ng-deep .mat-mdc-menu-item:hover {
+    background: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent) !important;
+}
+
+::ng-deep .mat-mdc-menu-item mat-icon {
+    color: var(--mat-sys-on-surface-variant) !important;
+    margin-right: 0.75rem !important;
+}
+
+/* ── RESPONSIVE ───────────────────────────── */
+@media (max-width: 980px) {
+    .desktop-nav,
+    .user-chip,
+    .toolbar > button:not(.mobile-menu-button):not([routerLink="/carrito"]) {
+        display: none !important;
+    }
+
+    .mobile-menu-button {
+        display: inline-flex !important;
+    }
+
+    .brand-text small {
+        display: none;
+    }
+
+    .toolbar {
+        height: 64px;
+        gap: 0.5rem;
+    }
+
+    .brand-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .brand-icon mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .brand-text strong {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .toolbar {
+        width: calc(100% - 1rem);
+        height: 60px;
+        gap: 0.25rem;
+    }
+
+    .brand-text strong {
+        font-size: 0.85rem;
+    }
+
+    .brand-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    }
+
+    .brand-icon mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+    }
+
+
+    
+}
+
+.brand {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

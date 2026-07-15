@@ -1,0 +1,43 @@
+<div class="page-container">
+
+    <a class="back-btn" routerLink="/">
+        ← Volver
+    </a>
+
+    <div class="page-header">
+        <h1>Usuarios</h1>
+        <p>Administra los usuarios registrados dentro de la plataforma.</p>
+    </div>
+
+    <app-filtros-generales
+        [showSearch]="true"
+        [showStatus]="false"
+        [showRole]="true"
+        [roles]="roles()"
+        (searchChange)="onBuscarChange($event)"
+        (roleChange)="onRolChange($event)"
+    />
+
+    @if (loading()) {
+        <div class="status-card">
+            Cargando usuarios...
+        </div>
+    }
+
+    @if (error()) {
+        <div class="status-card error">
+            {{ error() }}
+        </div>
+    }
+
+    @if (!loading() && !error()) {
+        <app-tabla-listado
+            [columnas]="columnas"
+            [datos]="usuariosFiltrados()"
+            rutaDetalle="/usuarios"
+            tipoEstado="usuario"
+            (cambiarEstado)="cambiarEstado($event)"
+        />
+    }
+
+</div>

@@ -1,0 +1,78 @@
+<div class="filters-panel">
+
+    @if (showSearch()) {
+        <div class="filter-group filter-search">
+            <label for="search">
+                Buscar
+            </label>
+
+            <input
+                id="search"
+                class="filter-control"
+                type="text"
+                placeholder="Buscar por nombre, correo o rol..."
+                [ngModel]="search()"
+                (ngModelChange)="onSearchChange($event)"
+            >
+        </div>
+    }
+
+
+    @if (showStatus()) {
+        <div class="filter-group">
+            <label for="status">
+                Estado
+            </label>
+
+            <div class="select-wrapper">
+                <select
+                    id="status"
+                    class="filter-control filter-select"
+                    [ngModel]="status()?.toString() ?? ''"
+                    (ngModelChange)="onStatusChange($event)"
+                >
+                    <option value="">
+                        Todos los estados
+                    </option>
+
+                    <option value="true">
+                        Activos
+                    </option>
+
+                    <option value="false">
+                        Inactivos
+                    </option>
+                </select>
+            </div>
+        </div>
+    }
+
+
+    @if (showRole()) {
+        <div class="filter-group">
+            <label for="role">
+                Rol
+            </label>
+
+            <div class="select-wrapper">
+                <select
+                    id="role"
+                    class="filter-control filter-select"
+                    [ngModel]="role() ?? ''"
+                    (ngModelChange)="onRolChange($event)"
+                >
+                    <option value="">
+                        Todos los roles
+                    </option>
+
+                    @for (rolItem of roles(); track rolItem) {
+                        <option [value]="rolItem">
+                            {{ formatearEtiqueta(rolItem) }}
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+    }
+
+</div>

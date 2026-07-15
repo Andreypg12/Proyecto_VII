@@ -1,0 +1,57 @@
+<footer class="footer">
+    <div class="footer-grid">
+
+        <div class="brand-col">
+        <a class="brand" routerLink="/">
+            <img src="http://localhost:3000/uploads/logo.png" class="logo-img">
+        </a>
+            <p class="brand-desc">Marketplace para encontrar los mejores desarrolladores de software en Costa Rica.</p>
+        </div>
+
+        <div class="footer-col">
+            <p class="col-title">Sistema</p>
+            <nav class="col-links">
+                <a routerLink="/login">Inicio de sesión</a>
+                <a routerLink="/dashboard">Inicio</a>
+                <a routerLink="/servicios">Servicios</a>
+                <a routerLink="/profesionales">Profesionales</a>
+            </nav>
+        </div>
+
+        <div class="footer-col">
+            <p class="col-title">Contacto</p>
+            <div class="contact-item">
+                <mat-icon>mail_outline</mat-icon>
+                <span>techHire.soporte.co.cr</span>
+            </div>
+            <div class="contact-item">
+                <mat-icon>phone</mat-icon>
+                <span>+506 8362 9274</span>
+            </div>
+            <div class="contact-item">
+                <mat-icon>location_on</mat-icon>
+                <span>Costa Rica</span>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <p class="col-title">Síguenos</p>
+            <div class="social-row">
+                <a href="#" mat-icon-button aria-label="LinkedIn">
+                    <mat-icon>work</mat-icon>
+                </a>
+                <a href="#" mat-icon-button aria-label="GitHub">
+                    <mat-icon>code</mat-icon>
+                </a>
+                <a href="#" mat-icon-button aria-label="Twitter">
+                    <mat-icon>chat</mat-icon>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <span class="copy">© {{ year }} TechHire · Todos los derechos reservados</span>
+    </div>
+</footer>
