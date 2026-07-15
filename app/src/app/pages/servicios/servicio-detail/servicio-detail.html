@@ -48,9 +48,6 @@
             <!-- Título y categoría -->
             <div class="service-header">
                 <div>
-                    <span class="category-badge">
-                        {{ service.categoria?.categoria || 'Sin categoría' }}
-                    </span>
                     <h1>{{ service.servicio }}</h1>
                 </div>
                 <div class="price-badge">
@@ -102,8 +99,16 @@
                 </h3>
                 <div class="professional-card">
                     <div class="professional-info">
-                        <div class="professional-avatar">
-                            <mat-icon>person</mat-icon>
+                        <div class="professional-image">
+                            @if(service.profesional.imagen_profesional) {
+                            <img [src]="getImageUrl(service.profesional.imagen_profesional)"
+                                [alt]="service.profesional.usuario.nombre || 'Profesional'"
+                                (error)="handleImageError($event)" />
+                            } @else {
+                            <div class="image-placeholder">
+                                <mat-icon>person</mat-icon>
+                            </div>
+                            }
                         </div>
                         <div class="professional-details">
                             <span class="professional-name">

@@ -195,6 +195,7 @@ export const servicioService = {
                         titulo: true,
                         tarifa_por_hora: true,
                         disponibilidad: true,
+                        imagen_profesional: true,
                         usuario: {
                             select: {
                                 id: true,

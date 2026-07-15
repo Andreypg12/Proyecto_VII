@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ServicioService } from '../../../core/services/servicio.service';
 import { Servicio } from '../../../core/models/servicio.model';
+import { ProfesionalService } from '../../../core/services/profesional.service';
 
 @Component({
   selector: 'app-servicio-detail',
@@ -34,6 +35,7 @@ export class ServicioDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly servicioService = inject(ServicioService);
+    private readonly profesionalService = inject(ProfesionalService);
 
   servicio = signal<Servicio | null>(null);
   loading = signal(true);
@@ -94,4 +96,23 @@ export class ServicioDetail implements OnInit {
     };
     return map[modalidad] || { label: modalidad || 'No especificada', icon: 'help' };
   }
+
+  getImageUrl(imageName: string): string {
+    return this.profesionalService.getImageUrl(imageName);
+  }
+
+  // Manejar error de carga de imagen
+  handleImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+    // Mostrar el placeholder
+    const parent = img.parentElement;
+    if (parent) {
+      const placeholder = parent.querySelector('.image-placeholder');
+      if (placeholder) {
+        (placeholder as HTMLElement).style.display = 'flex';
+      }
+    }
+  }
 }
+
