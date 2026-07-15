@@ -283,7 +283,7 @@ async function main() {
     await prisma.servicio.create({
         data: {
             servicio: "Software estandard",
-            descripcion: "Servicio",
+            descripcion: "Desarrollo de software a medida según requerimientos del cliente",
             precio: 10000,
             duracion_estimada: 60,
             estado: true,
@@ -303,7 +303,7 @@ async function main() {
     await prisma.servicio.create({
         data: {
             servicio: "Aplicación móvil básica",
-            descripcion: "Servicio",
+            descripcion: "Desarrollo de aplicación móvil para Android y iOS con funcionalidades esenciales",
             precio: 120000,
             duracion_estimada: 60,
             estado: true,
@@ -324,7 +324,7 @@ async function main() {
         data: [
             {
                 servicio: "Desarrollo de sitio web informativo",
-                descripcion: "Servicio",
+                descripcion: "Creación de sitio web corporativo o institucional con diseño responsivo",
                 precio: 85000,
                 duracion_estimada: 60,
                 estado: true,
@@ -334,7 +334,7 @@ async function main() {
             },
             {
                 servicio: "Optimización de base de datos",
-                descripcion: "Servicio",
+                descripcion: "Análisis y mejora de rendimiento de consultas y estructura de datos",
                 precio: 65000,
                 duracion_estimada: 60,
                 estado: false,
@@ -344,7 +344,7 @@ async function main() {
             },
             {
                 servicio: "Revisión de seguridad básica",
-                descripcion: "Servicio",
+                descripcion: "Auditoría inicial de seguridad y vulnerabilidades en sistemas web",
                 precio: 75000,
                 duracion_estimada: 60,
                 estado: true,
@@ -354,7 +354,7 @@ async function main() {
             },
             {
                 servicio: "Mantenimiento mensual de sistema",
-                descripcion: "Servicio",
+                descripcion: "Soporte y actualizaciones correctivas de sistemas en producción",
                 precio: 95000,
                 duracion_estimada: 60,
                 estado: true,
@@ -364,7 +364,7 @@ async function main() {
             },
             {
                 servicio: "Capacitación en desarrollo web",
-                descripcion: "Servicio",
+                descripcion: "Formación en tecnologías web modernas para equipos de desarrollo",
                 precio: 55000,
                 duracion_estimada: 60,
                 estado: true,
@@ -374,7 +374,7 @@ async function main() {
             },
             {
                 servicio: "Migración de sistema legado",
-                descripcion: "Servicio",
+                descripcion: "Actualización y migración de sistemas antiguos a tecnologías modernas",
                 precio: 150000,
                 duracion_estimada: 60,
                 estado: true,
@@ -384,7 +384,7 @@ async function main() {
             },
             {
                 servicio: "Auditoría de arquitectura de software",
-                descripcion: "Servicio",
+                descripcion: "Evaluación y mejora de la estructura técnica de sistemas existentes",
                 precio: 110000,
                 duracion_estimada: 60,
                 estado: true,
@@ -394,7 +394,7 @@ async function main() {
             },
             {
                 servicio: "Refactorización y modernización de aplicaciones",
-                descripcion: "Servicio",
+                descripcion: "Actualización de código y arquitectura para mejorar rendimiento y mantenibilidad",
                 precio: 140000,
                 duracion_estimada: 60,
                 estado: true,
