@@ -63,12 +63,9 @@
 .cita-form-card mat-card-header {
     position: relative;
     padding: 32px 36px 28px;
-    background: var(--primary-mid); /* Color sólido, sin gradiente */
+    background: var(--primary-mid);
     border-bottom: 3px solid var(--accent-teal);
-    /* ELIMINADO: overflow: hidden; ya no es necesario */
 }
-
-/* ELIMINADO el pseudo-elemento ::before que creaba el brillo */
 
 .cita-form-card mat-card-title {
     position: relative;
@@ -79,10 +76,7 @@
     font-weight: 800;
     letter-spacing: -0.5px;
     line-height: 1.2;
-    /* ELIMINADO: text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); */
 }
-
-/* ELIMINADO: el subtítulo ya no existe */
 
 /* Contenido - Versión oscura */
 .cita-form-card mat-card-content {
@@ -96,13 +90,14 @@
     gap: 24px;
 }
 
-/* Secciones mejoradas - Versión oscura */
+/* Secciones - TODAS IGUALES (mismo color) */
 .form-section {
     position: relative;
     padding: 24px 26px;
     background: var(--surface-gray);
     border: 1px solid var(--border-light);
-    border-left: 5px solid var(--accent-blue);
+    /* ELIMINADO: border-left con colores diferentes */
+    border-left: 5px solid var(--border-mid); /* MISMO COLOR para todas */
     border-radius: var(--radius-section);
     box-shadow: var(--shadow-soft);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -130,7 +125,7 @@
     background: var(--surface-hover);
 }
 
-/* Títulos de sección - Versión oscura */
+/* Títulos de sección - TODOS IGUALES */
 .section-title {
     position: relative;
     z-index: 1;
@@ -156,38 +151,7 @@
     line-height: 1.5;
 }
 
-/* Secciones con colores específicos - Versión oscura */
-.section-client {
-    border-left-color: var(--accent-teal);
-}
-
-.section-client .section-title h3 {
-    color: var(--accent-teal-light);
-}
-
-.section-service {
-    border-left-color: var(--accent-blue);
-}
-
-.section-service .section-title h3 {
-    color: var(--accent-blue-light);
-}
-
-.section-schedule {
-    border-left-color: #a78aba;
-}
-
-.section-schedule .section-title h3 {
-    color: #a78aba;
-}
-
-.section-comment {
-    border-left-color: var(--text-mid);
-}
-
-.section-comment .section-title h3 {
-    color: var(--text-mid);
-}
+/* ELIMINADOS todos los estilos específicos de sección (section-client, section-service, etc.) */
 
 /* Grid y campos */
 .form-grid {

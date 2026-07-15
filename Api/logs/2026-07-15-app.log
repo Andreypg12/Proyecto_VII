@@ -1,0 +1,1 @@
+{"level":"warn","message":"El servicio solamente se ofrece en modalidad VIRTUAL","method":"POST","name":"BadRequestError","path":"/cita","statusCode":400,"timestamp":"2026-07-15 00:11:50.618"}
