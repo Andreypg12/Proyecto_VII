@@ -77,6 +77,23 @@ export class CitasAgenda implements OnInit {
       }
     },
 
+    // Hace que los eventos mensuales sean rectángulos
+    eventDisplay: 'block',
+
+    // Muestra también la hora final
+    displayEventEnd: true,
+
+    // Evita que demasiadas citas deformen una celda
+    dayMaxEventRows: 3,
+    moreLinkClick: 'popover',
+
+    // Horario útil de la agenda semanal
+    slotMinTime: '07:00:00',
+    slotMaxTime: '20:00:00',
+
+    // Oculta la fila "todo el día"
+    allDaySlot: false,
+
     nowIndicator: true,
     height: 'auto',
 
@@ -86,9 +103,9 @@ export class CitasAgenda implements OnInit {
       this.seleccionarFecha(info.dateStr);
     },
 
-    eventClick: (info: EventClickInfo) => {
+    eventClick: (info) => {
       this.abrirDetalleCita(info);
-    },
+    }
   };
 
   //Backend
@@ -105,6 +122,16 @@ export class CitasAgenda implements OnInit {
     this.citaService.listar().subscribe({
       next: (response) => {
         const citas = response.data ?? [];
+
+        console.table(
+          citas.map((cita: Cita) => ({
+            id: cita.id,
+            estadoOriginal: cita.estado,
+            estadoNormalizado: String(cita.estado ?? '')
+              .trim()
+              .toUpperCase()
+          }))
+        );
 
         const eventos: EventInput[] = citas.map(
           (cita: Cita) => this.convertirCitaAEvento(cita)
@@ -140,67 +167,71 @@ export class CitasAgenda implements OnInit {
   //Convertir una cita en un evento de FullCalendar
 
   private convertirCitaAEvento(cita: Cita): EventInput {
-    const color = this.obtenerColorEstado(cita.estado);
+  const estadoNormalizado = String(cita.estado ?? '')
+    .trim()
+    .toUpperCase();
 
-    const nombreCliente =
-      `${cita.cliente.nombre} ${cita.cliente.apellidos}`;
+  const color = this.obtenerColorEstado(estadoNormalizado);
 
-    const nombreProfesional =
-      `${cita.profesional.usuario.nombre} ` +
-      `${cita.profesional.usuario.apellidos}`;
+  return {
+    id: String(cita.id),
 
-    return {
-      id: String(cita.id),
+    title: this.obtenerTituloCita(cita),
 
-      title:
-        `${cita.servicio.servicio} - ${nombreCliente}`,
+    start: cita.fecha_hora_inicio,
+    end: cita.fecha_hora_finalizacion_esperada,
 
-      start: cita.fecha_hora_inicio,
+    allDay: false,
 
-      end: cita.fecha_hora_finalizacion_esperada,
+    // Forma rectangular también en vista mensual
+    display: 'block',
 
-      backgroundColor: color,
-      borderColor: color,
-      textColor: '#ffffff',
+    // Propiedades de color de FullCalendar 7
+    color,
+    contrastColor: '#ffffff',
 
-      /*
-       * Aquí guardamos información adicional.
-       * No necesariamente se muestra en el calendario,
-       * pero estará disponible cuando se seleccione el evento.
-       */
-      extendedProps: {
-        estado: cita.estado,
-        modalidad: cita.modalidad,
-        comentario: cita.comentario_cliente,
-        montoEstimado: cita.monto_estimado,
-        cliente: nombreCliente,
-        profesional: nombreProfesional,
-        servicio: cita.servicio.servicio
-      }
-    };
-  }
+    extendedProps: {
+      estado: estadoNormalizado,
+      modalidad: cita.modalidad,
+      comentario: cita.comentario_cliente,
+      montoEstimado: cita.monto_estimado,
+      cita
+    }
+  };
+}
+
+private obtenerTituloCita(cita: Cita): string {
+  const servicio =
+    cita.servicio?.servicio ??
+    'Servicio';
+
+  const nombreCliente =
+    cita.cliente
+      ? `${cita.cliente.nombre} ${cita.cliente.apellidos}`
+      : 'Cliente';
+
+  return `${servicio} - ${nombreCliente}`;
+}
 
   // Asignar colores por estado
   private obtenerColorEstado(estado: string): string {
-    switch (estado) {
-      case 'PENDIENTE':
-        return '#f59e0b';
+    const colores: Record<string, string> = {
+      PENDIENTE: '#f59e0b',
 
-      case 'ACEPTADA':
-        return '#2563eb';
+      ACEPTADA: '#2563eb',
+      CONFIRMADA: '#2563eb',
 
-      case 'RECHAZADA':
-        return '#dc2626';
+      'EN PROCESO': '#7c3aed',
+      EN_PROCESO: '#7c3aed',
 
-      case 'CANCELADA':
-        return '#6b7280';
+      COMPLETADA: '#16a34a',
+      FINALIZADA: '#16a34a',
 
-      case 'COMPLETADA':
-        return '#16a34a';
+      RECHAZADA: '#dc2626',
+      CANCELADA: '#6b7280'
+    };
 
-      default:
-        return '#7c3aed';
-    }
+    return colores[estado] ?? '#64748b';
   }
 
   //Abrir detalle al seleccionar una cita

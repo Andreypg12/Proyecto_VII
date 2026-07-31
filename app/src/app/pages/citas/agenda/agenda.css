@@ -41,3 +41,128 @@
         padding: 0.75rem;
     }
 }
+
+
+/* Calendario dentro de la página de agenda */
+.agenda-page .fc {
+  font-family: inherit;
+}
+
+/* Título del calendario */
+.agenda-page .fc .fc-toolbar-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* Barra superior */
+.agenda-page .fc .fc-toolbar {
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Eventos */
+.agenda-page .fc .fc-event {
+  border: none;
+  border-radius: 8px;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Efecto al pasar el mouse */
+.agenda-page .fc .fc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 9px rgba(0, 0, 0, 0.18);
+}
+
+/* Espacio entre eventos mensuales */
+.agenda-page .fc .fc-daygrid-event {
+  margin: 3px 4px;
+}
+
+/* Texto de los eventos */
+.agenda-page .fc .fc-event-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Día actual */
+.agenda-page .fc .fc-day-today {
+  background: rgba(124, 58, 237, 0.07);
+}
+
+/* Celdas */
+.agenda-page .fc .fc-daygrid-day-frame {
+  min-height: 120px;
+}
+
+/* Encabezados de días */
+.agenda-page .fc .fc-col-header-cell {
+  padding: 0.75rem 0;
+  font-weight: 600;
+}
+
+/* Adaptación para teléfono */
+@media (max-width: 768px) {
+  .agenda-page .fc .fc-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .agenda-page .fc .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+  }
+
+  .agenda-page .fc .fc-toolbar-title {
+    font-size: 1.25rem;
+  }
+}
+
+
+
+.status-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.status-legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.status-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-dot.pendiente {
+  background: #f59e0b;
+}
+
+.status-dot.aceptada {
+  background: #2563eb;
+}
+
+.status-dot.completada {
+  background: #16a34a;
+}
+
+.status-dot.cancelada {
+  background: #6b7280;
+}
+
+.status-dot.rechazada {
+  background: #dc2626;
+}

@@ -22,6 +22,33 @@
     </p>
     }
 
+    <div class="status-legend">
+        <span>
+            <i class="status-dot pendiente"></i>
+            Pendiente
+        </span>
+
+        <span>
+            <i class="status-dot aceptada"></i>
+            Aceptada
+        </span>
+
+        <span>
+            <i class="status-dot completada"></i>
+            Completada
+        </span>
+
+        <span>
+            <i class="status-dot rechazada"></i>
+            Rechazada
+        </span>
+
+        <span>
+            <i class="status-dot cancelada"></i>
+            Cancelada
+        </span>
+    </div>
+
     @if (!loading()) {
     <div class="calendar-card">
         <full-calendar [options]="calendarOptions" />
