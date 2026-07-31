@@ -19,6 +19,16 @@
                 </a>
             }
 
+            <!-- Botón para abrir la agenda -->
+            <a
+                mat-button
+                routerLink="/citas/agenda"
+                routerLinkActive="active-link">
+
+                <mat-icon>calendar_month</mat-icon>
+                <span>Agenda</span>
+            </a>
+
             <button mat-button [matMenuTriggerFor]="ListMenu">
                 <mat-icon>list</mat-icon>
                 <span>Listados</span>

@@ -1,0 +1,43 @@
+:host {
+    display: block;
+}
+
+.agenda-page {
+    width: 100%;
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
+.agenda-header {
+    margin-bottom: 1.5rem;
+}
+
+.agenda-header h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.8rem;
+}
+
+.agenda-header p {
+    margin: 0;
+    opacity: 0.75;
+}
+
+.calendar-card {
+    width: 100%;
+    padding: 1.25rem;
+    border: 1px solid rgba(128, 128, 128, 0.25);
+    border-radius: 0.75rem;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .agenda-page {
+        padding: 1rem;
+    }
+
+    .calendar-card {
+        padding: 0.75rem;
+    }
+}

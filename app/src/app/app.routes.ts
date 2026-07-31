@@ -25,6 +25,9 @@ import { CitasList } from "./pages/citas/citas-list/citas-list";
 import { CitaDetail } from "./pages/citas/cita-detail/cita-detail";
 import { CitaCreate } from "./pages/citas/cita-create/cita-create";
 
+//Full calendar proceso
+import { CitasAgenda } from './pages/citas/agenda/agenda';
+
 export const routes: Routes = [
     {
         path: '',
@@ -54,7 +57,9 @@ export const routes: Routes = [
 
             { path: 'citas', component: CitasList, title: 'Citas' },
             { path: 'citas/nueva', component: CitaCreate, title: 'Registrar cita' },
-            { path: 'citas/:id', component: CitaDetail, title: 'Detalle de cita' }
+            {path: 'citas/agenda', component: CitasAgenda, title: 'Agenda fullCalendar'},
+            { path: 'citas/:id', component: CitaDetail, title: 'Detalle de cita' },
+            
         ]
     },
     { path: '**', component: NotFound }

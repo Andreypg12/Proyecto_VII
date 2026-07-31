@@ -1,0 +1,5 @@
+.calendar-container {
+  width: min(1200px, calc(100% - 2rem));
+  margin: 2rem auto;
+  padding: 1rem;
+}

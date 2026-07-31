@@ -1,0 +1,31 @@
+<section class="agenda-page">
+
+    <header class="agenda-header">
+        <div>
+            <h1>Agenda de citas</h1>
+
+            <p>
+                Consulte las citas registradas en la vista mensual o semanal.
+            </p>
+        </div>
+    </header>
+
+    @if (loading()) {
+    <p class="loading-message">
+        Cargando citas...
+    </p>
+    }
+
+    @if (error()) {
+    <p class="error-message">
+        {{ error() }}
+    </p>
+    }
+
+    @if (!loading()) {
+    <div class="calendar-card">
+        <full-calendar [options]="calendarOptions" />
+    </div>
+    }
+
+</section>
