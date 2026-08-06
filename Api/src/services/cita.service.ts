@@ -1,6 +1,6 @@
 import { prisma } from '../config/prisma';
 import { EstadoCita, EstadoUsuario, Modalidad, Rol, } from '../../generated/prisma/enums';
-import { CreateCitaDto } from '../dtos/cita.dto';
+import { CambiarEstadoCitaDto, CreateCitaDto, } from '../dtos/cita.dto';
 import { AppError } from '../utils/app-error';
 
 interface FiltrosCita {
@@ -34,7 +34,7 @@ export const citaService = {
 
         if (filtros?.estado) { where.estado = filtros.estado; }
 
-        if (filtros?.idProfesional) { where.id_profesional = filtros.idProfesional;}
+        if (filtros?.idProfesional) { where.id_profesional = filtros.idProfesional; }
 
         //se ejecuta cuando se recibió al menos una de las dos fechas.
         if (filtros?.fechaDesde || filtros?.fechaHasta) {
@@ -71,6 +71,7 @@ export const citaService = {
                     true,
 
                 comentario_cliente: true,
+                comentario_profesional: true,
                 monto_estimado: true,
                 modalidad: true,
                 estado: true,
@@ -143,6 +144,7 @@ export const citaService = {
                 fecha_hora_finalizacion_real: true,
 
                 comentario_cliente: true,
+                comentario_profesional: true,
                 monto_estimado: true,
                 modalidad: true,
                 estado: true,
@@ -278,7 +280,7 @@ export const citaService = {
 
         const fechaFinalizacionEsperada = new Date(fechaInicio);
 
-        fechaFinalizacionEsperada.setMinutes( fechaFinalizacionEsperada.getMinutes() + servicio.duracion_estimada);
+        fechaFinalizacionEsperada.setMinutes(fechaFinalizacionEsperada.getMinutes() + servicio.duracion_estimada);
 
         return prisma.cita.create({
             data: {
@@ -305,5 +307,107 @@ export const citaService = {
                     data.id_servicio,
             },
         });
-    }
+    },
+    async cambiarEstado(id: number, data: CambiarEstadoCitaDto) {
+
+
+        const cita =
+            await prisma.cita.findUnique({
+                where: {
+                    id,
+                },
+
+                select: {
+                    id: true,
+                    estado: true,
+
+                    fecha_hora_finalizacion_esperada:
+                        true,
+                },
+            });
+
+        if (!cita) {
+            throw AppError.badRequest(
+                'La cita seleccionada no existe'
+            );
+        }
+
+        const transicionesPermitidas:
+            Record<EstadoCita, EstadoCita[]> = {
+
+            [EstadoCita.PENDIENTE]: [
+                EstadoCita.ACEPTADA,
+                EstadoCita.RECHAZADA,
+            ],
+
+            [EstadoCita.ACEPTADA]: [
+                EstadoCita.COMPLETADA,
+                EstadoCita.CANCELADA,
+            ],
+
+            [EstadoCita.RECHAZADA]: [],
+
+            [EstadoCita.CANCELADA]: [],
+
+            [EstadoCita.COMPLETADA]: [],
+        };
+
+        const estadosPermitidos =
+            transicionesPermitidas[
+            cita.estado
+            ];
+
+        if (
+            !estadosPermitidos.includes(
+                data.estado
+            )
+        ) {
+            throw AppError.badRequest(
+                `No es posible cambiar una cita ` +
+                `de ${cita.estado} a ${data.estado}`
+            );
+        }
+
+
+        if (data.estado === EstadoCita.COMPLETADA && new Date() < cita.fecha_hora_finalizacion_esperada) {
+            throw AppError.badRequest(
+                'La cita todavía no puede marcarse como completada'
+            );
+        }
+
+        const comentarioProfesional = data.comentario_profesional?.trim() || null;
+
+        return prisma.cita.update({
+            where: {
+                id,
+            },
+
+            data: {
+                estado:
+                    data.estado,
+
+                comentario_profesional:
+                    comentarioProfesional,
+
+                fecha_hora_finalizacion_real:
+                    data.estado ===
+                        EstadoCita.COMPLETADA
+                        ? new Date()
+                        : null,
+            },
+
+            select: {
+                id: true,
+                estado: true,
+
+                comentario_profesional:
+                    true,
+
+                fecha_hora_finalizacion_real:
+                    true,
+
+                updateAt: true,
+            },
+        });
+    },
 }

@@ -50,6 +50,7 @@ export interface Cita {
     fecha_hora_finalizacion_real: string | null;
 
     comentario_cliente: string | null;
+    comentario_profesional: string | null;
     monto_estimado: string | number;
 
     modalidad: Modalidad;
@@ -91,4 +92,16 @@ export interface CreateCitaDto {
     modalidad: Modalidad;
 
     comentario_cliente?: string | null;
+}
+export interface CambiarEstadoCitaDto {
+    estado: EstadoCita;
+    comentario_profesional?: string | null;
+}
+
+export interface ResultadoCambioEstadoCita {
+    id: number;
+    estado: EstadoCita;
+    comentario_profesional: string | null;
+    fecha_hora_finalizacion_real: string | null;
+    updateAt: string;
 }

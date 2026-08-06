@@ -4,7 +4,11 @@ import {
     signal
 } from '@angular/core';
 
-import { Router } from '@angular/router';
+import {
+    ActivatedRoute,
+    Router
+} from '@angular/router';
+
 import { forkJoin } from 'rxjs';
 
 import { CitaForm } from
@@ -65,16 +69,25 @@ export class CitaCreate implements OnInit {
     loading = signal(false);
     saving = signal(false);
 
+    fechaInicial: string | null = null;
+
     constructor(
         private usuarioService: UsuarioService,
         private profesionalService: ProfesionalService,
         private servicioService: ServicioService,
         private citaService: CitaService,
         private notification: NotificationService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
+
+        this.fechaInicial =
+            this.route.snapshot.queryParamMap.get(
+                'fecha'
+            );
+
         this.cargarDatosFormulario();
     }
 

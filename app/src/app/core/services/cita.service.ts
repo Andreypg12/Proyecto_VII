@@ -5,10 +5,12 @@ import { environment } from '../../../environments/environment.development';
 import { ApiResponse } from '../models/api-response.model';
 
 import {
+    CambiarEstadoCitaDto,
     Cita,
     ConfiguracionCita,
     CreateCitaDto,
-    FiltrosCita
+    FiltrosCita,
+    ResultadoCambioEstadoCita
 } from '../models/cita.model';
 
 @Injectable({
@@ -79,6 +81,13 @@ export class CitaService {
     crear(data: CreateCitaDto) {
         return this.http.post<ApiResponse<Cita>>(
             this.apiUrl,
+            data
+        );
+    }
+
+    cambiarEstado(idCita: number, data: CambiarEstadoCitaDto) {
+        return this.http.patch<ApiResponse<ResultadoCambioEstadoCita>>(
+            `${this.apiUrl}/${idCita}/estado`,
             data
         );
     }

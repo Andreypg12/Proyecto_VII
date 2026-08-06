@@ -119,7 +119,7 @@ export class citaController {
         );
     };
 
-    async obtenerConfiguracion(req: Request,res: Response) {
+    async obtenerConfiguracion(req: Request, res: Response) {
         const configuracion = await citaService.obtenerConfiguracion();
 
         res.status(200).json({
@@ -127,4 +127,25 @@ export class citaController {
             data: configuracion
         });
     }
+
+    cambiarEstado = async (request: Request, response: Response, next: NextFunction) => {
+
+        // Obtiene y valida el identificador de la cita.
+        const id = parseId(
+            request.params.id
+        );
+
+        // Envía el nuevo estado y el comentario al servicio.
+        const cita =
+            await citaService.cambiarEstado(
+                id,
+                request.body
+            );
+
+        return sendSuccess(
+            response,
+            cita,
+            "Estado de la cita actualizado correctamente"
+        );
+    };
 }

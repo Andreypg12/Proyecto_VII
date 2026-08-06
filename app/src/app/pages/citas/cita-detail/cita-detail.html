@@ -1,397 +1,537 @@
 <div class="page-container">
 
-    <a
-        class="back-btn"
-        routerLink="/citas"
-    >
+    <a class="back-btn" routerLink="/citas">
         ← Volver a citas
     </a>
 
     @if (loading()) {
 
-        <div class="status-card">
-            Cargando información de la cita...
-        </div>
+    <div class="status-card">
+        Cargando información de la cita...
+    </div>
 
     }
 
     @if (error()) {
 
-        <div class="status-card error">
-            {{ error() }}
-        </div>
+    <div class="status-card error">
+        {{ error() }}
+    </div>
 
     }
 
     @if (
-        !loading() &&
-        !error() &&
-        cita();
-        as citaActual
+    !loading() &&
+    !error() &&
+    cita();
+    as citaActual
     ) {
 
-        <div class="detail-header">
+    <div class="detail-header">
+
+        <div>
+            <h1>
+                Detalle de cita
+                #{{ citaActual.id }}
+            </h1>
+
+            <p>
+                Información completa de la cita
+                registrada.
+            </p>
+        </div>
+
+        <span class="badge detail-status" [class.cita-pendiente]="citaActual.estado === 'PENDIENTE'"
+            [class.cita-aceptada]="citaActual.estado === 'ACEPTADA'"
+            [class.cita-rechazada]="citaActual.estado === 'RECHAZADA'"
+            [class.cita-cancelada]="citaActual.estado === 'CANCELADA'"
+            [class.cita-completada]="citaActual.estado === 'COMPLETADA'">
+            {{
+            formatearEstado(
+            citaActual.estado
+            )
+            }}
+        </span>
+
+    </div>
+
+    <!-- Cambio de estado -->
+    <section class="state-management">
+
+        <div class="state-management-header">
 
             <div>
-                <h1>
-                    Detalle de cita
-                    #{{ citaActual.id }}
-                </h1>
+                <h2>
+                    <mat-icon>published_with_changes</mat-icon>
+                    Gestión de la cita
+                </h2>
 
                 <p>
-                    Información completa de la cita
-                    registrada.
+                    Estado actual:
+                    <strong>
+                        {{ formatearEstado(citaActual.estado) }}
+                    </strong>
                 </p>
             </div>
 
-            <span
-                class="badge detail-status"
-                [class.cita-pendiente]="citaActual.estado === 'PENDIENTE'"
-                [class.cita-aceptada]="citaActual.estado === 'ACEPTADA'"
-                [class.cita-rechazada]="citaActual.estado === 'RECHAZADA'"
-                [class.cita-cancelada]="citaActual.estado === 'CANCELADA'"
-                [class.cita-completada]="citaActual.estado === 'COMPLETADA'">
-                {{
-                    formatearEstado(
-                        citaActual.estado
-                    )
-                }}
-            </span>
+        </div>
+
+        @if (
+        puedeCambiarA('RECHAZADA') ||
+        puedeCambiarA('CANCELADA')
+        ) {
+
+        <div class="state-comment">
+
+            <label for="comentarioEstado">
+                Motivo
+            </label>
+
+            <textarea id="comentarioEstado" rows="4" maxlength="500"
+                placeholder="Indique el motivo del rechazo o la cancelación" [value]="comentarioEstado()"
+                [disabled]="cambiandoEstado()" (input)="actualizarComentarioEstado($event)"></textarea>
+
+            <small>
+                {{ comentarioEstado().length }}/500
+            </small>
+
+        </div>
+        }
+
+        <div class="state-actions">
+
+            @if (puedeCambiarA('ACEPTADA')) {
+
+            <button type="button" class="state-button accept" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('ACEPTADA')">
+                <mat-icon>check_circle</mat-icon>
+                Aceptar cita
+            </button>
+            }
+
+            @if (puedeCambiarA('RECHAZADA')) {
+
+            <button type="button" class="state-button reject" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('RECHAZADA')">
+                <mat-icon>block</mat-icon>
+                Rechazar cita
+            </button>
+            }
+
+            @if (puedeCambiarA('COMPLETADA')) {
+
+            <button type="button" class="state-button complete" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('COMPLETADA')">
+                <mat-icon>task_alt</mat-icon>
+                Completar cita
+            </button>
+            }
+
+            @if (puedeCambiarA('CANCELADA')) {
+
+            <button type="button" class="state-button cancel" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('CANCELADA')">
+                <mat-icon>cancel</mat-icon>
+                Cancelar cita
+            </button>
+            }
 
         </div>
 
-        <div class="detail-card">
+        @if (cambiandoEstado()) {
 
-            <!-- PROGRAMACIÓN -->
-            <section class="detail-section">
+        <div class="state-message loading">
+            Actualizando el estado de la cita...
+        </div>
+        }
 
-                <h2>
-                    <mat-icon>
-                        calendar_month
-                    </mat-icon>
+        @if (mensajeEstado()) {
 
-                    Programación
-                </h2>
+        <div class="state-message success">
+            <mat-icon>check_circle</mat-icon>
+            {{ mensajeEstado() }}
+        </div>
+        }
 
-                <div class="detail-grid">
+        @if (errorEstado()) {
 
-                    <div class="detail-item">
-                        <span>Fecha</span>
+        <div class="state-message error">
+            <mat-icon>error</mat-icon>
+            {{ errorEstado() }}
+        </div>
+        }
 
-                        <strong>
-                            {{
-                                formatearFecha(
-                                    citaActual
-                                        .fecha_hora_inicio
-                                )
-                            }}
-                        </strong>
-                    </div>
+        @if (esEstadoFinal(citaActual.estado)) {
 
-                    <div class="detail-item">
-                        <span>Hora</span>
+        <div class="state-message final">
 
-                        <strong>
-                            {{
-                                formatearHora(
-                                    citaActual
-                                        .fecha_hora_inicio
-                                )
-                            }}
-                        </strong>
-                    </div>
+            <mat-icon>lock</mat-icon>
 
-                    <div class="detail-item">
-                        <span>Modalidad</span>
+            Esta cita se encuentra en un estado final y
+            no admite más cambios.
 
-                        <strong>
-                            {{
-                                formatearModalidad(
-                                    citaActual.modalidad
-                                )
-                            }}
-                        </strong>
-                    </div>
+        </div>
+        }
 
-                    <div class="detail-item">
-                        <span>Estado</span>
+    </section>
 
-                        <strong>
-                            {{
-                                formatearEstado(
-                                    citaActual.estado
-                                )
-                            }}
-                        </strong>
-                    </div>
+    <div class="detail-card">
 
-                    <div class="detail-item">
-                        <span>
-                            Finalización esperada
-                        </span>
+        <!-- PROGRAMACIÓN -->
+        <section class="detail-section">
 
-                        <strong>
-                            {{
-                                formatearFechaHora(
-                                    citaActual
-                                        .fecha_hora_finalizacion_esperada
-                                )
-                            }}
-                        </strong>
-                    </div>
+            <h2>
+                <mat-icon>
+                    calendar_month
+                </mat-icon>
 
-                    <div class="detail-item">
-                        <span>
-                            Finalización real
-                        </span>
+                Programación
+            </h2>
 
-                        <strong>
-                            @if (
-                                citaActual
-                                    .fecha_hora_finalizacion_real
-                            ) {
-                                {{
-                                    formatearFechaHora(
-                                        citaActual
-                                            .fecha_hora_finalizacion_real
-                                    )
-                                }}
-                            } @else {
-                                No registrada
-                            }
-                        </strong>
-                    </div>
+            <div class="detail-grid">
 
-                    <div class="detail-item">
-                        <span>Monto estimado</span>
+                <div class="detail-item">
+                    <span>Fecha</span>
 
-                        <strong>
-                            {{
-                                formatearMonto(
-                                    citaActual
-                                        .monto_estimado
-                                )
-                            }}
-                        </strong>
-                    </div>
-
+                    <strong>
+                        {{
+                        formatearFecha(
+                        citaActual
+                        .fecha_hora_inicio
+                        )
+                        }}
+                    </strong>
                 </div>
 
-            </section>
+                <div class="detail-item">
+                    <span>Hora</span>
 
-            <!-- CLIENTE -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>person</mat-icon>
-                    Cliente
-                </h2>
-
-                <div class="detail-grid">
-
-                    <div class="detail-item">
-                        <span>Nombre completo</span>
-
-                        <strong>
-                            {{
-                                citaActual.cliente.nombre
-                            }}
-
-                            {{
-                                citaActual.cliente.apellidos
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Correo electrónico</span>
-
-                        <strong>
-                            {{
-                                citaActual.cliente.email
-                            }}
-                        </strong>
-                    </div>
-
+                    <strong>
+                        {{
+                        formatearHora(
+                        citaActual
+                        .fecha_hora_inicio
+                        )
+                        }}
+                    </strong>
                 </div>
 
-            </section>
+                <div class="detail-item">
+                    <span>Modalidad</span>
 
-            <!-- PROFESIONAL -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>badge</mat-icon>
-                    Profesional
-                </h2>
-
-                <div class="detail-grid">
-
-                    <div class="detail-item">
-                        <span>Nombre completo</span>
-
-                        <strong>
-                            {{
-                                citaActual
-                                    .profesional
-                                    .usuario
-                                    .nombre
-                            }}
-
-                            {{
-                                citaActual
-                                    .profesional
-                                    .usuario
-                                    .apellidos
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Título profesional</span>
-
-                        <strong>
-                            {{
-                                citaActual
-                                    .profesional
-                                    .titulo
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Correo electrónico</span>
-
-                        <strong>
-                            {{
-                                citaActual
-                                    .profesional
-                                    .usuario
-                                    .email
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Teléfono</span>
-
-                        <strong>
-                            {{
-                                citaActual
-                                    .profesional
-                                    .telefono ||
-                                'No disponible'
-                            }}
-                        </strong>
-                    </div>
-
+                    <strong>
+                        {{
+                        formatearModalidad(
+                        citaActual.modalidad
+                        )
+                        }}
+                    </strong>
                 </div>
 
-            </section>
+                <div class="detail-item">
+                    <span>Estado</span>
 
-            <!-- SERVICIO -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>
-                        miscellaneous_services
-                    </mat-icon>
-
-                    Servicio
-                </h2>
-
-                <div class="detail-grid">
-
-                    <div class="detail-item">
-                        <span>Servicio</span>
-
-                        <strong>
-                            {{
-                                citaActual
-                                    .servicio
-                                    .servicio
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>
-                            Duración estimada
-                        </span>
-
-                        <strong>
-                            {{
-                                formatearDuracion(
-                                    citaActual
-                                        .servicio
-                                        .duracion_estimada
-                                )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>
-                            Precio del servicio
-                        </span>
-
-                        <strong>
-                            {{
-                                formatearMonto(
-                                    citaActual
-                                        .servicio
-                                        .precio
-                                )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item full">
-                        <span>
-                            Descripción del servicio
-                        </span>
-
-                        <strong>
-                            {{
-                                citaActual
-                                    .servicio
-                                    .descripcion ||
-                                'Sin descripción'
-                            }}
-                        </strong>
-                    </div>
-
+                    <strong>
+                        {{
+                        formatearEstado(
+                        citaActual.estado
+                        )
+                        }}
+                    </strong>
                 </div>
 
-            </section>
-
-            <!-- COMENTARIO -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>comment</mat-icon>
-                    Comentario del cliente
-                </h2>
-
-                <div class="detail-item full comment-box">
-
+                <div class="detail-item">
                     <span>
-                        Descripción o comentario
+                        Finalización esperada
                     </span>
 
-                    <p>
+                    <strong>
                         {{
-                            citaActual
-                                .comentario_cliente ||
-                            'No se registraron comentarios.'
+                        formatearFechaHora(
+                        citaActual
+                        .fecha_hora_finalizacion_esperada
+                        )
                         }}
-                    </p>
-
+                    </strong>
                 </div>
 
-            </section>
+                <div class="detail-item">
+                    <span>
+                        Finalización real
+                    </span>
+
+                    <strong>
+                        @if (
+                        citaActual
+                        .fecha_hora_finalizacion_real
+                        ) {
+                        {{
+                        formatearFechaHora(
+                        citaActual
+                        .fecha_hora_finalizacion_real
+                        )
+                        }}
+                        } @else {
+                        No registrada
+                        }
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Monto estimado</span>
+
+                    <strong>
+                        {{
+                        formatearMonto(
+                        citaActual
+                        .monto_estimado
+                        )
+                        }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CLIENTE -->
+        <section class="detail-section">
+
+            <h2>
+                <mat-icon>person</mat-icon>
+                Cliente
+            </h2>
+
+            <div class="detail-grid">
+
+                <div class="detail-item">
+                    <span>Nombre completo</span>
+
+                    <strong>
+                        {{
+                        citaActual.cliente.nombre
+                        }}
+
+                        {{
+                        citaActual.cliente.apellidos
+                        }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Correo electrónico</span>
+
+                    <strong>
+                        {{
+                        citaActual.cliente.email
+                        }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- PROFESIONAL -->
+        <section class="detail-section">
+
+            <h2>
+                <mat-icon>badge</mat-icon>
+                Profesional
+            </h2>
+
+            <div class="detail-grid">
+
+                <div class="detail-item">
+                    <span>Nombre completo</span>
+
+                    <strong>
+                        {{
+                        citaActual
+                        .profesional
+                        .usuario
+                        .nombre
+                        }}
+
+                        {{
+                        citaActual
+                        .profesional
+                        .usuario
+                        .apellidos
+                        }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Título profesional</span>
+
+                    <strong>
+                        {{
+                        citaActual
+                        .profesional
+                        .titulo
+                        }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Correo electrónico</span>
+
+                    <strong>
+                        {{
+                        citaActual
+                        .profesional
+                        .usuario
+                        .email
+                        }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Teléfono</span>
+
+                    <strong>
+                        {{
+                        citaActual
+                        .profesional
+                        .telefono ||
+                        'No disponible'
+                        }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- SERVICIO -->
+        <section class="detail-section">
+
+            <h2>
+                <mat-icon>
+                    miscellaneous_services
+                </mat-icon>
+
+                Servicio
+            </h2>
+
+            <div class="detail-grid">
+
+                <div class="detail-item">
+                    <span>Servicio</span>
+
+                    <strong>
+                        {{
+                        citaActual
+                        .servicio
+                        .servicio
+                        }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>
+                        Duración estimada
+                    </span>
+
+                    <strong>
+                        {{
+                        formatearDuracion(
+                        citaActual
+                        .servicio
+                        .duracion_estimada
+                        )
+                        }}
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>
+                        Precio del servicio
+                    </span>
+
+                    <strong>
+                        {{
+                        formatearMonto(
+                        citaActual
+                        .servicio
+                        .precio
+                        )
+                        }}
+                    </strong>
+                </div>
+
+                <div class="detail-item full">
+                    <span>
+                        Descripción del servicio
+                    </span>
+
+                    <strong>
+                        {{
+                        citaActual
+                        .servicio
+                        .descripcion ||
+                        'Sin descripción'
+                        }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- COMENTARIO -->
+        <section class="detail-section">
+
+            <h2>
+                <mat-icon>comment</mat-icon>
+                Comentario del cliente
+            </h2>
+
+            <div class="detail-item full comment-box">
+
+                <span>
+                    Descripción o comentario
+                </span>
+
+                <p>
+                    {{
+                    citaActual
+                    .comentario_cliente ||
+                    'No se registraron comentarios.'
+                    }}
+                </p>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- Comentario profesional -->
+    @if (citaActual.comentario_profesional) {
+
+    <section class="detail-section">
+
+        <h2>
+            <mat-icon>support_agent</mat-icon>
+            Comentario del profesional
+        </h2>
+
+        <div class="detail-item full comment-box">
+
+            <span>
+                Respuesta o motivo registrado
+            </span>
+
+            <p>
+                {{ citaActual.comentario_profesional }}
+            </p>
 
         </div>
+
+    </section>
+    }
 
     }
 
