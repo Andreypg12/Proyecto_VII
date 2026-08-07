@@ -258,10 +258,7 @@ export class CitasAgenda implements OnInit {
     ]);
   }
 
-  async seleccionarFecha(
-    fechaSeleccionada: Date,
-    esDiaCompleto: boolean
-  ): Promise<void> {
+  async seleccionarFecha(fechaSeleccionada: Date,esDiaCompleto: boolean): Promise<void> {
 
     const ahora = new Date();
 

@@ -13,26 +13,16 @@ import {
     ResultadoCambioEstadoCita
 } from '../models/cita.model';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
+
 export class CitaService {
 
     private readonly http = inject(HttpClient);
 
-    private readonly apiUrl =
-        `${environment.apiUrl}/cita`;
+    private readonly apiUrl =`${environment.apiUrl}/cita`;
 
-    /**
-     * Obtiene las opciones necesarias para registrar citas.
-     * Las modalidades provienen del enum de Prisma mediante la API.
-     */
     obtenerConfiguracion() {
-        return this.http.get<
-            ApiResponse<ConfiguracionCita>
-        >(
-            `${this.apiUrl}/configuracion`
-        );
+        return this.http.get<ApiResponse<ConfiguracionCita>>(`${this.apiUrl}/configuracion`);
     }
 
     listar(filtros?: FiltrosCita) {
@@ -66,29 +56,18 @@ export class CitaService {
             );
         }
 
-        return this.http.get<ApiResponse<Cita[]>>(
-            this.apiUrl,
-            { params }
-        );
+        return this.http.get<ApiResponse<Cita[]>>(this.apiUrl,{ params });
     }
 
     obtenerPorId(id: number) {
-        return this.http.get<ApiResponse<Cita>>(
-            `${this.apiUrl}/${id}`
-        );
+        return this.http.get<ApiResponse<Cita>>(`${this.apiUrl}/${id}`);
     }
 
     crear(data: CreateCitaDto) {
-        return this.http.post<ApiResponse<Cita>>(
-            this.apiUrl,
-            data
-        );
+        return this.http.post<ApiResponse<Cita>>(this.apiUrl,data);
     }
 
     cambiarEstado(idCita: number, data: CambiarEstadoCitaDto) {
-        return this.http.patch<ApiResponse<ResultadoCambioEstadoCita>>(
-            `${this.apiUrl}/${idCita}/estado`,
-            data
-        );
+        return this.http.patch<ApiResponse<ResultadoCambioEstadoCita>>(`${this.apiUrl}/${idCita}/estado`,data);
     }
 }

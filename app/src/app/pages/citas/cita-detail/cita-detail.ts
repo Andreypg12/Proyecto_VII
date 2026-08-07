@@ -105,64 +105,6 @@ export class CitaDetail implements OnInit {
       });
   }
 
-  // Guarda en la señal el comentario escrito por el profesional.
-  actualizarComentarioEstado(event: Event): void {
-
-    const input =
-      event.target as HTMLTextAreaElement;
-
-    this.comentarioEstado.set(
-      input.value
-    );
-  }
-
-
-  // Valida si el estado actual puede cambiar al nuevo estado indicado.
-  puedeCambiarA(nuevoEstado: EstadoCita): boolean {
-
-    const citaActual = this.cita();
-
-    if (!citaActual) {
-      return false;
-    }
-
-    switch (citaActual.estado) {
-
-      case 'PENDIENTE':
-
-        return (
-          nuevoEstado === 'ACEPTADA' ||
-          nuevoEstado === 'RECHAZADA'
-        );
-
-      case 'ACEPTADA':
-
-        return (
-          nuevoEstado === 'COMPLETADA' ||
-          nuevoEstado === 'CANCELADA'
-        );
-
-      default:
-        return false;
-    }
-  }
-
-  // Indica si el estado requiere un comentario obligatorio.
-  requiereComentario(estado: EstadoCita): boolean {
-    return (estado === 'RECHAZADA' || estado === 'CANCELADA');
-  }
-
-
-  // Determina si la cita ya se encuentra en un estado final.
-  esEstadoFinal(estado: EstadoCita): boolean {
-
-    return [
-      'RECHAZADA',
-      'CANCELADA',
-      'COMPLETADA'
-    ].includes(estado);
-  }
-
   // Valida, confirma y solicita al backend el cambio de estado de la cita.
   async cambiarEstado(nuevoEstado: EstadoCita): Promise<void> {
 
@@ -317,6 +259,86 @@ export class CitaDetail implements OnInit {
       });
   }
 
+  // Valida si el estado actual puede cambiar al nuevo estado indicado.
+  puedeCambiarA(nuevoEstado: EstadoCita): boolean {
+
+    const citaActual = this.cita();
+
+    if (!citaActual) {
+      return false;
+    }
+
+    switch (citaActual.estado) {
+
+      case 'PENDIENTE':
+
+        return (
+          nuevoEstado === 'ACEPTADA' ||
+          nuevoEstado === 'RECHAZADA'
+        );
+
+      case 'ACEPTADA':
+
+        return (
+          nuevoEstado === 'COMPLETADA' ||
+          nuevoEstado === 'CANCELADA'
+        );
+
+      default:
+        return false;
+    }
+  }
+
+  // Indica si el estado requiere un comentario obligatorio.
+  requiereComentario(estado: EstadoCita): boolean {
+    return (estado === 'RECHAZADA' || estado === 'CANCELADA');
+  }
+
+  // Devuelve el color que utiliza SweetAlert según el nuevo estado.
+  obtenerColorConfirmacion(estado: EstadoCita): string {
+
+    switch (estado) {
+
+      case 'PENDIENTE':
+        return '#d97706';
+
+      case 'ACEPTADA':
+        return '#15803d';
+
+      case 'RECHAZADA':
+        return '#be123c';
+
+      case 'CANCELADA':
+        return '#475569';
+
+      case 'COMPLETADA':
+        return '#1d4ed8';
+
+      default:
+        return '#475569';
+    }
+  }
+
+  // Guarda en la señal el comentario escrito por el profesional.
+  actualizarComentarioEstado(event: Event): void {
+
+    const input = event.target as HTMLTextAreaElement;
+
+    this.comentarioEstado.set(
+      input.value
+    );
+  }
+
+  // Determina si la cita ya se encuentra en un estado final.
+  esEstadoFinal(estado: EstadoCita): boolean {
+
+    return [
+      'RECHAZADA',
+      'CANCELADA',
+      'COMPLETADA'
+    ].includes(estado);
+  }
+
   // Convierte una fecha a un formato largo y legible en español.
   formatearFecha(fecha: string): string {
 
@@ -419,28 +441,5 @@ export class CitaDetail implements OnInit {
   }
 
 
-// Devuelve el color que utiliza SweetAlert según el nuevo estado.
-  obtenerColorConfirmacion(estado: EstadoCita): string {
 
-    switch (estado) {
-
-      case 'PENDIENTE':
-        return '#d97706';
-
-      case 'ACEPTADA':
-        return '#15803d';
-
-      case 'RECHAZADA':
-        return '#be123c';
-
-      case 'CANCELADA':
-        return '#475569';
-
-      case 'COMPLETADA':
-        return '#1d4ed8';
-
-      default:
-        return '#475569';
-    }
-  }
 }
