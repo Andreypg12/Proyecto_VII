@@ -1,3 +1,4 @@
+// Herramientas principales de Angular.
 import {
   Component,
   OnInit,
@@ -5,22 +6,14 @@ import {
   signal
 } from '@angular/core';
 
-import Swal from 'sweetalert2';
-
+// Herramientas para navegación entre páginas.
 import {
   ActivatedRoute,
   Router,
   RouterLink
 } from '@angular/router';
 
-import { HttpErrorResponse } from
-  '@angular/common/http';
-
-import { finalize } from 'rxjs';
-
-import { MatIconModule } from
-  '@angular/material/icon';
-
+// Modelos y tipos relacionados con las citas.
 import {
   CambiarEstadoCitaDto,
   Cita,
@@ -28,8 +21,18 @@ import {
   Modalidad
 } from '../../../core/models/cita.model';
 
-import { CitaService } from
-  '../../../core/services/cita.service';
+//Alerts
+import Swal from 'sweetalert2';
+
+// Manejo de errores provenientes de peticiones HTTP.
+import { HttpErrorResponse } from'@angular/common/http';
+// finalize ejecuta una acción cuando termina una petición,
+import { finalize } from 'rxjs';
+// Permite utilizar <mat-icon> en el HTML.
+import { MatIconModule } from'@angular/material/icon';
+
+//Backend
+import { CitaService } from '../../../core/services/cita.service';
 
 @Component({
   selector: 'app-cita-detail',
@@ -41,40 +44,30 @@ import { CitaService } from
   templateUrl: './cita-detail.html',
   styleUrl: './cita-detail.css'
 })
+
 export class CitaDetail implements OnInit {
 
-  private readonly route =
-    inject(ActivatedRoute);
-
-  private readonly router =
-    inject(Router);
-
-  private readonly citaService =
-    inject(CitaService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly citaService = inject(CitaService);
 
   cita = signal<Cita | null>(null);
-
   loading = signal<boolean>(false);
   error = signal<string>('');
 
   //Cambio de estado
   cambiandoEstado = signal<boolean>(false);
-
   comentarioEstado = signal<string>('');
-
   mensajeEstado = signal<string>('');
   errorEstado = signal<string>('');
 
+
+  // Obtiene el ID de la cita desde la URL y carga su información.
   ngOnInit(): void {
 
-    const id = Number(
-      this.route.snapshot.paramMap.get('id')
-    );
+    const id = Number(this.route.snapshot.paramMap.get('id'));
 
-    if (
-      Number.isNaN(id) ||
-      id <= 0
-    ) {
+    if (Number.isNaN(id) || id <= 0) {
       this.router.navigate(['/citas']);
       return;
     }
@@ -82,6 +75,7 @@ export class CitaDetail implements OnInit {
     this.cargarCita(id);
   }
 
+  // Consulta el backend y carga los datos de la cita seleccionada.
   cargarCita(id: number): void {
 
     this.loading.set(true);
@@ -111,10 +105,8 @@ export class CitaDetail implements OnInit {
       });
   }
 
-  //Cambiar estado
-  actualizarComentarioEstado(
-    event: Event
-  ): void {
+  // Guarda en la señal el comentario escrito por el profesional.
+  actualizarComentarioEstado(event: Event): void {
 
     const input =
       event.target as HTMLTextAreaElement;
@@ -125,9 +117,8 @@ export class CitaDetail implements OnInit {
   }
 
 
-  puedeCambiarA(
-    nuevoEstado: EstadoCita
-  ): boolean {
+  // Valida si el estado actual puede cambiar al nuevo estado indicado.
+  puedeCambiarA(nuevoEstado: EstadoCita): boolean {
 
     const citaActual = this.cita();
 
@@ -135,42 +126,35 @@ export class CitaDetail implements OnInit {
       return false;
     }
 
-    const transiciones: Record<
-      string,
-      EstadoCita[]
-    > = {
-      PENDIENTE: [
-        'ACEPTADA',
-        'RECHAZADA'
-      ],
+    switch (citaActual.estado) {
 
-      ACEPTADA: [
-        'COMPLETADA',
-        'CANCELADA'
-      ]
-    };
+      case 'PENDIENTE':
 
-    return (
-      transiciones[citaActual.estado]
-        ?.includes(nuevoEstado) ?? false
-    );
+        return (
+          nuevoEstado === 'ACEPTADA' ||
+          nuevoEstado === 'RECHAZADA'
+        );
+
+      case 'ACEPTADA':
+
+        return (
+          nuevoEstado === 'COMPLETADA' ||
+          nuevoEstado === 'CANCELADA'
+        );
+
+      default:
+        return false;
+    }
+  }
+
+  // Indica si el estado requiere un comentario obligatorio.
+  requiereComentario(estado: EstadoCita): boolean {
+    return (estado === 'RECHAZADA' || estado === 'CANCELADA');
   }
 
 
-  requiereComentario(
-    estado: EstadoCita
-  ): boolean {
-
-    return (
-      estado === 'RECHAZADA' ||
-      estado === 'CANCELADA'
-    );
-  }
-
-
-  esEstadoFinal(
-    estado: EstadoCita
-  ): boolean {
+  // Determina si la cita ya se encuentra en un estado final.
+  esEstadoFinal(estado: EstadoCita): boolean {
 
     return [
       'RECHAZADA',
@@ -179,48 +163,27 @@ export class CitaDetail implements OnInit {
     ].includes(estado);
   }
 
-
+  // Valida, confirma y solicita al backend el cambio de estado de la cita.
   async cambiarEstado(nuevoEstado: EstadoCita): Promise<void> {
 
     const citaActual = this.cita();
 
-    if (
-      !citaActual ||
-      !this.puedeCambiarA(nuevoEstado)
-    ) {
+    if (!citaActual || !this.puedeCambiarA(nuevoEstado)) {
       return;
     }
 
-    const comentario =
-      this.comentarioEstado().trim();
+    const comentario =this.comentarioEstado().trim();
 
-    if (
-      this.requiereComentario(nuevoEstado) &&
-      !comentario
-    ) {
-      this.errorEstado.set(
-        nuevoEstado === 'RECHAZADA'
-          ? 'Debe indicar el motivo por el que se rechaza la cita.'
-          : 'Debe indicar el motivo por el que se cancela la cita.'
-      );
+      if (this.requiereComentario(nuevoEstado) && !comentario) {
+        this.errorEstado.set(nuevoEstado === 'RECHAZADA'
+            ? 'Debe indicar el motivo por el que se rechaza la cita.'
+            : 'Debe indicar el motivo por el que se cancela la cita.'
+        );
 
-      return;
-    }
+        return;
+      }
 
-    //Configuración del sweetalert
-    const colorConfirmacion: Record<
-      EstadoCita,
-      string
-    > = {
-      PENDIENTE: '#d97706',
-      ACEPTADA: '#15803d',
-      RECHAZADA: '#be123c',
-      CANCELADA: '#475569',
-      COMPLETADA: '#1d4ed8'
-    };
-
-    const resultadoConfirmacion =
-      await Swal.fire({
+    const resultadoConfirmacion = await Swal.fire({
 
         title: 'Confirmar cambio de estado',
 
@@ -244,8 +207,7 @@ export class CitaDetail implements OnInit {
         confirmButtonText: 'Sí, cambiar',
         cancelButtonText: 'No, volver',
 
-        confirmButtonColor:
-          colorConfirmacion[nuevoEstado],
+        confirmButtonColor: this.obtenerColorConfirmacion(nuevoEstado),
 
         cancelButtonColor: '#475569',
 
@@ -271,8 +233,7 @@ export class CitaDetail implements OnInit {
     this.errorEstado.set('');
     this.mensajeEstado.set('');
 
-    this.citaService
-      .cambiarEstado(
+    this.citaService.cambiarEstado(
         citaActual.id,
         data
       )
@@ -330,9 +291,7 @@ export class CitaDetail implements OnInit {
 
         },
 
-        error: (
-          error: HttpErrorResponse
-        ) => {
+        error: (error: HttpErrorResponse) => {
 
           const mensajeValidacion =
             error.error
@@ -358,6 +317,7 @@ export class CitaDetail implements OnInit {
       });
   }
 
+  // Convierte una fecha a un formato largo y legible en español.
   formatearFecha(fecha: string): string {
 
     return new Intl.DateTimeFormat(
@@ -371,6 +331,7 @@ export class CitaDetail implements OnInit {
     ).format(new Date(fecha));
   }
 
+  // Convierte una fecha y muestra únicamente su hora y minutos.
   formatearHora(fecha: string): string {
 
     return new Intl.DateTimeFormat(
@@ -382,9 +343,8 @@ export class CitaDetail implements OnInit {
     ).format(new Date(fecha));
   }
 
-  formatearFechaHora(
-    fecha: string
-  ): string {
+  // Convierte una fecha mostrando fecha y hora en un solo texto.
+  formatearFechaHora(fecha: string): string {
 
     return new Intl.DateTimeFormat(
       'es-CR',
@@ -395,9 +355,8 @@ export class CitaDetail implements OnInit {
     ).format(new Date(fecha));
   }
 
-  formatearMonto(
-    monto: string | number
-  ): string {
+  // Convierte un número al formato de moneda de colones costarricenses.
+  formatearMonto(monto: string | number): string {
 
     return new Intl.NumberFormat(
       'es-CR',
@@ -409,9 +368,8 @@ export class CitaDetail implements OnInit {
     ).format(Number(monto));
   }
 
-  formatearModalidad(
-    modalidad: Modalidad
-  ): string {
+  // Convierte el valor de modalidad a un texto más amigable para la vista.
+  formatearModalidad(modalidad: Modalidad): string {
 
     switch (modalidad) {
 
@@ -429,17 +387,15 @@ export class CitaDetail implements OnInit {
     }
   }
 
-  formatearEstado(
-    estado: EstadoCita
-  ): string {
+  // Convierte el estado de mayúsculas a un formato legible para el usuario.
+  formatearEstado(estado: EstadoCita): string {
 
     return estado.charAt(0) +
       estado.slice(1).toLowerCase();
   }
 
-  formatearDuracion(
-    minutos: number
-  ): string {
+  // Convierte una duración en minutos a horas y minutos.
+  formatearDuracion(minutos: number): string {
 
     if (minutos < 60) {
       return `${minutos} minutos`;
@@ -460,5 +416,31 @@ export class CitaDetail implements OnInit {
       `${horas} hora${horas === 1 ? '' : 's'} ` +
       `y ${minutosRestantes} minutos`
     );
+  }
+
+
+// Devuelve el color que utiliza SweetAlert según el nuevo estado.
+  obtenerColorConfirmacion(estado: EstadoCita): string {
+
+    switch (estado) {
+
+      case 'PENDIENTE':
+        return '#d97706';
+
+      case 'ACEPTADA':
+        return '#15803d';
+
+      case 'RECHAZADA':
+        return '#be123c';
+
+      case 'CANCELADA':
+        return '#475569';
+
+      case 'COMPLETADA':
+        return '#1d4ed8';
+
+      default:
+        return '#475569';
+    }
   }
 }

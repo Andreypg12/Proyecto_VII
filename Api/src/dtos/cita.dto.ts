@@ -64,42 +64,7 @@ export const cambiarEstadoCitaSchema = z
             )
             .optional()
             .nullable(),
-
     })
-    .superRefine(
-        (
-            data,
-            context
-        ) => {
-
-            const requiereComentario =
-                data.estado ===
-                    EstadoCita.RECHAZADA ||
-                data.estado ===
-                    EstadoCita.CANCELADA;
-
-            if (
-                requiereComentario &&
-                !data.comentario_profesional
-                    ?.trim()
-            ) {
-                context.addIssue({
-                    code:
-                        z.ZodIssueCode.custom,
-
-                    path: [
-                        "comentario_profesional",
-                    ],
-
-                    message:
-                        data.estado ===
-                        EstadoCita.RECHAZADA
-                            ? "Debe indicar el motivo por el que se rechaza la cita"
-                            : "Debe indicar el motivo por el que se cancela la cita",
-                });
-            }
-        }
-    );
 
 
 
