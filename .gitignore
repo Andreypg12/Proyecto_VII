@@ -1,0 +1,25 @@
+ProyectoVII/
+
+# IDE/Editor
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files (cada proyecto tiene el suyo)
+.env
+.env.local
+.env.*.local
+
+# Dependency directories (cada proyecto tiene el suyo)
+node_modules/
