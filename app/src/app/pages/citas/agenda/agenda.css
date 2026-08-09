@@ -148,19 +148,19 @@
 }
 
 .status-dot.pendiente {
-  background: #f59e0b;
+  background: #d97706;
 }
 
 .status-dot.aceptada {
-  background: #2563eb;
-}
-
-.status-dot.completada {
   background: #16a34a;
 }
 
+.status-dot.completada {
+  background: #2563eb;
+}
+
 .status-dot.cancelada {
-  background: #6b7280;
+  background: #64748b;
 }
 
 .status-dot.rechazada {

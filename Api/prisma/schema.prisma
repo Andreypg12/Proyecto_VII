@@ -149,6 +149,7 @@ model Cita {
   fecha_hora_finalizacion_esperada DateTime
   fecha_hora_finalizacion_real     DateTime?
   comentario_cliente               String?   @db.VarChar(500)
+  comentario_profesional           String?   @db.VarChar(500)
   monto_estimado                   Decimal   @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())

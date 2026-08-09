@@ -6,6 +6,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import Swal from 'sweetalert2';
+
 //Rutas
 import { Router } from '@angular/router';
 
@@ -19,7 +21,13 @@ import {
 
 //Para backend de citas
 import { CitaService } from '../../../core/services/cita.service';
-import { Cita } from '../../../core/models/cita.model';
+import {
+  Cita,
+  ConfiguracionCita,
+  CreateCitaDto,
+  EstadoCita,
+  FiltrosCita
+} from '../../../core/models/cita.model';
 
 
 //Plugins
@@ -100,7 +108,10 @@ export class CitasAgenda implements OnInit {
     events: [],
 
     dateClick: (info) => {
-      this.seleccionarFecha(info.dateStr);
+      this.seleccionarFecha(
+        info.date,
+        info.allDay
+      );
     },
 
     eventClick: (info) => {
@@ -137,10 +148,7 @@ export class CitasAgenda implements OnInit {
           (cita: Cita) => this.convertirCitaAEvento(cita)
         );
 
-        /*
-         * Creamos un nuevo objeto para que Angular y
-         * FullCalendar detecten correctamente el cambio.
-         */
+        //Nuevo objeto para que Angular y FullCalendar detecten correctamente el cambio.
         this.calendarOptions = {
           ...this.calendarOptions,
           events: eventos
@@ -167,68 +175,74 @@ export class CitasAgenda implements OnInit {
   //Convertir una cita en un evento de FullCalendar
 
   private convertirCitaAEvento(cita: Cita): EventInput {
-  const estadoNormalizado = String(cita.estado ?? '')
-    .trim()
-    .toUpperCase();
 
-  const color = this.obtenerColorEstado(estadoNormalizado);
+    //Se normaliza el estado recibido
+    const estadoNormalizado = String(cita.estado ?? '')
+      .trim()
+      .toUpperCase();
 
-  return {
-    id: String(cita.id),
+    const color = this.obtenerColorEstado(estadoNormalizado);
 
-    title: this.obtenerTituloCita(cita),
+    return {
+      id: String(cita.id),
 
-    start: cita.fecha_hora_inicio,
-    end: cita.fecha_hora_finalizacion_esperada,
+      title: this.obtenerTituloCita(cita),
 
-    allDay: false,
+      start: cita.fecha_hora_inicio,
+      end: cita.fecha_hora_finalizacion_esperada,
 
-    // Forma rectangular también en vista mensual
-    display: 'block',
+      allDay: false,
 
-    // Propiedades de color de FullCalendar 7
-    color,
-    contrastColor: '#ffffff',
+      // Forma rectangular también en vista mensual
+      display: 'block',
 
-    extendedProps: {
-      estado: estadoNormalizado,
-      modalidad: cita.modalidad,
-      comentario: cita.comentario_cliente,
-      montoEstimado: cita.monto_estimado,
-      cita
-    }
-  };
-}
+      // Propiedades de color de FullCalendar 7
+      color,
+      contrastColor: '#ffffff',
 
-private obtenerTituloCita(cita: Cita): string {
-  const servicio =
-    cita.servicio?.servicio ??
-    'Servicio';
+      extendedProps: {
+        estado: estadoNormalizado,
+        modalidad: cita.modalidad,
+        comentario: cita.comentario_cliente,
+        montoEstimado: cita.monto_estimado,
+        cita
+      }
+    };
+  }
 
-  const nombreCliente =
-    cita.cliente
-      ? `${cita.cliente.nombre} ${cita.cliente.apellidos}`
-      : 'Cliente';
+  private obtenerTituloCita(cita: Cita): string {
+    const servicio =
+      cita.servicio?.servicio ??
+      'Servicio';
 
-  return `${servicio} - ${nombreCliente}`;
-}
+    const nombreCliente =
+      cita.cliente
+        ? `${cita.cliente.nombre} ${cita.cliente.apellidos}`
+        : 'Cliente';
+
+    return `${servicio} - ${nombreCliente}`;
+  }
 
   // Asignar colores por estado
-  private obtenerColorEstado(estado: string): string {
-    const colores: Record<string, string> = {
-      PENDIENTE: '#f59e0b',
+  private obtenerColorEstado(
+  estado: string
+): string {
 
-      ACEPTADA: '#2563eb',
-      CONFIRMADA: '#2563eb',
+  const colores: Record<string, string> = {
+      PENDIENTE: '#d97706',
 
-      'EN PROCESO': '#7c3aed',
-      EN_PROCESO: '#7c3aed',
+      ACEPTADA: '#16a34a',
+      CONFIRMADA: '#16a34a',
 
-      COMPLETADA: '#16a34a',
-      FINALIZADA: '#16a34a',
+      COMPLETADA: '#2563eb',
+      FINALIZADA: '#2563eb',
 
       RECHAZADA: '#dc2626',
-      CANCELADA: '#6b7280'
+
+      CANCELADA: '#64748b',
+
+      'EN PROCESO': '#7c3aed',
+      EN_PROCESO: '#7c3aed'
     };
 
     return colores[estado] ?? '#64748b';
@@ -244,8 +258,156 @@ private obtenerTituloCita(cita: Cita): string {
     ]);
   }
 
-  seleccionarFecha(fecha: string): void {
-    alert(`Fecha seleccionada: ${fecha}`);
+  async seleccionarFecha(fechaSeleccionada: Date,esDiaCompleto: boolean): Promise<void> {
+
+    const ahora = new Date();
+
+    const inicioHoy = new Date(
+      ahora.getFullYear(),
+      ahora.getMonth(),
+      ahora.getDate()
+    );
+
+    const inicioFechaSeleccionada = new Date(
+      fechaSeleccionada.getFullYear(),
+      fechaSeleccionada.getMonth(),
+      fechaSeleccionada.getDate()
+    );
+
+    // No hacer nada si se selecciona un día anterior.
+    if (
+      inicioFechaSeleccionada.getTime() <
+      inicioHoy.getTime()
+    ) {
+      return;
+    }
+
+    const esHoy =
+      inicioFechaSeleccionada.getTime() ===
+      inicioHoy.getTime();
+
+    if (esHoy) {
+
+      if (esDiaCompleto) {
+
+        // En la vista mensual no existe una hora seleccionada.
+        // Se permite abrir el formulario mientras todavía
+        // haya horario disponible durante el día.
+        const horaLimite = new Date(
+          ahora.getFullYear(),
+          ahora.getMonth(),
+          ahora.getDate(),
+          20,
+          0,
+          0
+        );
+
+        if (ahora >= horaLimite) {
+          return;
+        }
+
+      } else {
+
+        // En la vista semanal sí se selecciona una hora.
+        if (fechaSeleccionada <= ahora) {
+          return;
+        }
+      }
+    }
+
+    const fechaFormulario =
+      this.formatearFechaParametro(
+        fechaSeleccionada
+      );
+
+    const fechaVisible =
+      new Intl.DateTimeFormat(
+        'es-CR',
+        {
+          weekday: 'long',
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }
+      ).format(fechaSeleccionada);
+
+    const resultado =
+      await Swal.fire({
+        title: 'Crear una cita',
+
+        html:
+          `Seleccionó el día ` +
+          `<strong>${fechaVisible}</strong>.<br><br>` +
+          `¿Desea crear una cita para esta fecha?`,
+
+        icon: 'question',
+
+        showCancelButton: true,
+
+        confirmButtonText: 'Sí, crear cita',
+        cancelButtonText: 'Cancelar',
+
+        confirmButtonColor: '#15803d',
+        cancelButtonColor: '#475569',
+
+        reverseButtons: true,
+
+        background: '#0f172a',
+        color: '#f8fafc'
+      });
+
+    if (!resultado.isConfirmed) {
+      return;
+    }
+
+    await this.router.navigate(
+      ['/citas/nueva'],
+      {
+        queryParams: {
+          fecha: fechaFormulario,
+
+          hora: esDiaCompleto
+            ? null
+            : this.formatearHoraParametro(
+              fechaSeleccionada
+            )
+        }
+      }
+    );
+  }
+
+  private formatearFechaParametro(
+    fecha: Date
+  ): string {
+
+    const anio =
+      fecha.getFullYear();
+
+    const mes =
+      String(fecha.getMonth() + 1)
+        .padStart(2, '0');
+
+    const dia =
+      String(fecha.getDate())
+        .padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
+  }
+
+
+  private formatearHoraParametro(
+    fecha: Date
+  ): string {
+
+    const horas =
+      String(fecha.getHours())
+        .padStart(2, '0');
+
+    const minutos =
+      String(fecha.getMinutes())
+        .padStart(2, '0');
+
+    return `${horas}:${minutos}`;
   }
 
   seleccionarCita(id: string, titulo: string): void {

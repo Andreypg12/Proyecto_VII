@@ -1,6 +1,7 @@
 import {
     Component,
     computed,
+    effect,
     input,
     output,
     signal
@@ -68,6 +69,7 @@ export class CitaForm {
     modalidades = input<Modalidad[]>([]);
 
     saving = input<boolean>(false);
+    fechaInicial = input<string | null>(null);
 
     guardar = output<CreateCitaDto>();
     cancelar = output<void>();
@@ -124,6 +126,26 @@ export class CitaForm {
         modalidad: null,
         comentario_cliente: ''
     });
+
+    constructor() {
+
+        effect(() => {
+
+            const fecha =
+                this.fechaInicial();
+
+            if (!fecha) {
+                return;
+            }
+
+            this.citaModel.update(
+                (value) => ({
+                    ...value,
+                    fecha
+                })
+            );
+        });
+    }
 
     citaForm = form(this.citaModel, (path) => {
 
