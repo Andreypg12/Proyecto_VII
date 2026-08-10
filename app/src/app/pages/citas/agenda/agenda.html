@@ -1,58 +1,88 @@
-<section class="agenda-page">
+<section class="agenda-shell">
 
-    <header class="agenda-header">
-        <div>
-            <h1>Agenda de citas</h1>
+  <!-- Subtle background grid -->
+  <div class="agenda-grid-bg"></div>
 
-            <p>
-                Consulte las citas registradas en la vista mensual o semanal.
-            </p>
+  <header class="agenda-header">
+    <div class="header-main">
+      <div class="header-eyebrow">
+        <span class="header-dot"></span>
+        Panel de citas
+      </div>
+      <h1 class="header-title">Agenda</h1>
+      <p class="header-subtitle">Gestiona y consulta las citas programadas. Haz clic en un día para crear una nueva cita.</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-card">
+        <mat-icon>event</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalCitas() }}</span>
+          <span class="stat-label">Total</span>
         </div>
-    </header>
-
-    @if (loading()) {
-    <p class="loading-message">
-        Cargando citas...
-    </p>
-    }
-
-    @if (error()) {
-    <p class="error-message">
-        {{ error() }}
-    </p>
-    }
-
-    <div class="status-legend">
-        <span>
-            <i class="status-dot pendiente"></i>
-            Pendiente
-        </span>
-
-        <span>
-            <i class="status-dot aceptada"></i>
-            Aceptada
-        </span>
-
-        <span>
-            <i class="status-dot completada"></i>
-            Completada
-        </span>
-
-        <span>
-            <i class="status-dot rechazada"></i>
-            Rechazada
-        </span>
-
-        <span>
-            <i class="status-dot cancelada"></i>
-            Cancelada
-        </span>
+      </div>
+      <div class="stat-card stat-pending">
+        <mat-icon>schedule</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ citasPendientes() }}</span>
+          <span class="stat-label">Pendientes</span>
+        </div>
+      </div>
+      <div class="stat-card stat-today">
+        <mat-icon>today</mat-icon>
+        <div class="stat-info">
+          <span class="stat-value">{{ citasHoy() }}</span>
+          <span class="stat-label">Hoy</span>
+        </div>
+      </div>
     </div>
+  </header>
 
-    @if (!loading()) {
-    <div class="calendar-card">
-        <full-calendar [options]="calendarOptions" />
+  @if (loading()) {
+  <div class="agenda-loading">
+    <div class="loading-spinner"></div>
+    <span>Cargando calendario...</span>
+  </div>
+  }
+
+  @if (error()) {
+  <div class="agenda-error">
+    <mat-icon>error_outline</mat-icon>
+    <div class="error-content">
+      <strong>Error al cargar</strong>
+      <span>{{ error() }}</span>
     </div>
-    }
+  </div>
+  }
+
+  <div class="agenda-legend">
+    <div class="legend-section">
+      <span class="legend-label">Estado</span>
+      <div class="legend-chips">
+        <span class="chip chip-pendiente"><i class="chip-dot"></i>Pendiente</span>
+        <span class="chip chip-aceptada"><i class="chip-dot"></i>Aceptada</span>
+        <span class="chip chip-completada"><i class="chip-dot"></i>Completada</span>
+        <span class="chip chip-rechazada"><i class="chip-dot"></i>Rechazada</span>
+        <span class="chip chip-cancelada"><i class="chip-dot"></i>Cancelada</span>
+      </div>
+    </div>
+    <div class="legend-divider"></div>
+    <div class="legend-section">
+      <span class="legend-label">Modalidad</span>
+      <div class="legend-chips">
+        <span class="chip chip-modalidad"><mat-icon>location_on</mat-icon>Presencial</span>
+        <span class="chip chip-modalidad"><mat-icon>computer</mat-icon>Virtual</span>
+        <span class="chip chip-modalidad"><mat-icon>swap_horiz</mat-icon>Híbrida</span>
+      </div>
+    </div>
+  </div>
+
+  @if (!loading()) {
+  <div class="calendar-wrapper">
+    <div class="calendar-glow"></div>
+    <div class="calendar-frame">
+      <full-calendar [options]="calendarOptions" />
+    </div>
+  </div>
+  }
 
 </section>
