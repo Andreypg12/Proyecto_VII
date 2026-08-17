@@ -1,6 +1,6 @@
 import { prisma } from '../config/prisma';
 import { EstadoCita, EstadoUsuario, Modalidad, Rol, } from '../../generated/prisma/enums';
-import { CreateCitaDto } from '../dtos/cita.dto';
+import { CambiarEstadoCitaDto, CreateCitaDto, } from '../dtos/cita.dto';
 import { AppError } from '../utils/app-error';
 
 interface FiltrosCita {
@@ -34,7 +34,7 @@ export const citaService = {
 
         if (filtros?.estado) { where.estado = filtros.estado; }
 
-        if (filtros?.idProfesional) { where.id_profesional = filtros.idProfesional;}
+        if (filtros?.idProfesional) { where.id_profesional = filtros.idProfesional; }
 
         //se ejecuta cuando se recibió al menos una de las dos fechas.
         if (filtros?.fechaDesde || filtros?.fechaHasta) {
@@ -71,6 +71,7 @@ export const citaService = {
                     true,
 
                 comentario_cliente: true,
+                comentario_profesional: true,
                 monto_estimado: true,
                 modalidad: true,
                 estado: true,
@@ -143,6 +144,7 @@ export const citaService = {
                 fecha_hora_finalizacion_real: true,
 
                 comentario_cliente: true,
+                comentario_profesional: true,
                 monto_estimado: true,
                 modalidad: true,
                 estado: true,
@@ -278,7 +280,7 @@ export const citaService = {
 
         const fechaFinalizacionEsperada = new Date(fechaInicio);
 
-        fechaFinalizacionEsperada.setMinutes( fechaFinalizacionEsperada.getMinutes() + servicio.duracion_estimada);
+        fechaFinalizacionEsperada.setMinutes(fechaFinalizacionEsperada.getMinutes() + servicio.duracion_estimada);
 
         return prisma.cita.create({
             data: {
@@ -305,5 +307,122 @@ export const citaService = {
                     data.id_servicio,
             },
         });
-    }
+    },
+
+
+    async cambiarEstado(id: number, data: CambiarEstadoCitaDto) {
+
+
+        //Busca la cita por su id, solo trae id, estado y fecha hora finalización esperada.
+        const cita =
+            await prisma.cita.findUnique({
+                where: {
+                    id,
+                },
+
+                select: {
+                    id: true,
+                    estado: true,
+
+                    fecha_hora_finalizacion_esperada:
+                        true,
+                },
+            });
+
+        if (!cita) {
+            throw AppError.badRequest(
+                'La cita seleccionada no existe'
+            );
+        }
+
+        //Verificar cuales serán los cambios que si están permitidos
+        let cambioPermitido = false;
+
+        switch (cita.estado) {
+
+            case EstadoCita.PENDIENTE:
+
+                if (
+                    data.estado === EstadoCita.ACEPTADA ||
+                    data.estado === EstadoCita.RECHAZADA
+                ) {
+                    cambioPermitido = true;
+                }
+
+                break;
+
+
+            case EstadoCita.ACEPTADA:
+
+                if (
+                    data.estado === EstadoCita.COMPLETADA ||
+                    data.estado === EstadoCita.CANCELADA
+                ) {
+                    cambioPermitido = true;
+                }
+
+                break;
+
+
+            default:
+                cambioPermitido = false;
+                break;
+        }
+
+        if (!cambioPermitido) {
+            throw AppError.badRequest(
+                `No es posible cambiar una cita ` +
+                `de ${cita.estado} a ${data.estado}`
+            );
+        }
+
+
+        //En caso de que la fecha actual aún sea menor que la fecha esperada
+        if (data.estado === EstadoCita.COMPLETADA && new Date() < cita.fecha_hora_finalizacion_esperada) {
+            throw AppError.badRequest(
+                'La cita todavía no puede marcarse como completada'
+            );
+        }
+
+        //Preparar el comentario, darle "formato"
+        const comentarioProfesional = data.comentario_profesional?.trim() || null;
+
+        if (data.estado === EstadoCita.RECHAZADA && !comentarioProfesional) {
+            throw AppError.badRequest(
+                'Debe indicar el motivo por el que se rechaza la cita'
+            );
+        }
+
+        if (data.estado === EstadoCita.CANCELADA && !comentarioProfesional) {
+            throw AppError.badRequest(
+                'Debe indicar el motivo por el que se cancela la cita'
+            );
+        }
+
+        return prisma.cita.update({
+            where: {
+                id,
+            },
+
+            data: {
+                estado:data.estado,
+                comentario_profesional:comentarioProfesional,
+                fecha_hora_finalizacion_real: data.estado === EstadoCita.COMPLETADA ? new Date() : null,
+            },
+
+            //devolvemos id, estado, comentario profesional, hora finalización real
+            select: {
+                id: true,
+                estado: true,
+
+                comentario_profesional:
+                    true,
+
+                fecha_hora_finalizacion_real:
+                    true,
+
+                updateAt: true,
+            },
+        });
+    },
 }

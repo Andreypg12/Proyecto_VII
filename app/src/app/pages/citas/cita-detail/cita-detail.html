@@ -1,66 +1,176 @@
 <div class="page-container">
 
-    <a
-        class="back-btn"
-        routerLink="/citas"
-    >
+    <a class="back-btn" routerLink="/citas">
         ← Volver a citas
     </a>
 
     @if (loading()) {
 
-        <div class="status-card">
-            Cargando información de la cita...
-        </div>
+    <div class="status-card">
+        Cargando información de la cita...
+    </div>
 
     }
 
     @if (error()) {
 
-        <div class="status-card error">
-            {{ error() }}
-        </div>
+    <div class="status-card error">
+        {{ error() }}
+    </div>
 
     }
 
-    @if (
-        !loading() &&
-        !error() &&
-        cita();
-        as citaActual
-    ) {
+    @if (!loading() && !error() && cita(); as citaActual) {
 
-        <div class="detail-header">
+    <div class="detail-header">
+
+        <div>
+            <h1>
+                Detalle de cita
+                #{{ citaActual.id }}
+            </h1>
+
+            <p>
+                Información completa de la cita
+                registrada.
+            </p>
+        </div>
+
+        <span class="badge detail-status" [class.cita-pendiente]="citaActual.estado === 'PENDIENTE'"
+            [class.cita-aceptada]="citaActual.estado === 'ACEPTADA'"
+            [class.cita-rechazada]="citaActual.estado === 'RECHAZADA'"
+            [class.cita-cancelada]="citaActual.estado === 'CANCELADA'"
+            [class.cita-completada]="citaActual.estado === 'COMPLETADA'">
+            {{
+            formatearEstado(
+            citaActual.estado
+            )
+            }}
+        </span>
+
+    </div>
+
+    <!-- Cambio de estado -->
+    <section class="state-management">
+
+        <div class="state-management-header">
 
             <div>
-                <h1>
-                    Detalle de cita
-                    #{{ citaActual.id }}
-                </h1>
+                <h2>
+                    <mat-icon>published_with_changes</mat-icon>
+                    Gestión de la cita
+                </h2>
 
                 <p>
-                    Información completa de la cita
-                    registrada.
+                    Estado actual:
+                    <strong>
+                        {{ formatearEstado(citaActual.estado) }}
+                    </strong>
                 </p>
             </div>
 
-            <span
-                class="badge detail-status"
-                [class.cita-pendiente]="citaActual.estado === 'PENDIENTE'"
-                [class.cita-aceptada]="citaActual.estado === 'ACEPTADA'"
-                [class.cita-rechazada]="citaActual.estado === 'RECHAZADA'"
-                [class.cita-cancelada]="citaActual.estado === 'CANCELADA'"
-                [class.cita-completada]="citaActual.estado === 'COMPLETADA'">
-                {{
-                    formatearEstado(
-                        citaActual.estado
-                    )
-                }}
-            </span>
+        </div>
+
+        @if (
+        puedeCambiarA('RECHAZADA') ||
+        puedeCambiarA('CANCELADA')
+        ) {
+
+        <div class="state-comment">
+
+            <label for="comentarioEstado">
+                Motivo
+            </label>
+
+            <textarea id="comentarioEstado" rows="4" maxlength="500"
+                placeholder="Indique el motivo del rechazo o la cancelación" [value]="comentarioEstado()"
+                [disabled]="cambiandoEstado()" (input)="actualizarComentarioEstado($event)"></textarea>
+
+            <small>
+                {{ comentarioEstado().length }}/500
+            </small>
+
+        </div>
+        }
+
+        <div class="state-actions">
+
+            @if (puedeCambiarA('ACEPTADA')) {
+
+            <button type="button" class="state-button accept" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('ACEPTADA')">
+                <mat-icon>check_circle</mat-icon>
+                Aceptar cita
+            </button>
+            }
+
+            @if (puedeCambiarA('RECHAZADA')) {
+
+            <button type="button" class="state-button reject" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('RECHAZADA')">
+                <mat-icon>block</mat-icon>
+                Rechazar cita
+            </button>
+            }
+
+            @if (puedeCambiarA('COMPLETADA')) {
+
+            <button type="button" class="state-button complete" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('COMPLETADA')">
+                <mat-icon>task_alt</mat-icon>
+                Completar cita
+            </button>
+            }
+
+            @if (puedeCambiarA('CANCELADA')) {
+
+            <button type="button" class="state-button cancel" [disabled]="cambiandoEstado()"
+                (click)="cambiarEstado('CANCELADA')">
+                <mat-icon>cancel</mat-icon>
+                Cancelar cita
+            </button>
+            }
 
         </div>
 
-        <div class="detail-card">
+        @if (cambiandoEstado()) {
+
+        <div class="state-message loading">
+            Actualizando el estado de la cita...
+        </div>
+        }
+
+        @if (mensajeEstado()) {
+
+        <div class="state-message success">
+            <mat-icon>check_circle</mat-icon>
+            {{ mensajeEstado() }}
+        </div>
+        }
+
+        @if (errorEstado()) {
+
+        <div class="state-message error">
+            <mat-icon>error</mat-icon>
+            {{ errorEstado() }}
+        </div>
+        }
+
+        @if (esEstadoFinal(citaActual.estado)) {
+
+        <div class="state-message final">
+
+            <mat-icon>lock</mat-icon>
+
+            Esta cita se encuentra en un estado final y
+            no admite más cambios.
+
+        </div>
+        }
+
+    </section>
+
+    <div class="detail-card">
 
             <!-- PROGRAMACIÓN -->
             <section class="detail-section">
@@ -80,10 +190,10 @@
 
                         <strong>
                             {{
-                                formatearFecha(
-                                    citaActual
-                                        .fecha_hora_inicio
-                                )
+                            formatearFecha(
+                            citaActual
+                            .fecha_hora_inicio
+                            )
                             }}
                         </strong>
                     </div>
@@ -93,10 +203,10 @@
 
                         <strong>
                             {{
-                                formatearHora(
-                                    citaActual
-                                        .fecha_hora_inicio
-                                )
+                            formatearHora(
+                            citaActual
+                            .fecha_hora_inicio
+                            )
                             }}
                         </strong>
                     </div>
@@ -106,9 +216,9 @@
 
                         <strong>
                             {{
-                                formatearModalidad(
-                                    citaActual.modalidad
-                                )
+                            formatearModalidad(
+                            citaActual.modalidad
+                            )
                             }}
                         </strong>
                     </div>
@@ -118,9 +228,9 @@
 
                         <strong>
                             {{
-                                formatearEstado(
-                                    citaActual.estado
-                                )
+                            formatearEstado(
+                            citaActual.estado
+                            )
                             }}
                         </strong>
                     </div>
@@ -132,10 +242,10 @@
 
                         <strong>
                             {{
-                                formatearFechaHora(
-                                    citaActual
-                                        .fecha_hora_finalizacion_esperada
-                                )
+                            formatearFechaHora(
+                            citaActual
+                            .fecha_hora_finalizacion_esperada
+                            )
                             }}
                         </strong>
                     </div>
@@ -147,17 +257,17 @@
 
                         <strong>
                             @if (
-                                citaActual
-                                    .fecha_hora_finalizacion_real
+                            citaActual
+                            .fecha_hora_finalizacion_real
                             ) {
-                                {{
-                                    formatearFechaHora(
-                                        citaActual
-                                            .fecha_hora_finalizacion_real
-                                    )
-                                }}
+                            {{
+                            formatearFechaHora(
+                            citaActual
+                            .fecha_hora_finalizacion_real
+                            )
+                            }}
                             } @else {
-                                No registrada
+                            No registrada
                             }
                         </strong>
                     </div>
@@ -167,10 +277,10 @@
 
                         <strong>
                             {{
-                                formatearMonto(
-                                    citaActual
-                                        .monto_estimado
-                                )
+                            formatearMonto(
+                            citaActual
+                            .monto_estimado
+                            )
                             }}
                         </strong>
                     </div>
@@ -194,11 +304,11 @@
 
                         <strong>
                             {{
-                                citaActual.cliente.nombre
+                            citaActual.cliente.nombre
                             }}
 
                             {{
-                                citaActual.cliente.apellidos
+                            citaActual.cliente.apellidos
                             }}
                         </strong>
                     </div>
@@ -208,7 +318,7 @@
 
                         <strong>
                             {{
-                                citaActual.cliente.email
+                            citaActual.cliente.email
                             }}
                         </strong>
                     </div>
@@ -232,17 +342,17 @@
 
                         <strong>
                             {{
-                                citaActual
-                                    .profesional
-                                    .usuario
-                                    .nombre
+                            citaActual
+                            .profesional
+                            .usuario
+                            .nombre
                             }}
 
                             {{
-                                citaActual
-                                    .profesional
-                                    .usuario
-                                    .apellidos
+                            citaActual
+                            .profesional
+                            .usuario
+                            .apellidos
                             }}
                         </strong>
                     </div>
@@ -252,9 +362,9 @@
 
                         <strong>
                             {{
-                                citaActual
-                                    .profesional
-                                    .titulo
+                            citaActual
+                            .profesional
+                            .titulo
                             }}
                         </strong>
                     </div>
@@ -264,10 +374,10 @@
 
                         <strong>
                             {{
-                                citaActual
-                                    .profesional
-                                    .usuario
-                                    .email
+                            citaActual
+                            .profesional
+                            .usuario
+                            .email
                             }}
                         </strong>
                     </div>
@@ -277,10 +387,10 @@
 
                         <strong>
                             {{
-                                citaActual
-                                    .profesional
-                                    .telefono ||
-                                'No disponible'
+                            citaActual
+                            .profesional
+                            .telefono ||
+                            'No disponible'
                             }}
                         </strong>
                     </div>
@@ -307,9 +417,9 @@
 
                         <strong>
                             {{
-                                citaActual
-                                    .servicio
-                                    .servicio
+                            citaActual
+                            .servicio
+                            .servicio
                             }}
                         </strong>
                     </div>
@@ -321,11 +431,11 @@
 
                         <strong>
                             {{
-                                formatearDuracion(
-                                    citaActual
-                                        .servicio
-                                        .duracion_estimada
-                                )
+                            formatearDuracion(
+                            citaActual
+                            .servicio
+                            .duracion_estimada
+                            )
                             }}
                         </strong>
                     </div>
@@ -337,11 +447,11 @@
 
                         <strong>
                             {{
-                                formatearMonto(
-                                    citaActual
-                                        .servicio
-                                        .precio
-                                )
+                            formatearMonto(
+                            citaActual
+                            .servicio
+                            .precio
+                            )
                             }}
                         </strong>
                     </div>
@@ -353,10 +463,10 @@
 
                         <strong>
                             {{
-                                citaActual
-                                    .servicio
-                                    .descripcion ||
-                                'Sin descripción'
+                            citaActual
+                            .servicio
+                            .descripcion ||
+                            'Sin descripción'
                             }}
                         </strong>
                     </div>
@@ -368,30 +478,55 @@
             <!-- COMENTARIO -->
             <section class="detail-section">
 
+                    <h2>
+                        <mat-icon>comment</mat-icon>
+                        Comentario del cliente
+                    </h2>
+
+                    <div class="detail-item full comment-box">
+
+                        <span>
+                            Descripción o comentario
+                        </span>
+
+                        <p>
+                            {{
+                            citaActual
+                            .comentario_cliente ||
+                            'No se registraron comentarios.'
+                            }}
+                        </p>
+
+                    </div>
+
+            </section>
+
+        </div>
+
+        <!-- Comentario profesional -->
+        @if (citaActual.comentario_profesional) {
+
+            <section class="detail-section">
+
                 <h2>
-                    <mat-icon>comment</mat-icon>
-                    Comentario del cliente
+                    <mat-icon>support_agent</mat-icon>
+                    Comentario del profesional
                 </h2>
 
                 <div class="detail-item full comment-box">
 
                     <span>
-                        Descripción o comentario
+                        Respuesta o motivo registrado
                     </span>
 
                     <p>
-                        {{
-                            citaActual
-                                .comentario_cliente ||
-                            'No se registraron comentarios.'
-                        }}
+                        {{ citaActual.comentario_profesional }}
                     </p>
 
                 </div>
 
             </section>
-
-        </div>
+        }
 
     }
 

@@ -1,7 +1,12 @@
 import { Router } from "express";
 import { usuarioController } from "../controllers/usuario.controller";
 import { asyncHandler } from "../middlewares/async-handler.middleware";
-import { createUsuarioSchema, updateUsuarioSchema } from "../dtos/usuario.dto";
+import {
+    createUsuarioSchema,
+    updateUsuarioSchema,
+    registerUsuarioSchema,
+    loginUsuarioSchema,
+} from "../dtos/usuario.dto";
 import { validateRequest } from "../middlewares/validate-request.middleware";
 
 export class UsuarioRoutes {
@@ -9,18 +14,31 @@ export class UsuarioRoutes {
         const router = Router();
         const controller = new usuarioController();
 
-        // GET
-        router.get('/', asyncHandler(controller.listar));
-        router.get('/config',asyncHandler(controller.obtenerConfiguracion));
-        router.get('/:id', asyncHandler(controller.obtenerPorId));
+        /// Get
 
-        // POST / PUT
-        router.post("/",validateRequest(createUsuarioSchema),asyncHandler(controller.crear));
-        router.put( "/:id", validateRequest(updateUsuarioSchema), asyncHandler(controller.actualizar));
+            //listado
+                router.get('/', asyncHandler(controller.listar));
 
-        // CAMBIO DE ESTADO
-        router.put('/activar/:id', asyncHandler(controller.activar));
-        router.put('/bloquear/:id', asyncHandler(controller.bloquear));
+            //configuración
+            router.get('/config',asyncHandler(controller.obtenerConfiguracion));
+
+            //Autenticación
+            router.post("/register",validateRequest(registerUsuarioSchema),asyncHandler(controller.registrar));
+            router.post("/login",validateRequest(loginUsuarioSchema),asyncHandler(controller.login));
+
+            //Usuario por ID
+            router.get('/:id', asyncHandler(controller.obtenerPorId));
+
+
+        /// Post / Put
+
+            //Creación general
+            router.post("/",validateRequest(createUsuarioSchema),asyncHandler(controller.crear));
+            router.put( "/:id", validateRequest(updateUsuarioSchema), asyncHandler(controller.actualizar));
+
+            //Cambios estado
+            router.put('/activar/:id', asyncHandler(controller.activar));
+            router.put('/bloquear/:id', asyncHandler(controller.bloquear));
 
         return router;
     }

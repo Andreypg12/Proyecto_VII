@@ -4,47 +4,22 @@ import {
     signal
 } from '@angular/core';
 
-import { Router } from '@angular/router';
+import {
+    ActivatedRoute,
+    Router
+} from '@angular/router';
+
 import { forkJoin } from 'rxjs';
-
-import { CitaForm } from
-    '../../../shared/components/cita-form/cita-form';
-
-import {
-    CreateCitaDto, Modalidad
-} from '../../../core/models/cita.model';
-
-import {
-    Usuario
-} from '../../../core/models/usuario.model';
-
-import {
-    Profesional
-} from '../../../core/models/profesional.model';
-
-import {
-    Servicio
-} from '../../../core/models/servicio.model';
-
-import {
-    UsuarioService
-} from '../../../core/services/usuarios.service';
-
-import {
-    ProfesionalService
-} from '../../../core/services/profesional.service';
-
-import {
-    ServicioService
-} from '../../../core/services/servicio.service';
-
-import {
-    CitaService
-} from '../../../core/services/cita.service';
-
-import {
-    NotificationService
-} from '../../../core/services/notification.service';
+import { CitaForm } from'../../../shared/components/cita-form/cita-form';
+import {CreateCitaDto, Modalidad} from '../../../core/models/cita.model';
+import {Usuario} from '../../../core/models/usuario.model';
+import {Profesional} from '../../../core/models/profesional.model';
+import {Servicio} from '../../../core/models/servicio.model';
+import {UsuarioService} from '../../../core/services/usuarios.service';
+import {ProfesionalService} from '../../../core/services/profesional.service';
+import {ServicioService} from '../../../core/services/servicio.service';
+import {CitaService} from '../../../core/services/cita.service';
+import {NotificationService} from '../../../core/services/notification.service';
 
 @Component({
     selector: 'app-cita-create',
@@ -65,16 +40,25 @@ export class CitaCreate implements OnInit {
     loading = signal(false);
     saving = signal(false);
 
+    fechaInicial: string | null = null;
+
     constructor(
         private usuarioService: UsuarioService,
         private profesionalService: ProfesionalService,
         private servicioService: ServicioService,
         private citaService: CitaService,
         private notification: NotificationService,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) { }
 
     ngOnInit(): void {
+
+        this.fechaInicial =
+            this.route.snapshot.queryParamMap.get(
+                'fecha'
+            );
+
         this.cargarDatosFormulario();
     }
 
