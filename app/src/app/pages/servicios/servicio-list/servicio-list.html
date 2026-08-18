@@ -95,8 +95,12 @@
 }
 
 <section class="services-grid">
-    @for (service of serviciosFiltrados(); track service.id) {
-    <mat-card class="service-card" [class.inactive]="!service.estado">
+    @for (service of serviciosFiltrados(); track service.id; let i = $index) {
+    <mat-card class="service-card" [class.inactive]="!service.estado"
+        [style.animation-delay]="(i * 45) + 'ms'">
+        <!-- Barra de acento superior -->
+        <div class="card-accent"></div>
+
         <!-- Badge de estado en esquina -->
         <div class="status-indicator" [class.active]="service.estado" [class.inactive]="!service.estado"
             matTooltip="{{ service.estado ? 'Disponible' : 'No disponible' }}" matTooltipPosition="above">
@@ -104,31 +108,61 @@
         </div>
 
         <mat-card-content>
-            <div class="service-header">
-                <span class="category">
-                    {{service.categoria?.categoria || 'Sin Categoría'}}
+            <div class="card-top">
+                <span class="chip chip-categoria">
+                    <mat-icon>category</mat-icon>
+                    {{ service.categoria?.categoria || 'General' }}
+                </span>
+                @if (service.duracion_estimada) {
+                <span class="chip chip-duracion">
+                    <mat-icon>schedule</mat-icon>
+                    {{ formatearDuracion(service.duracion_estimada) }}
+                </span>
+                }
+            </div>
+
+            <h2 class="card-titulo">{{ service.servicio }}</h2>
+            <p class="card-descripcion">{{ service.descripcion }}</p>
+
+            <div class="card-profesional">
+                @if (service.profesional.imagen_profesional) {
+                <img class="pro-avatar" [src]="service.profesional!.imagen_profesional"
+                    [alt]="service.profesional!.usuario.nombre" />
+                } @else {
+                <span class="pro-avatar pro-iniciales">
+                    {{ iniciales(service.profesional.usuario.nombre) }}
+                </span>
+                }
+                <div class="pro-info">
+                    <span class="pro-rol">Profesional</span>
+                    <strong>
+                        {{ service.profesional.usuario.nombre }}
+                        {{ service.profesional.usuario.apellidos }}
+                    </strong>
+                    <span class="pro-titulo">{{ service.profesional.titulo }}</span>
+                </div>
+                <span class="chip chip-modalidad" matTooltip="Modalidad" matTooltipPosition="above">
+                    <mat-icon>location_on</mat-icon>
+                    {{ etiquetaModalidad(service.modalidad) }}
                 </span>
             </div>
 
-            <!-- Línea separadora -->
-            <div class="category-divider"></div>
+            @if (service.especialidades && service.especialidades.length > 0) {
+            <div class="especialidades">
+                @for (esp of service.especialidades; track esp.id) {
+                @if (esp.estado === true) {
+                <span class="especialidad-tag">{{ esp.especialidad }}</span>
+                }
+                }
+            </div>
+            }
 
-            <h2>{{ service.servicio }}</h2>
-            <p>{{ service.descripcion }}</p>
-
-            <div class="service-meta">
-                <div class="meta-item">
-                    <mat-icon>person</mat-icon>
-                    <span>{{ service.profesional.usuario.nombre || 'Sin profesional' }}</span>
+            <div class="card-footer">
+                <div class="card-precio">
+                    <span class="precio-label">Desde</span>
+                    <span class="precio-valor">${{ service.precio | number }}</span>
                 </div>
-                <div class="meta-item">
-                    <mat-icon>devices</mat-icon>
-                    <span>{{ service.modalidad || 'No especificada' }}</span>
-                </div>
-                <div class="meta-item price">
-                    <strong>${{ service.precio | number }}</strong>
-                </div>
-                <div class="meta-item estado-switch" [class.active]="service.estado" [class.inactive]="!service.estado"
+                <div class="estado-switch" [class.active]="service.estado" [class.inactive]="!service.estado"
                     (click)="cambiarEstado(service, $event)"
                     matTooltip="{{ service.estado ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
                     matTooltipPosition="above">
@@ -136,28 +170,28 @@
                     <span class="switch-label">{{ service.estado ? 'Activo' : 'Inactivo' }}</span>
                 </div>
             </div>
-
-            @if(service.especialidades && service.especialidades.length > 0) {
-            <div class="especialidades">
-                @for (esp of service.especialidades; track esp.id) {
-                @if(esp.estado === true) {
-                <span class="especialidad-tag">{{ esp.especialidad }}</span>
-                }
-                }
-            </div>
-            }
         </mat-card-content>
 
-        <mat-card-actions align="end">
-            <a mat-stroked-button color="accent" [routerLink]="['/servicios/editar', service.id]" class="edit-button">
+        <mat-card-actions align="end" class="card-acciones">
+            <button mat-flat-button class="reservar-btn"
+                [class.reservar-inactivo]="!service.estado"
+                [disabled]="!service.estado"
+                [routerLink]="['/citas/nueva', service.id]">
+                <mat-icon>event_available</mat-icon>
+                Reservar cita
+            </button>
+        </mat-card-actions>
+
+        <div class="admin-row">
+            <a mat-stroked-button class="admin-btn" [routerLink]="['/servicios/editar', service.id]">
                 <mat-icon>edit</mat-icon>
                 Editar
             </a>
-
-            <a mat-stroked-button color="primary" [routerLink]="['/servicios', service.id]" class="view-icon-button">
-                Detalle<mat-icon>more_horiz</mat-icon>
+            <a mat-stroked-button class="admin-btn" [routerLink]="['/servicios', service.id]">
+                <mat-icon>more_horiz</mat-icon>
+                Detalle
             </a>
-        </mat-card-actions>
+        </div>
     </mat-card>
     }
 </section>

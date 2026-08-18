@@ -1,7 +1,7 @@
 <mat-card class="cita-form-card">
     <mat-card-header>
-        <mat-card-title>Registrar cita</mat-card-title>
-        <mat-card-subtitle>Complete la información requerida para programar la cita.</mat-card-subtitle>
+        <mat-card-title>{{ titulo() }}</mat-card-title>
+        <mat-card-subtitle>{{ subtitulo() }}</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -33,6 +33,74 @@
             </section>
 
             <!-- PROFESIONAL Y SERVICIO -->
+            @if (servicioFijo(); as servicio) {
+            <section class="form-section section-fixed">
+                <div class="section-title">
+                    <div>
+                        <h3>Servicio seleccionado</h3>
+                        <p>Viene incluido en tu solicitud y no puede modificarse aquí.</p>
+                    </div>
+                    <span class="fixed-chip">
+                        <mat-icon>lock</mat-icon>
+                        Fijo
+                    </span>
+                </div>
+
+                <div class="servicio-resumen">
+                    <div class="resumen-icono">
+                        <mat-icon>design_services</mat-icon>
+                    </div>
+
+                    <div class="resumen-info">
+                        <span class="resumen-categoria">
+                            {{ servicio.categoria?.categoria || 'Servicio' }}
+                        </span>
+                        <h4>{{ servicio.servicio }}</h4>
+                        @if (servicio.descripcion) {
+                        <p class="resumen-descripcion">{{ servicio.descripcion }}</p>
+                        }
+                        <div class="resumen-meta">
+                            <span class="meta-pill">
+                                <mat-icon>schedule</mat-icon>
+                                {{ formatearDuracion(servicio.duracion_estimada) }}
+                            </span>
+                            <span class="meta-pill">
+                                <mat-icon>location_on</mat-icon>
+                                {{ etiquetaModalidad(servicio.modalidad) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="resumen-precio">
+                        <span class="precio-label">Precio</span>
+                        <span class="precio-valor">${{ servicio.precio | number }}</span>
+                    </div>
+                </div>
+
+                <div class="resumen-profesional">
+                    @if (servicio.profesional.imagen_profesional) {
+                    <img class="pro-avatar" [src]="getImageUrl(servicio.profesional.imagen_profesional)"
+                        alt="Foto del profesional" />
+                    } @else {
+                    <span class="pro-avatar pro-iniciales">
+                        {{ iniciales(servicio.profesional.usuario.nombre) }}
+                    </span>
+                    }
+                    <div class="pro-datos">
+                        <span class="pro-rol">Profesional asignado</span>
+                        <strong>
+                            {{ servicio.profesional.usuario.nombre }}
+                            {{ servicio.profesional.usuario.apellidos }}
+                        </strong>
+                        <span class="pro-titulo">{{ servicio.profesional.titulo }}</span>
+                    </div>
+                    <span class="disponible-chip">
+                        <mat-icon>verified</mat-icon>
+                        Disponible
+                    </span>
+                </div>
+            </section>
+            } @else {
             <section class="form-section section-service">
                 <div class="section-title">
                     <div>
@@ -79,6 +147,7 @@
                     </mat-form-field>
                 </div>
             </section>
+            }
 
             <!-- FECHA, HORA Y MODALIDAD -->
             <section class="form-section section-schedule">

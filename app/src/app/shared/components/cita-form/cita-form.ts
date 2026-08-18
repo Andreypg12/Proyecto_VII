@@ -4,7 +4,8 @@ import {
     effect,
     input,
     output,
-    signal
+    signal,
+    inject
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -33,6 +34,9 @@ import {
 import { Usuario } from '../../../core/models/usuario.model';
 import { Profesional } from '../../../core/models/profesional.model';
 import { Servicio } from '../../../core/models/servicio.model';
+
+import { ProfesionalService } from '../../../core/services/profesional.service';
+
 
 interface HorarioCita {
     inicio: string;
@@ -71,8 +75,16 @@ export class CitaForm {
     saving = input<boolean>(false);
     fechaInicial = input<string | null>(null);
 
+    // Modo "reserva directa": el servicio (y su profesional) ya vienen fijos.
+    servicioFijo = input<Servicio | null>(null);
+
+    titulo = input('Registrar cita');
+    subtitulo = input('Complete la información requerida para programar la cita.');
+
     guardar = output<CreateCitaDto>();
     cancelar = output<void>();
+
+    private readonly profesionalService = inject(ProfesionalService);
 
 
     readonly fechaMinima = this.obtenerFechaLocal(new Date());
@@ -142,6 +154,30 @@ export class CitaForm {
                 (value) => ({
                     ...value,
                     fecha
+                })
+            );
+        });
+
+        effect(() => {
+
+            const servicio =
+                this.servicioFijo();
+
+            if (!servicio) {
+                return;
+            }
+
+            const idProfesional =
+                servicio.id_profesional ??
+                servicio.profesional?.id ??
+                null;
+
+            this.citaModel.update(
+                (value) => ({
+                    ...value,
+                    id_profesional: idProfesional,
+                    id_servicio: servicio.id,
+                    modalidad: servicio.modalidad || value.modalidad
                 })
             );
         });
@@ -294,6 +330,47 @@ export class CitaForm {
         }));
     }
 
+    formatearDuracion(minutos: number): string {
+        if (!minutos || minutos <= 0) {
+            return '—';
+        }
+
+        const horas = Math.floor(minutos / 60);
+        const restantes = minutos % 60;
+
+        if (horas > 0) {
+            return restantes > 0
+                ? `${horas} h ${restantes} min`
+                : `${horas} hora${horas > 1 ? 's' : ''}`;
+        }
+
+        return `${minutos} min`;
+    }
+
+    etiquetaModalidad(modalidad?: string): string {
+        if (!modalidad) {
+            return 'No especificada';
+        }
+
+        const etiquetas: Record<string, string> = {
+            PRESENCIAL: 'Presencial',
+            VIRTUAL: 'Virtual',
+            'HÍBRIDA': 'Híbrida'
+        };
+
+        return etiquetas[modalidad] ?? modalidad;
+    }
+
+    iniciales(nombre: string): string {
+        return (nombre || '')
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((parte) => parte.charAt(0))
+            .join('')
+            .toUpperCase();
+    }
+
     submit(): void {
         if (this.isSubmitting()) {
             return;
@@ -395,4 +472,8 @@ export class CitaForm {
 
         input.focus();
     }
+    getImageUrl(imageName: string): string {
+        return this.profesionalService.getImageUrl(imageName);
+    }
 }
+

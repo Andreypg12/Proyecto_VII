@@ -1,0 +1,66 @@
+<section class="reserva-page">
+
+    <header class="reserva-header">
+        <div class="reserva-header-glow"></div>
+        <span class="tech-eyebrow">Reserva en línea</span>
+        <h1>Reservar cita</h1>
+        <p>
+            Confirmá el servicio, elegí el momento y el profesional coordinará
+            contigo los siguientes pasos.
+        </p>
+    </header>
+
+    @if (loading()) {
+    <div class="state loading">
+        <mat-spinner diameter="46" />
+        <p>Cargando el servicio…</p>
+    </div>
+    } @else if (error(); as mensaje) {
+    <div class="state error">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ mensaje }}</p>
+        <button mat-stroked-button class="volver-btn" (click)="volver()">
+            <mat-icon>arrow_back</mat-icon>
+            Volver a servicios
+        </button>
+    </div>
+    } @else if (servicio(); as servicio) {
+    <div class="reserva-strip">
+        <div class="strip-izquierdo">
+            <span class="strip-categoria">
+                {{ servicio.categoria?.categoria || 'Servicio' }}
+            </span>
+            <h2>{{ servicio.servicio }}</h2>
+        </div>
+        <div class="strip-meta">
+            <span class="strip-pill">
+                <mat-icon>person</mat-icon>
+                {{ servicio.profesional.usuario.nombre }}
+                {{ servicio.profesional.usuario.apellidos }}
+            </span>
+            <span class="strip-pill">
+                <mat-icon>schedule</mat-icon>
+                {{ formatearDuracion(servicio.duracion_estimada) }}
+            </span>
+            <span class="strip-pill">
+                <mat-icon>location_on</mat-icon>
+                {{ etiquetaModalidad(servicio.modalidad) }}
+            </span>
+        </div>
+    </div>
+
+    <app-cita-form
+        [clientes]="clientes()"
+        [profesionales]="servicio.profesional ? [servicio.profesional] : []"
+        [servicios]="[servicio]"
+        [modalidades]="modalidades()"
+        [saving]="saving()"
+        [servicioFijo]="servicio"
+        titulo="Reservar cita"
+        subtitulo="Completá tu información y seleccioná el momento que prefieras para coordinar con el profesional."
+        (guardar)="guardarCita($event)"
+        (cancelar)="cancelar()"
+    />
+    }
+
+</section>

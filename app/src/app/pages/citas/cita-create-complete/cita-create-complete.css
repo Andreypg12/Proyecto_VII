@@ -1,0 +1,213 @@
+:host {
+    display: block;
+    width: 100%;
+}
+
+.reserva-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 0 56px;
+}
+
+/* ===== Encabezado ===== */
+.reserva-header {
+    position: relative;
+    padding: 12px 0 28px;
+    margin-bottom: 8px;
+}
+
+.reserva-header-glow {
+    position: absolute;
+    top: -90px;
+    right: -40px;
+    width: 360px;
+    height: 360px;
+    background: radial-gradient(circle, rgba(186, 242, 255, 0.12), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.reserva-header h1 {
+    margin: 10px 0 10px;
+    font-family: var(--th-font-display);
+    font-size: clamp(2.1rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--th-on-surface);
+}
+
+.reserva-header p {
+    margin: 0;
+    max-width: 620px;
+    font-family: var(--th-font-body);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--th-on-surface-variant);
+}
+
+/* ===== Franja de resumen del servicio ===== */
+.reserva-strip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+    padding: 18px 24px;
+    background: var(--th-surface-container);
+    border: 1px solid var(--th-outline-variant);
+    border-radius: var(--th-radius-xl);
+    box-shadow: 0 8px 30px rgba(1, 15, 31, 0.5);
+    overflow: hidden;
+    animation: strip-in 300ms var(--th-ease-out) both;
+}
+
+.reserva-strip::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--th-primary), transparent);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+@keyframes strip-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reserva-strip {
+        animation: none;
+    }
+}
+
+.strip-categoria {
+    display: inline-block;
+    font-family: var(--th-font-body);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--th-primary);
+    margin-bottom: 4px;
+}
+
+.strip-izquierdo h2 {
+    margin: 0;
+    font-family: var(--th-font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--th-on-surface);
+}
+
+.strip-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.strip-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: var(--th-radius-full);
+    background: var(--th-surface-container-high);
+    border: 1px solid var(--th-outline-variant);
+    font-family: var(--th-font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--th-on-surface-variant);
+}
+
+.strip-pill mat-icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+    color: var(--th-primary);
+}
+
+/* ===== Estados ===== */
+.state {
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    text-align: center;
+    padding: 2rem;
+}
+
+.state p {
+    margin: 0;
+    font-family: var(--th-font-body);
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--th-on-surface-variant);
+}
+
+.state.loading mat-spinner {
+    margin-bottom: 4px;
+}
+
+.state.error mat-icon {
+    font-size: 3rem;
+    width: 3rem;
+    height: 3rem;
+    color: var(--th-error);
+}
+
+.state.error p {
+    color: var(--th-error);
+}
+
+.volver-btn {
+    margin-top: 6px;
+    border-radius: var(--th-radius-full) !important;
+    color: var(--th-on-surface-variant) !important;
+    border-color: var(--th-outline-variant) !important;
+    font-family: var(--th-font-body) !important;
+    font-weight: 600 !important;
+    transition: color 220ms ease, border-color 220ms ease, background-color 220ms ease !important;
+}
+
+.volver-btn:hover {
+    color: var(--th-primary) !important;
+    border-color: var(--th-primary) !important;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+    .reserva-page {
+        padding: 8px 0 40px;
+    }
+
+    .reserva-header {
+        padding: 8px 0 20px;
+    }
+
+    .reserva-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 18px;
+        margin-bottom: 20px;
+    }
+
+    .strip-izquierdo h2 {
+        font-size: 1.15rem;
+    }
+}
