@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NgStyle } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MagicBentoComponent } from '../../shared/components/magic-bento/magic-bento';
 
 interface Specialty {
   label: string;
@@ -56,6 +57,7 @@ const TYPE_PAUSE_MS = 20000;
     MatIconModule,
     MatButtonModule,
     RouterLink,
+    MagicBentoComponent,
   ],
 })
 export class Home implements OnInit, OnDestroy {

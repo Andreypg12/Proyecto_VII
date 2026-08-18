@@ -94,21 +94,34 @@
     <div class="section-container">
         <div class="section-header">
             <span class="tech-eyebrow">Ventajas</span>
-            <h2 class="tech-section-title">Superioridad técnica</h2>
+            <h2 class="tech-section-title shiny-text">Superioridad técnica</h2>
             <p class="tech-section-sub">Construida sobre una base de rendimiento inquebrantable y escalabilidad modular.</p>
         </div>
 
-        <div class="bento-grid">
-            @for (feature of features(); track feature.title) {
-            <div class="bento-card glass-panel" [class]="feature.span">
-                <div class="bento-icon">
-                    <mat-icon>{{ feature.icon }}</mat-icon>
+        <app-magic-bento
+            [enableStars]="true"
+            [enableSpotlight]="true"
+            [enableBorderGlow]="true"
+            [enableTilt]="true"
+            [enableMagnetism]="true"
+            [clickEffect]="true"
+            [spotlightRadius]="300"
+            [particleCount]="8"
+            glowColor="0, 218, 248">
+
+            <div class="bento-grid">
+                @for (feature of features(); track feature.title) {
+                <div class="bento-card glass-panel mbento-border-glow" [class]="feature.span">
+                    <div class="bento-icon">
+                        <mat-icon>{{ feature.icon }}</mat-icon>
+                    </div>
+                    <h3>{{ feature.title }}</h3>
+                    <p>{{ feature.desc }}</p>
                 </div>
-                <h3>{{ feature.title }}</h3>
-                <p>{{ feature.desc }}</p>
+                }
             </div>
-            }
-        </div>
+
+        </app-magic-bento>
     </div>
 </section>
 

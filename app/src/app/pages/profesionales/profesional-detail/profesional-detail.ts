@@ -12,12 +12,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ProfesionalService } from '../../../core/services/profesional.service';
 import { Profesional } from '../../../core/models/profesional.model';
+import { MagicBentoComponent } from '../../../shared/components/magic-bento/magic-bento';
 
 @Component({
   selector: 'app-profesional-detail',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -25,6 +27,7 @@ import { Profesional } from '../../../core/models/profesional.model';
     MatChipsModule,
     MatDividerModule,
     MatTooltipModule,
+    MagicBentoComponent,
   ],
   templateUrl: './profesional-detail.html',
   styleUrl: './profesional-detail.css',
@@ -100,7 +103,12 @@ export class ProfesionalDetail implements OnInit {
       'PRESENCIAL': { label: 'Presencial', icon: 'location_on' },
       'HÍBRIDA': { label: 'Híbrida', icon: 'swap_horiz' },
     };
-    return map[modalidad] || { label: modalidad || 'No especificada', icon: 'help' };
+    return map[modalidad] || { label: modalidad || 'No especificada', icon: 'help_outline' };
+  }
+
+  iniciales(nombre: string): string {
+    if (!nombre) return '?';
+    return nombre.split(' ').map(p => p.charAt(0)).slice(0, 2).join('').toUpperCase();
   }
 
   // Helper para estado del servicio

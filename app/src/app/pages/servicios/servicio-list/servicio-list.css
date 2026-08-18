@@ -1,3 +1,10 @@
+/* ===== HOST ===== */
+:host {
+    display: block;
+    padding: 0 var(--th-margin-desktop, 48px);
+    box-sizing: border-box;
+}
+
 /* ===== PAGE HEADER ===== */
 .page-header {
     margin-bottom: 1.5rem;

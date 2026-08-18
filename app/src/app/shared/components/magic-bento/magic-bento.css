@@ -1,0 +1,86 @@
+/* ═══════════════════════════════════════════════════════
+   MagicBento — Angular port · TechHire cyan theme
+   Adapted from react-bits/MagicBento
+   Uses ViewEncapsulation.None — all selectors are global
+   ═══════════════════════════════════════════════════════ */
+
+/* ── GLOBAL SPOTLIGHT ────────────────────────── */
+.mbento-global-spotlight {
+    mix-blend-mode: screen;
+    will-change: transform, opacity;
+    z-index: 200 !important;
+    pointer-events: none;
+}
+
+/* ── BORDER GLOW (pseudo-element on each card) ── */
+.mbento-border-glow {
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+
+    --glow-x: 50%;
+    --glow-y: 50%;
+    --glow-intensity: 0;
+    --glow-radius: 180px;
+}
+
+.mbento-border-glow::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: radial-gradient(
+        var(--glow-radius) circle at var(--glow-x) var(--glow-y),
+        rgba(0, 218, 248, calc(var(--glow-intensity) * 0.9)) 0%,
+        rgba(0, 218, 248, calc(var(--glow-intensity) * 0.5)) 25%,
+        rgba(0, 218, 248, calc(var(--glow-intensity) * 0.15)) 50%,
+        transparent 70%
+    );
+    border-radius: inherit;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.mbento-border-glow[style*="--glow-intensity"]:not([style*="--glow-intensity: 0"]):not([style*="--glow-intensity:0"])::after {
+    opacity: 1;
+}
+
+/* ── PARTICLES ─────────────────────────────────── */
+.mbento-particle::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: rgba(0, 218, 248, 0.2);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+/* ── HOVER LIFT ────────────────────────────────── */
+@media (hover: hover) and (pointer: fine) {
+    .mbento-border-glow:hover {
+        box-shadow:
+            0 4px 20px rgba(0, 54, 63, 0.4),
+            0 0 30px rgba(0, 218, 248, 0.12);
+    }
+}
+
+/* ── REDUCED MOTION ────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .mbento-border-glow {
+        transition: none !important;
+    }
+}
