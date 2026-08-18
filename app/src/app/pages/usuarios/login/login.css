@@ -1,0 +1,483 @@
+:host {
+    display: block;
+}
+
+
+/* ==========================================
+   PÁGINA
+========================================== */
+
+.login-page {
+    min-height: calc(100dvh - 80px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 60px 24px;
+
+    background:
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(0, 218, 248, 0.05),
+            transparent 38%
+        );
+}
+
+
+/* ==========================================
+   CONTENEDOR LOGIN
+========================================== */
+
+.login-wrapper {
+    width: min(100%, 415px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* ==========================================
+   TARJETA
+========================================== */
+
+.login-card {
+    width: 100%;
+
+    padding: 32px;
+
+    border: 1px solid
+        var(
+            --th-outline-variant,
+            rgba(255, 255, 255, 0.12)
+        );
+
+    border-radius:
+        var(--th-radius-xl, 10px);
+
+    background:
+        var(
+            --th-surface-container,
+            rgba(18, 39, 56, 0.95)
+        );
+
+    box-shadow:
+        0 24px 70px
+        rgba(0, 0, 0, 0.2);
+}
+
+
+/* ==========================================
+   ENCABEZADO
+========================================== */
+
+.login-card-header {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 28px;
+}
+
+
+.login-icon {
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border-radius: 11px;
+
+    color:
+        var(--th-primary, #baf2ff);
+
+    background:
+        rgba(186, 242, 255, 0.08);
+}
+
+
+.login-icon mat-icon {
+    font-size: 21px;
+
+    width: 21px;
+    height: 21px;
+}
+
+
+.login-heading span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.1em;
+
+    color:
+        var(--th-primary, #baf2ff);
+}
+
+
+.login-heading h1 {
+    margin: 0;
+
+    font-family:
+        var(
+            --th-font-display,
+            Montserrat,
+            sans-serif
+        );
+
+    font-size: 27px;
+    font-weight: 700;
+
+    color:
+        var(--th-on-surface, #d4e4fa);
+}
+
+
+/* ==========================================
+   FORMULARIO
+========================================== */
+
+.login-form {
+    display: grid;
+
+    gap: 20px;
+}
+
+
+.form-group {
+    display: grid;
+
+    gap: 8px;
+}
+
+
+.form-group label {
+    font-family:
+        var(
+            --th-font-body,
+            Inter,
+            sans-serif
+        );
+
+    font-size: 13px;
+    font-weight: 600;
+
+    color:
+        var(
+            --th-on-surface-variant,
+            #bac9cd
+        );
+}
+
+
+/* ==========================================
+   INPUT
+========================================== */
+
+.input-container {
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 13px;
+
+    border: 1px solid
+        rgba(255, 255, 255, 0.12);
+
+    border-radius: 10px;
+
+    background:
+        rgba(5, 20, 32, 0.4);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.input-container:focus-within {
+    border-color:
+        rgba(186, 242, 255, 0.42);
+
+    background:
+        rgba(5, 20, 32, 0.6);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0, 218, 248, 0.05);
+}
+
+
+.input-container > mat-icon {
+    width: 18px;
+    height: 18px;
+
+    font-size: 18px;
+
+    flex-shrink: 0;
+
+    color:
+        rgba(186, 242, 255, 0.5);
+}
+
+
+.input-container input {
+    width: 100%;
+
+    border: 0;
+    outline: 0;
+
+    font-family:
+        var(
+            --th-font-body,
+            Inter,
+            sans-serif
+        );
+
+    font-size: 14px;
+
+    color:
+        var(--th-on-surface, #d4e4fa);
+
+    background: transparent;
+}
+
+
+.input-container input::placeholder {
+    color:
+        rgba(186, 201, 205, 0.4);
+}
+
+
+/* ==========================================
+   MOSTRAR CONTRASEÑA
+========================================== */
+
+.password-toggle {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    color:
+        rgba(186, 201, 205, 0.6);
+
+    background: transparent;
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+.password-toggle:hover {
+    color:
+        var(--th-primary, #baf2ff);
+
+    background:
+        rgba(186, 242, 255, 0.06);
+}
+
+
+.password-toggle mat-icon {
+    width: 20px;
+    height: 20px;
+
+    font-size: 20px;
+}
+
+
+/* ==========================================
+   BOTÓN LOGIN
+========================================== */
+
+.login-submit {
+    min-height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-top: 2px;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    font-family:
+        var(
+            --th-font-body,
+            Inter,
+            sans-serif
+        );
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #08212a;
+
+    background:
+        var(--th-primary, #baf2ff);
+
+    transition:
+        transform 0.16s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+
+.login-submit mat-icon {
+    width: 20px;
+    height: 20px;
+
+    font-size: 20px;
+}
+
+
+.login-submit:hover {
+    transform: translateY(-1px);
+
+    filter: brightness(1.04);
+
+    box-shadow:
+        0 8px 24px
+        rgba(0, 218, 248, 0.12);
+}
+
+
+.login-submit:active {
+    transform: scale(0.99);
+}
+
+
+/* ==========================================
+   CREAR CUENTA
+========================================== */
+
+.login-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 4px;
+
+    margin-top: 1px;
+
+    font-size: 11px;
+
+    color:
+        rgba(186, 201, 205, 0.55);
+}
+
+
+.register-placeholder {
+    font-weight: 700;
+
+    color:
+        var(--th-primary, #baf2ff);
+}
+
+
+/* ==========================================
+   BADGE INFERIOR
+========================================== */
+
+.platform-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 24px;
+
+    padding: 7px 15px;
+
+    border: 1px solid
+        rgba(186, 242, 255, 0.32);
+
+    border-radius: 9999px;
+
+    font-family:
+        var(
+            --th-font-body,
+            Inter,
+            sans-serif
+        );
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+
+    color:
+        var(--th-primary, #baf2ff);
+
+    background:
+        rgba(186, 242, 255, 0.05);
+
+    box-shadow:
+        0 0 16px
+        rgba(0, 218, 248, 0.04);
+
+    white-space: nowrap;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 500px) {
+
+    .login-page {
+        padding:
+            40px 18px;
+    }
+
+
+    .login-card {
+        padding:
+            28px 22px;
+    }
+
+
+    .login-heading h1 {
+        font-size: 24px;
+    }
+
+
+    .platform-badge {
+        font-size: 8px;
+
+        padding:
+            7px 11px;
+    }
+
+}

@@ -26,6 +26,8 @@ import { CitaDetail } from "./pages/citas/cita-detail/cita-detail";
 import { CitaCreate } from "./pages/citas/cita-create/cita-create";
 import { CitaCreateComplete } from "./pages/citas/cita-create-complete/cita-create-complete";
 
+import { Login } from './pages/usuarios/login/login';
+
 //Full calendar proceso
 import { CitasAgenda } from './pages/citas/agenda/agenda';
 
@@ -61,6 +63,8 @@ export const routes: Routes = [
             { path: 'citas/nueva/:servicioId', component: CitaCreateComplete, title: 'Reservar cita' },
             { path: 'citas/agenda', component: CitasAgenda, title: 'Agenda fullCalendar'},
             { path: 'citas/:id', component: CitaDetail, title: 'Detalle de cita' },
+
+            { path: 'login', component: Login, title: 'Iniciar sesión | TechHire'},
             
         ]
     },

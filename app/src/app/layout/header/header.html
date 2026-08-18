@@ -58,14 +58,28 @@
         <span class="spacer"></span>
 
         <div class="header-side">
+
+            <a
+                class="login-button"
+                routerLink="/login"
+                routerLinkActive="active">
+                <mat-icon>login</mat-icon>
+                <span>Iniciar sesión</span>
+            </a>
+
             <span class="status-chip" title="Plataforma operativa">
                 <span class="led led-pulse"></span>
                 <span>En línea</span>
             </span>
 
-            <button class="mobile-menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu" aria-label="Abrir menú">
+            <button
+                class="mobile-menu-button"
+                mat-icon-button
+                [matMenuTriggerFor]="mobileMenu"
+                aria-label="Abrir menú">
                 <mat-icon>menu</mat-icon>
             </button>
+
         </div>
 
     </mat-toolbar>
@@ -87,21 +101,31 @@
 </mat-menu>
 
 <mat-menu #mobileMenu="matMenu" class="th-menu">
+
     @for (item of publicMenu(); track item.path) {
-    <a mat-menu-item [routerLink]="item.path">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-    </a>
+        <a mat-menu-item [routerLink]="item.path">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+        </a>
     }
+
     <a mat-menu-item routerLink="/citas/agenda">
         <mat-icon>calendar_month</mat-icon>
         <span>Agenda</span>
     </a>
+
     <mat-divider class="menu-divider"></mat-divider>
     @for (item of menuListados(); track item.path) {
-    <a mat-menu-item [routerLink]="item.path">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-    </a>
+        <a mat-menu-item [routerLink]="item.path">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+        </a>
     }
+
+    <mat-divider class="menu-divider"></mat-divider>
+    <a mat-menu-item routerLink="/login">
+        <mat-icon>login</mat-icon>
+        <span>Iniciar sesión</span>
+    </a>
+
 </mat-menu>
