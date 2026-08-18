@@ -24,6 +24,7 @@ import { ProfesionalDetail } from "./pages/profesionales/profesional-detail/prof
 import { CitasList } from "./pages/citas/citas-list/citas-list";
 import { CitaDetail } from "./pages/citas/cita-detail/cita-detail";
 import { CitaCreate } from "./pages/citas/cita-create/cita-create";
+import { CitaCreateComplete } from "./pages/citas/cita-create-complete/cita-create-complete";
 
 //Full calendar proceso
 import { CitasAgenda } from './pages/citas/agenda/agenda';
@@ -57,7 +58,8 @@ export const routes: Routes = [
 
             { path: 'citas', component: CitasList, title: 'Citas' },
             { path: 'citas/nueva', component: CitaCreate, title: 'Registrar cita' },
-            {path: 'citas/agenda', component: CitasAgenda, title: 'Agenda fullCalendar'},
+            { path: 'citas/nueva/:servicioId', component: CitaCreateComplete, title: 'Reservar cita' },
+            { path: 'citas/agenda', component: CitasAgenda, title: 'Agenda fullCalendar'},
             { path: 'citas/:id', component: CitaDetail, title: 'Detalle de cita' },
             
         ]

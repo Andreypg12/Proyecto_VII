@@ -1,15 +1,30 @@
-<!-- HERO - Estilo Fiverr -->
+<!-- HERO - Estilo TechHire (Stitch) -->
 <section class="hero-section">
+    <div class="hero-bg-ambient">
+        <div class="hero-glow hero-glow-center"></div>
+        <div class="hero-glow hero-glow-corner"></div>
+        <div class="hero-grid"></div>
+    </div>
+
     <div class="hero-container">
         <div class="hero-content">
-            <h1>Encontrá al <span class="accent">desarrollador</span> perfecto para tu proyecto</h1>
-            <p>Conectá con los mejores desarrolladores verificados de Costa Rica. 
-               Filtrá por especialidad, tecnología y tarifa. Agenda en minutos.</p>
-            
+            <span class="tech-eyebrow hero-badge">Plataforma de talento N°1 en Costa Rica</span>
+
+            <h1 class="hero-title">
+                Encontrá al
+                <span class="hero-accent">desarrollador</span>
+                perfecto para tu proyecto
+            </h1>
+
+            <p class="hero-subtitle">
+                Conectá con los mejores desarrolladores verificados de Costa Rica.
+                Filtrá por especialidad, tecnología y tarifa. Agendá en minutos.
+            </p>
+
             <div class="search-wrapper">
                 <div class="search-bar">
                     <mat-icon class="search-icon">search</mat-icon>
-                    <input type="text" placeholder='Intentá "React developer"' [(ngModel)]="searchQuery" />
+                    <input type="text" placeholder='Intentá "React developer"' [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" />
                     <button mat-flat-button class="search-btn" (click)="onSearch()">Buscar</button>
                 </div>
                 <div class="popular-tags">
@@ -20,52 +35,99 @@
                 </div>
             </div>
 
+            <div class="hero-cta-row">
+                <button mat-flat-button class="btn-primary hero-cta" (click)="onSearch()">
+                    Explorar servicios
+                    <mat-icon>arrow_forward</mat-icon>
+                </button>
+                <button mat-stroked-button class="btn-secondary hero-cta" routerLink="/servicios">
+                    Ver especialidades
+                </button>
+            </div>
+
             <div class="trusted-brands">
-                <span class="trusted-label">Confiado por:</span>
+                <span class="trusted-label">Confiado por equipos de</span>
                 <div class="brand-icons">
                     <span class="brand-icon">Google</span>
                     <span class="brand-icon">Microsoft</span>
                     <span class="brand-icon">Amazon</span>
                     <span class="brand-icon">IBM</span>
-                    <span class="brand-icon">Intel</span>
                 </div>
             </div>
         </div>
 
         <div class="hero-visual">
-            <div class="hero-code-block">
+            <div class="hero-code-block glass-panel">
                 <div class="code-header">
                     <span class="dot red"></span>
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
                     <span class="code-title">developer.js</span>
+                    <span class="code-live">
+                        <span class="led led-pulse"></span>
+                        Sistema en línea
+                    </span>
                 </div>
                 <div class="code-body">
-                    <div><span class="c">// TechHire CR</span></div>
-                    <div><span class="k">const</span> developer = &#123;</div>
-                    <div>&nbsp;&nbsp;name: <span class="s">"Andrea"</span>,</div>
-                    <div>&nbsp;&nbsp;rol: <span class="s">"Full Stack"</span>,</div>
-                    <div>&nbsp;&nbsp;stack: <span class="s">"React / Node"</span>,</div>
-                    <div>&nbsp;&nbsp;disponible: <span class="k">true</span>,</div>
-                    <div>&nbsp;&nbsp;rating: <span class="n">5.0</span></div>
-                    <div>&#125;;</div>
+                    @for (line of renderedLines(); track $index) {
+                    <div class="code-line">
+                        @for (tok of line.tokens; track $index) {
+                        <span [class]="tok.c">{{ tok.t }}</span>
+                        }
+                        @if (line.cursor) {
+                        <span class="code-cursor"></span>
+                        }
+                    </div>
+                    }
+                </div>
+                <div class="code-footer">
+                    <span class="code-stat"><mat-icon>bolt</mat-icon> +320 proyectos activos</span>
+                    <span class="code-stat"><mat-icon>group</mat-icon> 184 profesionales</span>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ESPECIALIDADES POPULARES - FULL WIDTH -->
-<section class="specialties-section full-width">
+<!-- VENTAJAS - BENTO GRID (Estilo Stitch) -->
+<section class="bento-section">
     <div class="section-container">
         <div class="section-header">
-            <span class="section-eyebrow">EXPLORAR</span>
-            <h2 class="section-title">Especialidades populares</h2>
+            <span class="tech-eyebrow">Ventajas</span>
+            <h2 class="tech-section-title">Superioridad técnica</h2>
+            <p class="tech-section-sub">Construida sobre una base de rendimiento inquebrantable y escalabilidad modular.</p>
         </div>
+
+        <div class="bento-grid">
+            @for (feature of features(); track feature.title) {
+            <div class="bento-card glass-panel" [class]="feature.span">
+                <div class="bento-icon">
+                    <mat-icon>{{ feature.icon }}</mat-icon>
+                </div>
+                <h3>{{ feature.title }}</h3>
+                <p>{{ feature.desc }}</p>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ESPECIALIDADES POPULARES -->
+<section class="specialties-section">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="tech-eyebrow">Explorar</span>
+            <h2 class="tech-section-title">Especialidades populares</h2>
+            <p class="tech-section-sub">Elegí una especialidad y descubrí a los profesionales que la dominan.</p>
+        </div>
+
         <div class="spec-grid">
             @for (spec of specialties(); track spec.label) {
             <div class="spec-card" (click)="onSpecClick(spec)">
-                <div class="spec-icon-wrapper">
+                <div class="spec-status">
+                    <span class="led led-pulse"></span>
+                </div>
+                <div class="spec-icon-wrapper" [ngStyle]="{ 'background': spec.bg, 'color': spec.color }">
                     <mat-icon>{{ spec.icon }}</mat-icon>
                 </div>
                 <div class="spec-info">
@@ -81,16 +143,19 @@
     </div>
 </section>
 
-<!-- CTA BANNER - FULL WIDTH -->
-<section class="cta-banner full-width">
-    <div class="section-container">
+<!-- CTA FINAL -->
+<section class="cta-section">
+    <div class="cta-banner glass-panel">
+        <div class="cta-glow"></div>
         <div class="cta-content">
             <div class="cta-text">
-                <h2>Tu talento, al alcance de un clic</h2>
-                <p>Regístrate como profesional y empezá a recibir solicitudes de cita hoy.</p>
+                <span class="tech-eyebrow">Tu talento, al alcance de un clic</span>
+                <h2 class="tech-section-title">Únete a la red</h2>
+                <p>Registrate como profesional y empezá a recibir solicitudes de cita hoy mismo.</p>
             </div>
-            <button mat-flat-button class="cta-btn" routerLink="/registro">
-                Unirme como dev <mat-icon>arrow_forward</mat-icon>
+            <button mat-flat-button class="btn-primary cta-btn" routerLink="/registro">
+                Unirme como profesional
+                <mat-icon>arrow_forward</mat-icon>
             </button>
         </div>
     </div>

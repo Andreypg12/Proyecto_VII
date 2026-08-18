@@ -228,6 +228,47 @@ export class ServicioList implements OnInit, OnDestroy {
     return precio >= this.precioMin() && precio <= this.precioMax();
   }
 
+  formatearDuracion(minutos: number): string {
+    if (!minutos || minutos <= 0) {
+      return '—';
+    }
+
+    const horas = Math.floor(minutos / 60);
+    const restantes = minutos % 60;
+
+    if (horas > 0) {
+      return restantes > 0
+        ? `${horas} h ${restantes} min`
+        : `${horas} hora${horas > 1 ? 's' : ''}`;
+    }
+
+    return `${minutos} min`;
+  }
+
+  etiquetaModalidad(modalidad?: string): string {
+    if (!modalidad) {
+      return 'No especificada';
+    }
+
+    const etiquetas: Record<string, string> = {
+      PRESENCIAL: 'Presencial',
+      VIRTUAL: 'Virtual',
+      'HÍBRIDA': 'Híbrida'
+    };
+
+    return etiquetas[modalidad] ?? modalidad;
+  }
+
+  iniciales(nombre: string): string {
+    return (nombre || '')
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((parte) => parte.charAt(0))
+      .join('')
+      .toUpperCase();
+  }
+
   async cambiarEstado(service: Servicio, event: Event): Promise<void> {
     event.preventDefault();
     event.stopPropagation();

@@ -1,61 +1,83 @@
-<header class="site-header">
+<header class="site-header" [class.is-scrolled]="scrolled()">
     <mat-toolbar class="toolbar">
 
         <a class="brand" routerLink="/">
-            <img src="http://localhost:3000/images/logo.png" class="logo-img">
+            <span class="brand-logo">
+                <img src="http://localhost:3000/images/logo.png" class="logo-img" alt="TechHire">
+            </span>
+            <span class="brand-text">
+                <strong>TechHire</strong>
+                <small>Costa Rica</small>
+            </span>
         </a>
 
         <nav class="desktop-nav">
-
-            @for (item of publicMenu(); track item.path) {
+            <div class="nav-group" role="tablist" aria-label="Navegación principal">
+                @for (item of publicMenu(); track item.path) {
                 <a
-                    mat-button
+                    class="nav-pill"
+                    role="tab"
+                    [attr.aria-selected]="false"
                     [routerLink]="item.path"
-                    routerLinkActive="active-link"
+                    routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: item.path === '/' }">
 
                     <mat-icon>{{ item.icon }}</mat-icon>
                     <span>{{ item.label }}</span>
                 </a>
-            }
+                }
 
-            <!-- Botón para abrir la agenda -->
-            <a
+                <a
+                    class="nav-pill"
+                    role="tab"
+                    [attr.aria-selected]="false"
+                    routerLink="/citas/agenda"
+                    routerLinkActive="active">
+
+                    <mat-icon>calendar_month</mat-icon>
+                    <span>Agenda</span>
+                </a>
+            </div>
+
+            <span class="nav-divider" aria-hidden="true"></span>
+
+            <button
                 mat-button
-                routerLink="/citas/agenda"
-                routerLinkActive="active-link">
+                class="menu-trigger"
+                [class.is-open]="listadosOpen()"
+                (menuOpened)="setListadosOpen(true)"
+                (menuClosed)="setListadosOpen(false)"
+                [matMenuTriggerFor]="ListMenu">
 
-                <mat-icon>calendar_month</mat-icon>
-                <span>Agenda</span>
-            </a>
-
-            <button mat-button [matMenuTriggerFor]="ListMenu">
-                <mat-icon>list</mat-icon>
-                <span>Listados</span>
+                <mat-icon>apps</mat-icon>
+                <span>Explorar</span>
+                <mat-icon class="caret">expand_more</mat-icon>
             </button>
-
         </nav>
 
         <span class="spacer"></span>
 
-        <!-- <button class="mobile-menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu">
-            <mat-icon>menu</mat-icon>
-        </button> -->
+        <div class="header-side">
+            <span class="status-chip" title="Plataforma operativa">
+                <span class="led led-pulse"></span>
+                <span>En línea</span>
+            </span>
+
+            <button class="mobile-menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu" aria-label="Abrir menú">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </div>
 
     </mat-toolbar>
 </header>
 
-<!-- <mat-menu #maintenanceMenu="matMenu">
-    @for (item of publicMenu(); track item.path) {
-    <a mat-menu-item [routerLink]="item.path">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-    </a>
-    }
-</mat-menu>
-    -->
-
-<mat-menu #ListMenu="matMenu">
+<mat-menu #ListMenu="matMenu" class="th-menu th-menu-wide">
+    <div class="menu-header" mat-menu-item disabled>
+        <span class="menu-title">Explorar</span>
+        <br>
+        <span class="menu-sub">Listados del sistema</span>
+    </div>
+    <mat-divider class="menu-divider"></mat-divider>
     @for (item of menuListados(); track item.path) {
     <a mat-menu-item [routerLink]="item.path">
         <mat-icon>{{ item.icon }}</mat-icon>
@@ -64,17 +86,22 @@
     }
 </mat-menu>
 
-<!-- 
-<mat-menu #mobileMenu="matMenu">
-    <a mat-menu-item routerLink="/">
-        <mat-icon>home</mat-icon>
-        <span>Inicio</span>
-    </a>
-
-    @for (item of listados; track item.ruta) {
-    <a mat-menu-item [routerLink]="item.ruta">
-        <mat-icon>{{ item.icono }}</mat-icon>
-        <span>{{ item.nombre }}</span>
+<mat-menu #mobileMenu="matMenu" class="th-menu">
+    @for (item of publicMenu(); track item.path) {
+    <a mat-menu-item [routerLink]="item.path">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
     </a>
     }
-</mat-menu> -->
+    <a mat-menu-item routerLink="/citas/agenda">
+        <mat-icon>calendar_month</mat-icon>
+        <span>Agenda</span>
+    </a>
+    <mat-divider class="menu-divider"></mat-divider>
+    @for (item of menuListados(); track item.path) {
+    <a mat-menu-item [routerLink]="item.path">
+        <mat-icon>{{ item.icon }}</mat-icon>
+        <span>{{ item.label }}</span>
+    </a>
+    }
+</mat-menu>
