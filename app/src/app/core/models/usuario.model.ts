@@ -63,3 +63,9 @@ export interface LoginResponse {
     message: string;
     data: LoginData;
 }
+
+export interface PerfilResponse {
+    success: boolean;
+    message: string;
+    data: Usuario;
+}

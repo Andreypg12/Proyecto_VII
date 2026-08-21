@@ -132,6 +132,9 @@ export class Login {
             .subscribe({
 
                 next: () => {
+                    console.log(
+                        this.authService.usuario()
+                    );
 
                     const returnUrl =
                         this.route

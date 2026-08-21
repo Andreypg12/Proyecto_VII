@@ -1,11 +1,7 @@
 <section class="login-page">
-
     <div class="login-wrapper">
-
         <div class="login-card">
-
             <div class="login-card-header">
-
                 <div class="login-icon">
                     <mat-icon>lock</mat-icon>
                 </div>
@@ -17,11 +13,7 @@
 
             </div>
 
-
-            <form
-                class="login-form"
-                (submit)="$event.preventDefault(); submit()"
-            >
+            <form class="login-form" (submit)="$event.preventDefault(); submit()">
 
                 <!-- CORREO -->
                 <div class="form-group">
@@ -34,32 +26,19 @@
 
                         <mat-icon>mail</mat-icon>
 
-                        <input
-                            id="email"
-                            type="email"
-                            placeholder="correo@ejemplo.com"
-                            autocomplete="email"
-                            [formField]="loginForm.email"
-                        />
+                        <input id="email" type="email" placeholder="correo@ejemplo.com" autocomplete="email"
+                            [formField]="loginForm.email" />
 
                     </div>
 
-                    @if (
-                        loginForm.email().touched() &&
-                        loginForm.email().invalid()
-                    ) {
+                    @if (loginForm.email().touched() && loginForm.email().invalid()) {
 
-                        <span class="field-error">
-                            {{
-                                loginForm.email()
-                                    .errors()[0]
-                                    .message
-                            }}
-                        </span>
+                    <span class="field-error">
+                        {{loginForm.email().errors()[0].message}}
+                    </span>
                     }
 
                 </div>
-
 
                 <!-- CONTRASEÑA -->
                 <div class="form-group">
@@ -72,113 +51,62 @@
 
                         <mat-icon>lock</mat-icon>
 
-                        <input
-                            id="password"
-                            [type]="
+                        <input id="password" [type]="
                                 ocultarPassword()
                                     ? 'password'
                                     : 'text'
-                            "
-                            placeholder="••••••••"
-                            autocomplete="current-password"
-                            [formField]="loginForm.password"
-                        />
+                            " placeholder="••••••••" autocomplete="current-password"
+                            [formField]="loginForm.password" />
 
-
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            (click)="
+                        <button type="button" class="password-toggle" (click)="
                                 ocultarPassword.update(
                                     valor => !valor
                                 )
-                            "
-                            aria-label="Mostrar u ocultar contraseña"
-                        >
+                            " aria-label="Mostrar u ocultar contraseña">
 
                             <mat-icon>
-
-                                {{
-                                    ocultarPassword()
-                                        ? 'visibility'
-                                        : 'visibility_off'
-                                }}
-
+                                {{ocultarPassword()? 'visibility': 'visibility_off'}}
                             </mat-icon>
-
                         </button>
-
                     </div>
 
+                    @if (loginForm.password().touched() &&loginForm.password().invalid()) {
 
-                    @if (
-                        loginForm.password().touched() &&
-                        loginForm.password().invalid()
-                    ) {
-
-                        <span class="field-error">
-
-                            {{
-                                loginForm.password()
-                                    .errors()[0]
-                                    .message
-                            }}
-
-                        </span>
+                    <span class="field-error">
+                        {{loginForm.password().errors()[0].message}}
+                    </span>
                     }
 
                 </div>
 
-
                 <!-- ERROR DEL API -->
                 @if (errorServidor()) {
 
-                    <div
-                        class="server-error"
-                        role="alert"
-                    >
+                <div class="server-error" role="alert">
 
-                        <mat-icon>
-                            error
-                        </mat-icon>
+                    <mat-icon>error</mat-icon>
+                    <span>{{ errorServidor() }}</span>
 
-                        <span>
-                            {{ errorServidor() }}
-                        </span>
-
-                    </div>
+                </div>
                 }
 
 
                 <!-- BOTÓN -->
-                <button
-                    type="submit"
-                    class="login-submit"
-                    [disabled]="
+                <button type="submit" class="login-submit" [disabled]="
                         enviando() ||
                         loginForm().invalid()
-                    "
-                >
+                    ">
 
                     @if (enviando()) {
 
-                        <mat-spinner
-                            diameter="20"
-                        />
-
-                        <span>
-                            Ingresando...
-                        </span>
+                    <mat-spinner diameter="20" />
+                    <span>Ingresando...</span>
 
                     } @else {
 
-                        <mat-icon>
-                            login
-                        </mat-icon>
+                    <mat-icon>login</mat-icon>
 
-                        <span>
-                            Iniciar sesión
-                        </span>
+                    <span>Iniciar sesión</span>
                     }
 
                 </button>
@@ -186,26 +114,13 @@
 
                 <!-- REGISTRO -->
                 <div class="login-footer">
-
-                    <span>
-                        ¿Todavía no tenés una cuenta?
-                    </span>
-
-                    <span class="register-placeholder">
-                        Crear cuenta
-                    </span>
-
+                    <span>¿Todavía no tenés una cuenta?</span>
+                    <span class="register-placeholder">Crear cuenta</span>
                 </div>
-
             </form>
-
         </div>
 
-
-        <div class="platform-badge">
-            PLATAFORMA DE TALENTO N°1 EN COSTA RICA
-        </div>
-
+        <div class="platform-badge"> PLATAFORMA DE TALENTO N°1 EN COSTA RICA </div>
     </div>
 
 </section>
