@@ -30,7 +30,7 @@ export const authGuard: CanActivateFn = () => {
     return authService
         .inicializarSesion()
         .pipe(
-            map((usuario) => // devuelve  Observable<Usuario | null>
+            map((usuario) => // usuario es Usuario | null
                 usuario
                     ? true
                     : router.createUrlTree([
