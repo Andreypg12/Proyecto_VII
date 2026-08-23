@@ -208,4 +208,38 @@ export class usuarioController {
             "Perfil obtenido correctamente"
         );
     };
+
+
+    // Actualizar perfil del usuario autenticado
+    actualizarPerfil = async ( request: AuthRequest, response: Response, next: NextFunction) => {
+        const usuarioId = request.user?.id;
+
+        if (!usuarioId) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+        }
+
+        try {
+            const usuario = await usuarioService.actualizarPerfil( usuarioId, request.body);
+            return sendSuccess( response, usuario, "Perfil actualizado correctamente");
+        } catch (error) {
+
+            const message = error instanceof Error ? error.message: "";
+            if ( message === "El correo ya está registrado") {
+
+                return response
+                    .status(StatusCodes.CONFLICT)
+                    .json({
+                        success: false,
+                        message:
+                            "El correo ya está registrado"
+                    });
+            }
+            next(error);
+        }
+    };
 }

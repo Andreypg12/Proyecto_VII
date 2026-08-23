@@ -449,9 +449,90 @@
     white-space: nowrap;
 }
 
+/* ==========================================
+   CREAR CUENTA
+========================================== */
+
+.register-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    margin-top: 4px;
+
+    font-family:
+        var(
+            --th-font-body,
+            Inter,
+            sans-serif
+        );
+
+    font-size: 13px;
+
+    color:
+        var(
+            --th-on-surface-variant,
+            #bac9cd
+        );
+}
+
+
+.register-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    font-weight: 700;
+    text-decoration: none;
+
+    color:
+        var(--th-primary, #baf2ff);
+
+    background:
+        rgba(186, 242, 255, 0.04);
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.register-button mat-icon {
+    width: 16px;
+    height: 16px;
+
+    font-size: 16px;
+
+    transition:
+        transform 0.2s ease;
+}
+
+
+.register-button:hover {
+    color: #ffffff;
+
+    background:
+        rgba(186, 242, 255, 0.1);
+
+    transform:
+        translateY(-1px);
+}
+
+
+.register-button:hover mat-icon {
+    transform:
+        translateX(2px);
+}
+
 
 /* ==========================================
-   RESPONSIVE
+    RESPONSIVE
 ========================================== */
 
 @media (max-width: 500px) {
