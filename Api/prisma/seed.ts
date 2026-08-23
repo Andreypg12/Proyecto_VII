@@ -2,21 +2,13 @@
 import { prisma } from "../src/config/prisma";
 import { EstadoCita, EstadoUsuario, Modalidad, Rol } from "../generated/prisma/enums";
 import { create } from "node:domain";
+import bcrypt from "bcryptjs";
 
 async function main() {
     console.log("Iniciando seed...");
+    const passwordHash = await bcrypt.hash("123456", 10);
     // 1. Limpieza de datos
 
-    /*  const models = [
-        prisma.especialidad,
-        prisma.servicio,
-        prisma.categoriaServicio,
-        prisma.valoracion,
-        prisma.cita,
-        prisma.ubicacionProfesional,
-        prisma.perfilProfesional,
-        prisma.usuario,
-    ] */
     const models = [
     prisma.valoracion,
     prisma.cita,
@@ -82,17 +74,17 @@ async function main() {
 
     await prisma.usuario.createMany({
         data: [
-            { email: "admin@gmail.com", nombre: "Admin", apellidos: ".", password: "hash_password", rol: Rol.ADMINISTRADOR },
-            { email: "Adriel@correo.com", nombre: "Adriel", apellidos: "Gómez", password: "hash_password", rol: Rol.ADMINISTRADOR },
-            { email: "alejandro@gmail.com", nombre: "Alejandro", apellidos: "Serrano", password: "hash_password", rol: Rol.PROFESIONAL },
-            { email: "daniela.rojas@correo.com", nombre: "Daniela", apellidos: "Rojas Vargas", password: "hash_password", rol: Rol.PROFESIONAL },
-            { email: "sebastian.mora@correo.com", nombre: "Sebastián", apellidos: "Mora Jiménez", password: "hash_password", rol: Rol.PROFESIONAL },
-            { email: "valeria@correo.com", nombre: "Valeria", apellidos: "Méndez", password: "hash_password", rol: Rol.PROFESIONAL },
-            { email: "franklin@correo.com", nombre: "Franklin", apellidos: "Montoya", password: "hash_password", rol: Rol.PROFESIONAL },
-            { email: "camila.solis@correo.com", nombre: "Camila", apellidos: "Solís Hernández", password: "hash_password", rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO},
-            { email: "andrey@correo.com", nombre: "Andrey", apellidos: "Pérez", password: "hash_password", rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO },
-            { email: "fabián@correo.com", nombre: "Fabián", apellidos: "Zamora", password: "hash_password", rol: Rol.CLIENTE },
-            { email: "gael@correo.com", nombre: "Gael", apellidos: "Osorio", password: "hash_password", rol: Rol.CLIENTE },
+            { email: "admin@gmail.com", nombre: "Admin", apellidos: ".", password: passwordHash, rol: Rol.ADMINISTRADOR },
+            { email: "Adriel@correo.com", nombre: "Adriel", apellidos: "Gómez", password: passwordHash, rol: Rol.ADMINISTRADOR },
+            { email: "alejandro@gmail.com", nombre: "Alejandro", apellidos: "Serrano", password: passwordHash, rol: Rol.PROFESIONAL },
+            { email: "daniela.rojas@correo.com", nombre: "Daniela", apellidos: "Rojas Vargas", password: passwordHash, rol: Rol.PROFESIONAL },
+            { email: "sebastian.mora@correo.com", nombre: "Sebastián", apellidos: "Mora Jiménez", password: passwordHash, rol: Rol.PROFESIONAL },
+            { email: "valeria@correo.com", nombre: "Valeria", apellidos: "Méndez", password: passwordHash, rol: Rol.PROFESIONAL },
+            { email: "franklin@correo.com", nombre: "Franklin", apellidos: "Montoya", password: passwordHash, rol: Rol.PROFESIONAL },
+            { email: "camila.solis@correo.com", nombre: "Camila", apellidos: "Solís Hernández", password: passwordHash, rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO},
+            { email: "andrey@correo.com", nombre: "Andrey", apellidos: "Pérez", password: passwordHash, rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO },
+            { email: "fabián@correo.com", nombre: "Fabián", apellidos: "Zamora", password: passwordHash, rol: Rol.CLIENTE },
+            { email: "gael@correo.com", nombre: "Gael", apellidos: "Osorio", password: passwordHash, rol: Rol.CLIENTE },
         ],
         //skipDuplicates: true, 
     });

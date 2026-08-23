@@ -45,6 +45,7 @@ model Usuario {
   email     String @unique @db.VarChar(150)
   nombre    String @db.VarChar(100)
   apellidos String @db.VarChar(120)
+  telefono  String? @db.VarChar(20)
   password  String @db.VarChar(251)
 
   createdAt DateTime @default(now())

@@ -350,4 +350,31 @@ export const usuarioService = {
             },
         });
     },
+
+    async perfil(usuarioId: number) {
+
+        const usuario =
+            await prisma.usuario.findUnique({
+                where: { id: usuarioId},
+
+                select: {
+                    id: true,
+                    email: true,
+                    nombre: true,
+                    apellidos: true,
+                    rol: true,
+                    estado: true,
+                    createdAt: true,
+                    updateAt: true,
+                },
+            });
+
+        if (!usuario) {
+            throw AppError.notFound(
+                "El usuario autenticado no existe"
+            );
+        }
+        
+        return usuario;
+    },
 };

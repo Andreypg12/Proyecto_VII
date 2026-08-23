@@ -5,6 +5,9 @@ import { parseId } from "../utils/parse-id";
 import { sendSuccess } from "../utils/http-response";
 import { Rol } from "../../generated/prisma/enums";
 
+import {AuthRequest} from "../middlewares/auth.middleware";
+import { success } from "zod";
+
 export class usuarioController {
 
     //Obtener Configuración
@@ -180,6 +183,29 @@ export class usuarioController {
             response,
             usuario,
             "Usuario actualizado correctamente"
+        );
+    };
+
+    perfil = async ( request: AuthRequest, response: Response, next: NextFunction) => {
+
+        const usuarioId = request.user?.id;
+        if (!usuarioId) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({ success: false, message: "Usuario no autenticado" + usuarioId});
+        }
+
+        const usuario = await usuarioService.perfil(usuarioId);
+        if (!usuario) {
+            return response
+            .status(StatusCodes.NOT_FOUND)
+            .json({ success: false, message: "El usuario autenticado no existe: " + usuarioId});
+        }
+
+        return sendSuccess(
+            response,
+            usuario,
+            "Perfil obtenido correctamente"
         );
     };
 }

@@ -13,7 +13,7 @@
 
         <nav class="desktop-nav">
             <div class="nav-group" role="tablist" aria-label="Navegación principal">
-                @for (item of publicMenu(); track item.path) {
+                @for (item of publicMenuVisible(); track item.path) {
                 <a
                     class="nav-pill"
                     role="tab"
@@ -26,21 +26,10 @@
                     <span>{{ item.label }}</span>
                 </a>
                 }
-
-                <a
-                    class="nav-pill"
-                    role="tab"
-                    [attr.aria-selected]="false"
-                    routerLink="/citas/agenda"
-                    routerLinkActive="active">
-
-                    <mat-icon>calendar_month</mat-icon>
-                    <span>Agenda</span>
-                </a>
             </div>
 
             <span class="nav-divider" aria-hidden="true"></span>
-
+            @if (mostrarMenuListados()) {
             <button
                 mat-button
                 class="menu-trigger"
@@ -53,23 +42,130 @@
                 <span>Explorar</span>
                 <mat-icon class="caret">expand_more</mat-icon>
             </button>
+            }
         </nav>
 
         <span class="spacer"></span>
 
-        <div class="header-side">
-            <span class="status-chip" title="Plataforma operativa">
-                <span class="led led-pulse"></span>
-                <span>En línea</span>
-            </span>
+        <!-- La aplicación todavía está recuperando la sesión -->
+        @if (!sesionInicializada() || cargandoSesion()) {
 
-            <button class="mobile-menu-button" mat-icon-button [matMenuTriggerFor]="mobileMenu" aria-label="Abrir menú">
-                <mat-icon>menu</mat-icon>
+            <button
+                type="button"
+                class="login-button"
+                disabled
+            >
+
+                <mat-icon>
+                    hourglass_top
+                </mat-icon>
+
+                <span>
+                    Cargando sesión...
+                </span>
+
             </button>
-        </div>
+
+        }
+
+        <!-- Existe un usuario autenticado -->
+        @else if (usuario(); as usuarioActual) {
+
+            <button
+                type="button"
+                class="login-button"
+                [matMenuTriggerFor]="userMenu"
+                aria-label="Abrir menú de usuario"
+            >
+
+                <span class="user-avatar">
+                    {{ iniciales() }}
+                </span>
+
+                <span class="user-summary">
+
+                    <strong>
+                        {{ usuarioActual.nombre }}
+                        {{ usuarioActual.apellidos }}
+                    </strong>
+
+                    <small>
+                        {{ nombreRol() }}
+                    </small>
+
+                </span>
+
+            </button>
+
+        }
+
+        <!-- No existe usuario -->
+        @else {
+
+            <a
+                class="login-button"
+                routerLink="/login"
+                routerLinkActive="active"
+            >
+
+                <mat-icon>
+                    login
+                </mat-icon>
+
+                <span>
+                    Iniciar sesión
+                </span>
+
+            </a>
+
+        }
+
+        <!-- Botón que abre el menú móvil -->
+        <button
+            class="mobile-menu-button"
+            mat-icon-button
+            [matMenuTriggerFor]="mobileMenu"
+            aria-label="Abrir menú"
+        >
+            <mat-icon>menu</mat-icon>
+        </button>
 
     </mat-toolbar>
 </header>
+
+<!-- Menú del usuario -->
+
+<mat-menu #userMenu="matMenu" class="th-menu">
+
+    @if (usuario(); as usuarioActual) {
+
+        <div class="user-menu-info" mat-menu-item disabled>
+            <mat-icon> account_circle </mat-icon>
+            <span>
+                {{ usuarioActual.nombre }}
+                {{ usuarioActual.apellidos }}
+            </span>
+        </div>
+
+        <div mat-menu-item disabled>
+            <mat-icon> mail </mat-icon>
+            <span> {{ usuarioActual.email }} </span>
+        </div>
+
+        <div mat-menu-item disabled>
+            <mat-icon> badge </mat-icon>
+            <span> {{ nombreRol() }}</span>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <button mat-menu-item type="button" (click)="cerrarSesion()">
+            <mat-icon> logout </mat-icon>
+            <span> Cerrar sesión </span>
+        </button>
+    }
+
+</mat-menu>
 
 <mat-menu #ListMenu="matMenu" class="th-menu th-menu-wide">
     <div class="menu-header" mat-menu-item disabled>
@@ -78,7 +174,7 @@
         <span class="menu-sub">Listados del sistema</span>
     </div>
     <mat-divider class="menu-divider"></mat-divider>
-    @for (item of menuListados(); track item.path) {
+    @for (item of menuListadosVisible(); track item.path) {
     <a mat-menu-item [routerLink]="item.path">
         <mat-icon>{{ item.icon }}</mat-icon>
         <span>{{ item.label }}</span>
@@ -87,21 +183,44 @@
 </mat-menu>
 
 <mat-menu #mobileMenu="matMenu" class="th-menu">
-    @for (item of publicMenu(); track item.path) {
-    <a mat-menu-item [routerLink]="item.path">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-    </a>
+
+    @for (item of publicMenuVisible(); track item.path) {
+        <a mat-menu-item [routerLink]="item.path">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+        </a>
     }
-    <a mat-menu-item routerLink="/citas/agenda">
-        <mat-icon>calendar_month</mat-icon>
-        <span>Agenda</span>
-    </a>
+
     <mat-divider class="menu-divider"></mat-divider>
-    @for (item of menuListados(); track item.path) {
-    <a mat-menu-item [routerLink]="item.path">
-        <mat-icon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
-    </a>
+    @for (item of menuListadosVisible(); track item.path) {
+        <a mat-menu-item [routerLink]="item.path">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span>{{ item.label }}</span>
+        </a>
     }
+
+    <mat-divider class="menu-divider"></mat-divider>
+
+    @if (usuario(); as usuarioActual) {
+
+        <div mat-menu-item disabled>
+            <mat-icon>person</mat-icon>
+
+            <span>
+                {{ usuarioActual.nombre }}
+                {{ usuarioActual.apellidos }}
+                - {{ nombreRol() }}
+            </span>
+
+        </div>
+
+    } @else {
+
+        <a  mat-menu-item
+            routerLink="/login">
+            <mat-icon>login</mat-icon>
+            <span>Iniciar sesión</span>
+        </a>
+    }
+    
 </mat-menu>

@@ -8,6 +8,7 @@ import {
     loginUsuarioSchema,
 } from "../dtos/usuario.dto";
 import { validateRequest } from "../middlewares/validate-request.middleware";
+import { authenticateToken } from "../middlewares/auth.middleware";
 
 export class UsuarioRoutes {
     static get routes(): Router {
@@ -25,10 +26,12 @@ export class UsuarioRoutes {
             //Autenticación
             router.post("/register",validateRequest(registerUsuarioSchema),asyncHandler(controller.registrar));
             router.post("/login",validateRequest(loginUsuarioSchema),asyncHandler(controller.login));
+            router.get("/perfil",authenticateToken,asyncHandler(controller.perfil));
 
             //Usuario por ID
             router.get('/:id', asyncHandler(controller.obtenerPorId));
 
+            
 
         /// Post / Put
 

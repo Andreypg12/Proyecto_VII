@@ -310,6 +310,70 @@
     gap: 0.6rem;
 }
 
+/* ── LOGIN BUTTON ─────────────────────────── */
+
+.login-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    height: 38px;
+    padding: 0 1rem;
+
+    border-radius: 10px;
+
+    font-family: var(--th-font-body, Inter, sans-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+
+    color: var(--th-primary, #baf2ff);
+    text-decoration: none;
+
+    background: rgba(186, 242, 255, 0.07);
+    border: 1px solid rgba(186, 242, 255, 0.22);
+
+    box-shadow:
+        0 0 14px rgba(0, 218, 248, 0.05);
+
+    transition:
+        background 0.22s var(--th-ease-out, cubic-bezier(0.23, 1, 0.32, 1)),
+        border-color 0.22s var(--th-ease-out, cubic-bezier(0.23, 1, 0.32, 1)),
+        color 0.22s var(--th-ease-out, cubic-bezier(0.23, 1, 0.32, 1)),
+        box-shadow 0.22s var(--th-ease-out, cubic-bezier(0.23, 1, 0.32, 1)),
+        transform 0.16s var(--th-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
+
+    white-space: nowrap;
+}
+
+
+.login-button mat-icon {
+    width: 17px;
+    height: 17px;
+
+    font-size: 17px;
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+    .login-button:hover {
+        color: #e2f9ff;
+
+        background: rgba(186, 242, 255, 0.13);
+
+        border-color: rgba(186, 242, 255, 0.42);
+
+        box-shadow:
+            0 0 20px rgba(0, 218, 248, 0.12);
+    }
+}
+
+
+.login-button:active {
+    transform: scale(0.97);
+}
+
 .status-chip {
     display: inline-flex;
     align-items: center;
