@@ -13,6 +13,7 @@ export interface Usuario {
     email: string;
     nombre: string;
     apellidos: string;
+    telefono?: string | null;
     rol: Rol;
     estado: EstadoUsuario;
     createdAt?: string;
@@ -65,6 +66,29 @@ export interface LoginResponse {
 }
 
 export interface PerfilResponse {
+    success: boolean;
+    message: string;
+    data: Usuario;
+}
+
+export interface UpdatePerfilUsuarioDto {
+    email?: string;
+    nombre?: string;
+    apellidos?: string;
+    telefono?: string;
+    password?: string;
+}
+
+
+export interface RegisterRequest {
+    email: string;
+    nombre: string;
+    apellidos: string;
+    telefono: string;
+    password: string;
+}
+
+export interface RegisterResponse {
     success: boolean;
     message: string;
     data: Usuario;

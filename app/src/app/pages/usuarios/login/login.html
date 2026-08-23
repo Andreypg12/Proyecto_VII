@@ -25,7 +25,6 @@
                     <div class="input-container">
 
                         <mat-icon>mail</mat-icon>
-
                         <input id="email" type="email" placeholder="correo@ejemplo.com" autocomplete="email"
                             [formField]="loginForm.email" />
 
@@ -79,7 +78,7 @@
 
                 </div>
 
-                <!-- ERROR DEL API -->
+                <!-- Error del API -->
                 @if (errorServidor()) {
 
                 <div class="server-error" role="alert">
@@ -91,11 +90,10 @@
                 }
 
 
-                <!-- BOTÓN -->
+                <!-- Botón -->
                 <button type="submit" class="login-submit" [disabled]="
                         enviando() ||
-                        loginForm().invalid()
-                    ">
+                        loginForm().invalid()">
 
                     @if (enviando()) {
 
@@ -103,23 +101,22 @@
                     <span>Ingresando...</span>
 
                     } @else {
-
                     <mat-icon>login</mat-icon>
-
                     <span>Iniciar sesión</span>
                     }
 
                 </button>
 
-
-                <!-- REGISTRO -->
-                <div class="login-footer">
-                    <span>¿Todavía no tenés una cuenta?</span>
-                    <span class="register-placeholder">Crear cuenta</span>
+                <!-- Registro -->
+                <div class="register-link">
+                    <span>¿No tienes una cuenta?</span>
+                    <a routerLink="/registro" class="register-button" >
+                        Crear cuenta
+                        <mat-icon>arrow_forward</mat-icon>
+                    </a>
                 </div>
             </form>
         </div>
-
         <div class="platform-badge"> PLATAFORMA DE TALENTO N°1 EN COSTA RICA </div>
     </div>
 

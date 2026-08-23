@@ -6,6 +6,7 @@ import {
     updateUsuarioSchema,
     registerUsuarioSchema,
     loginUsuarioSchema,
+    updatePerfilUsuarioSchema
 } from "../dtos/usuario.dto";
 import { validateRequest } from "../middlewares/validate-request.middleware";
 import { authenticateToken } from "../middlewares/auth.middleware";
@@ -37,6 +38,9 @@ export class UsuarioRoutes {
 
             //Creación general
             router.post("/",validateRequest(createUsuarioSchema),asyncHandler(controller.crear));
+
+            // Actualizar perfil del usuario autenticado
+            router.put("/perfil", authenticateToken, validateRequest(updatePerfilUsuarioSchema), asyncHandler(controller.actualizarPerfil));
             router.put( "/:id", validateRequest(updateUsuarioSchema), asyncHandler(controller.actualizar));
 
             //Cambios estado

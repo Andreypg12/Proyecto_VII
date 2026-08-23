@@ -22,7 +22,10 @@ import {
     LoginRequest,
     LoginResponse,
     PerfilResponse,
+    RegisterRequest,
+    RegisterResponse,
     Rol,
+    UpdatePerfilUsuarioDto,
     Usuario
 } from '../models/usuario.model';
 
@@ -117,6 +120,41 @@ export class AuthService {
             )
             .pipe(
                 map((response) => response.data )
+            );
+    }
+
+    actualizarPerfil(data: UpdatePerfilUsuarioDto): Observable<Usuario> {
+        return this.http
+            .put<PerfilResponse>(
+                `${this.apiUrl}/perfil`,
+                data
+            )
+            .pipe(
+
+                map(
+                    response => response.data
+                ),
+
+                tap(usuario => {
+                    this.usuarioSignal.set(
+                        usuario
+                    );
+                })
+
+            );
+    }
+
+    registrar( data: RegisterRequest): Observable<Usuario> {
+
+        return this.http
+            .post<RegisterResponse>(
+                `${this.apiUrl}/register`,
+                data
+            )
+            .pipe(
+                map(
+                    response => response.data
+                )
             );
     }
 
@@ -240,6 +278,8 @@ export class AuthService {
         this.sesionInicializadaSignal.set(true);
         this.solicitudPerfilActual = null;
     }
+
+    
 
 
 

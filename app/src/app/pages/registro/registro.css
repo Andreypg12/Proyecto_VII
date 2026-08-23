@@ -1,0 +1,180 @@
+.registro-page {
+    min-height: calc(100vh - 72px);
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding: 48px 24px;
+}
+
+
+.registro-card {
+    width: 100%;
+    max-width: 850px;
+
+    padding: 32px;
+
+    border:
+        1px solid rgba(148, 163, 184, 0.2);
+
+    border-radius: 16px;
+
+    background:
+        rgba(15, 35, 52, 0.92);
+}
+
+
+.registro-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    margin-bottom: 30px;
+}
+
+
+.registro-icon {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 12px;
+
+    background:
+        rgba(125, 211, 252, 0.1);
+}
+
+
+.registro-icon mat-icon {
+    color: #b9efff;
+}
+
+
+.registro-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+
+    color: #a5dced;
+}
+
+
+.registro-header h1 {
+    margin: 3px 0 4px;
+
+    font-size: 28px;
+
+    color: #e8f2ff;
+}
+
+
+.registro-header p {
+    margin: 0;
+
+    color: #94a3b8;
+}
+
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 18px;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+}
+
+
+.error-message {
+    background:
+        rgba(239, 68, 68, 0.1);
+
+    color: #fecaca;
+}
+
+
+.success-message {
+    background:
+        rgba(34, 197, 94, 0.1);
+
+    color: #bbf7d0;
+}
+
+
+.form-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+
+    margin-top: 18px;
+}
+
+.form-actions button {
+    grid-column: 2;
+
+    width: 100%;
+    height: 50px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    border-radius: 12px;
+}
+
+.button-content {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.button-content mat-icon {
+    margin: 0 !important;
+
+    width: 20px;
+    height: 20px;
+
+    font-size: 20px;
+    line-height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 700px) {
+
+    .registro-page {
+        padding: 24px 16px;
+    }
+
+
+    .registro-card {
+        padding: 22px;
+    }
+
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

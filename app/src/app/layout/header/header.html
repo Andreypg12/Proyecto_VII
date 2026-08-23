@@ -159,6 +159,14 @@
 
         <mat-divider></mat-divider>
 
+        <!-- Mi perfil -->
+        <a mat-menu-item routerLink="/perfil">
+            <mat-icon> manage_accounts</mat-icon>
+            <span> Mi perfil</span>
+        </a>
+        <mat-divider class="menu-divider"></mat-divider>
+
+
         <button mat-menu-item type="button" (click)="cerrarSesion()">
             <mat-icon> logout </mat-icon>
             <span> Cerrar sesión </span>
@@ -204,22 +212,31 @@
     @if (usuario(); as usuarioActual) {
 
         <div mat-menu-item disabled>
-            <mat-icon>person</mat-icon>
-
+            <mat-icon> person</mat-icon>
             <span>
                 {{ usuarioActual.nombre }}
                 {{ usuarioActual.apellidos }}
                 - {{ nombreRol() }}
             </span>
-
         </div>
+
+
+        <a mat-menu-item routerLink="/perfil">
+            <mat-icon> manage_accounts </mat-icon>
+            <span> Mi perfil </span>
+        </a>
+
+
+        <button mat-menu-item type="button" (click)="cerrarSesion()">
+            <mat-icon> logout </mat-icon>
+            <span> Cerrar sesión </span>
+        </button>
 
     } @else {
 
-        <a  mat-menu-item
-            routerLink="/login">
-            <mat-icon>login</mat-icon>
-            <span>Iniciar sesión</span>
+        <a mat-menu-item routerLink="/login" >
+            <mat-icon> login</mat-icon>
+            <span> Iniciar sesión </span>
         </a>
     }
     

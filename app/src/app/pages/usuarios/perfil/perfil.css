@@ -1,0 +1,188 @@
+.perfil-page {
+    min-height: calc(100vh - 72px);
+    padding: 48px 24px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+
+.perfil-card {
+    width: 100%;
+    max-width: 850px;
+
+    padding: 32px;
+
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 16px;
+
+    background: rgba(15, 35, 52, 0.92);
+}
+
+
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    margin-bottom: 28px;
+}
+
+
+.perfil-icon {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 12px;
+
+    background: rgba(125, 211, 252, 0.1);
+}
+
+
+.perfil-icon mat-icon {
+    color: #b9efff;
+}
+
+
+.perfil-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+
+    color: #a5dced;
+}
+
+
+.perfil-header h1 {
+    margin: 3px 0 4px;
+
+    font-size: 28px;
+
+    color: #e8f2ff;
+}
+
+
+.perfil-header p {
+    margin: 0;
+
+    color: #94a3b8;
+}
+
+
+.account-summary {
+    display: flex;
+    gap: 24px;
+
+    margin-bottom: 28px;
+    padding: 16px 18px;
+
+    border-radius: 12px;
+
+    background: rgba(148, 163, 184, 0.06);
+}
+
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+
+.summary-item span {
+    font-size: 11px;
+    text-transform: uppercase;
+
+    color: #64748b;
+}
+
+
+.summary-item strong {
+    color: #dceeff;
+}
+
+
+.form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+
+.message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 18px;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+}
+
+
+.error-message {
+    background: rgba(239, 68, 68, 0.1);
+    color: #fecaca;
+}
+
+
+.success-message {
+    background: rgba(34, 197, 94, 0.1);
+    color: #bbf7d0;
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 24px;
+}
+
+
+.form-actions button {
+    min-width: 180px;
+}
+
+
+@media (max-width: 700px) {
+
+    .perfil-page {
+        padding: 24px 16px;
+    }
+
+
+    .perfil-card {
+        padding: 22px;
+    }
+
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .full-width {
+        grid-column: auto;
+    }
+
+
+    .account-summary {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+}

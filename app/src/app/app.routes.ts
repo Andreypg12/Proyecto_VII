@@ -29,6 +29,8 @@ import { CitaCreateComplete } from "./pages/citas/cita-create-complete/cita-crea
 import { Login } from './pages/usuarios/login/login';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { Perfil } from './pages/usuarios/perfil/perfil';
+import { Registro } from './pages/registro/registro';
 
 //Full calendar proceso
 import { CitasAgenda } from './pages/citas/agenda/agenda';
@@ -44,6 +46,8 @@ export const routes: Routes = [
             // Inicio y autenticación
             { path: '', component: Home, title: 'Inicio' },
             { path: 'login', component: Login, title: 'Iniciar sesión | TechHire' },
+            { path: 'registro', component: Registro, title: 'Crear cuenta | TechHire'},
+            { path: 'perfil', component: Perfil, title: 'Mi perfil | TechHire', canActivate: [authGuard] },
 
             // Usuarios
             { path: 'usuarios', component: UsuariosList, title: 'Usuarios', canActivate: [authGuard, roleGuard(['ADMINISTRADOR'])] },
