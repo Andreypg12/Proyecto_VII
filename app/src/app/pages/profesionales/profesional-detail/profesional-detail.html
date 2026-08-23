@@ -37,221 +37,213 @@
 
     <!-- Detalle -->
     @else if (profesional(); as prof) {
-    <mat-card class="detail-card">
-        <mat-card-content>
-            <!-- Cabecera con imagen y datos -->
-            <div class="profile-header">
-                <div class="profile-image">
-                    @if(prof.imagen_profesional) {
-                    <div class="image-wrapper">
-                        <img [src]="getImageUrl(prof.imagen_profesional)" [alt]="prof.usuario.nombre"
-                            (error)="handleImageError($event)" class="profile-img" />
-                    </div>
+    <div class="profile-layout">
+        <!-- HERO: Avatar + Nombre + Tarifa -->
+        <div class="profile-hero glass-panel">
+            <div class="hero-accent"></div>
+            <div class="hero-content">
+                <div class="hero-avatar-wrap" [class.active]="prof.disponibilidad" [class.inactive]="!prof.disponibilidad">
+                    @if (prof.imagen_profesional) {
+                    <img class="hero-avatar" [src]="getImageUrl(prof.imagen_profesional)"
+                        [alt]="prof.usuario.nombre" (error)="handleImageError($event)" />
                     } @else {
-                    <div class="image-placeholder">
-                        <mat-icon>person</mat-icon>
-                    </div>
-
+                    <span class="hero-avatar-initials">
+                        {{ iniciales(prof.usuario.nombre) }}
+                    </span>
                     }
                 </div>
 
-                <div class="profile-info">
-                    <div class="profile-name">
-                        <h1>{{ prof.usuario.nombre || 'Sin nombre' }} {{ prof.usuario.apellidos || '' }}</h1>
+                <div class="hero-info">
+                    <div class="hero-name-row">
+                        <h1 class="shiny-text">{{ prof.usuario.nombre || 'Sin nombre' }} {{ prof.usuario.apellidos || '' }}</h1>
                         <div class="status-badge" [class]="getEstadoInfo(prof.usuario.estado || 'INACTIVO').class">
                             <mat-icon>{{ getEstadoInfo(prof.usuario.estado || 'INACTIVO').icon }}</mat-icon>
                             <span>{{ getEstadoInfo(prof.usuario.estado || 'INACTIVO').label }}</span>
                         </div>
                     </div>
-                    <p class="titulo">{{ prof.titulo || 'Sin título' }}</p>
-                    <div class="profile-email">
-                        <mat-icon>email</mat-icon>
-                        <span>{{ prof.usuario.email }}</span>
-                    </div>
-                </div>
-                <div class="profile-tarifa">
-                    <span class="tarifa-amount">${{ prof.tarifa_por_hora | number }}</span>
-                    <span class="tarifa-label">/ hora</span>
-                </div>
-            </div>
-
-            <mat-divider></mat-divider>
-
-            <!-- Descripción -->
-            <div class="info-section">
-                <h3>
-                    <mat-icon class="section-icon">description</mat-icon>
-                    Descripción
-                </h3>
-                <p class="descripcion">{{ prof.descripcion }}</p>
-            </div>
-
-            <mat-divider></mat-divider>
-
-            <!-- Datos principales -->
-            <div class="info-grid">
-                <div class="info-item">
-                    <mat-icon>work</mat-icon>
-                    <div>
-                        <span class="label">Título</span>
-                        <span class="value">{{ prof.titulo || 'Sin título' }}</span>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <mat-icon>calendar_today</mat-icon>
-                    <div>
-                        <span class="label">Años de experiencia</span>
-                        <span class="value">{{ prof.annos_experiencia }} años</span>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <mat-icon>phone</mat-icon>
-                    <div>
-                        <span class="label">Teléfono</span>
-                        <span class="value">{{ prof.telefono || 'No especificado' }}</span>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <div>
-                        <span class="label">Modalidad</span>
-                        <span class="value">
-                            <mat-icon class="modalidad-icon">{{ getModalidadInfo(prof.modalidad).icon }}</mat-icon>
+                    <p class="hero-titulo">{{ prof.titulo || 'Sin título' }}</p>
+                    <div class="hero-meta">
+                        <span class="meta-chip">
+                            <mat-icon>email</mat-icon>
+                            {{ prof.usuario.email }}
+                        </span>
+                        <span class="meta-chip">
+                            <mat-icon>{{ getModalidadInfo(prof.modalidad).icon }}</mat-icon>
                             {{ getModalidadInfo(prof.modalidad).label }}
                         </span>
-                    </div>
-                </div>
-
-                <div class="info-item">
-                    <mat-icon>check_circle</mat-icon>
-                    <div>
-                        <span class="label">Disponibilidad</span>
-                        <span class="value" [class.available]="prof.disponibilidad"
-                            [class.unavailable]="!prof.disponibilidad">
-                            <mat-icon>{{ prof.disponibilidad ? 'check_circle' : 'cancel' }}</mat-icon>
-                            {{ prof.disponibilidad ? 'Disponible' : 'No disponible' }}
+                        @if (prof.telefono) {
+                        <span class="meta-chip">
+                            <mat-icon>phone</mat-icon>
+                            {{ prof.telefono }}
                         </span>
+                        }
                     </div>
                 </div>
 
-                <div class="info-item">
-                    <mat-icon>location_on</mat-icon>
-                    <div>
-                        <span class="label">Ubicación</span>
-                        <span class="value">{{ prof.ubicaciones?.[0]?.ciudad || 'No especificada' }}</span>
-                    </div>
+                <div class="hero-tarifa">
+                    <span class="tarifa-label">Tarifa</span>
+                    <span class="tarifa-amount">${{ prof.tarifa_por_hora | number }}</span>
+                    <span class="tarifa-unit">/ hora</span>
                 </div>
             </div>
+        </div>
 
-            <mat-divider></mat-divider>
+        <!-- MAGIC BENTO: Stats + Contenido interactivo -->
+        <app-magic-bento
+            [enableStars]="true"
+            [enableSpotlight]="true"
+            [enableBorderGlow]="true"
+            [enableTilt]="true"
+            [enableMagnetism]="true"
+            [clickEffect]="true"
+            [spotlightRadius]="300"
+            [particleCount]="8"
+            glowColor="0, 218, 248">
 
-            <!-- Ubicación detallada -->
-            <div class="info-section">
-                <h3>
-                    <mat-icon class="section-icon">place</mat-icon>
-                    Ubicación
-                </h3>
-                @if (prof.ubicaciones && prof.ubicaciones.length > 0) {
-                <div class="location-detail">
-                    <div class="location-item">
-                        <span class="location-label">Ciudad:</span>
-                        <span>{{ prof.ubicaciones[0].ciudad || 'No especificada' }}</span>
-                    </div>
-                    <div class="location-item">
-                        <span class="location-label">Cantón:</span>
-                        <span>{{ prof.ubicaciones[0].canton || 'No especificado' }}</span>
-                    </div>
-                    <div class="location-item">
-                        <span class="location-label">Distrito:</span>
-                        <span>{{ prof.ubicaciones[0].distrito || 'No especificado' }}</span>
-                    </div>
-                    <div class="location-item">
-                        <span class="location-label">Descripción:</span>
-                        <span>{{ prof.ubicaciones[0].descripcion || 'No especificada' }}</span>
-                    </div>
-                </div>
-                } @else {
-                <p class="no-data">No hay ubicación registrada</p>
-                }
+        <!-- STATS ROW -->
+        <div class="stats-row">
+            <div class="stat-card glass-panel mbento-border-glow">
+                <mat-icon class="stat-icon">work_history</mat-icon>
+                <span class="stat-value">{{ prof.annos_experiencia || 0 }}</span>
+                <span class="stat-label">Años exp.</span>
             </div>
+            <div class="stat-card glass-panel mbento-border-glow">
+                <mat-icon class="stat-icon">list_alt</mat-icon>
+                <span class="stat-value">{{ getTotalServicios() }}</span>
+                <span class="stat-label">Servicios</span>
+            </div>
+            <div class="stat-card glass-panel mbento-border-glow">
+                <mat-icon class="stat-icon">{{ prof.disponibilidad ? 'check_circle' : 'cancel' }}</mat-icon>
+                <span class="stat-value">{{ prof.disponibilidad ? 'Sí' : 'No' }}</span>
+                <span class="stat-label">Disponible</span>
+            </div>
+            <div class="stat-card glass-panel mbento-border-glow">
+                <mat-icon class="stat-icon">place</mat-icon>
+                <span class="stat-value">{{ prof.ubicaciones?.[0]?.ciudad || '—' }}</span>
+                <span class="stat-label">Ubicación</span>
+            </div>
+        </div>
 
-            <mat-divider></mat-divider>
-
-            <!-- Especialidades -->
-            <div class="info-section">
-                <h3>
-                    <mat-icon class="section-icon">local_offer</mat-icon>
-                    Especialidades
-                </h3>
-                @if (prof.especialidades && prof.especialidades.length > 0) {
-                <div class="especialidades-list">
-                    @for (esp of prof.especialidades; track esp.id) {
-                    <div class="especialidad-chip" [class.inactive-chip]="!esp.estado">
-                        <mat-icon>{{ esp.estado ? 'verified' : 'disabled' }}</mat-icon>
-                        <span>{{ esp.especialidad }}</span>
+        <!-- CONTENIDO EN DOS COLUMNAS -->
+        <div class="content-columns">
+            <!-- COLUMNA IZQUIERDA -->
+            <div class="col-left">
+                <!-- Descripción -->
+                <div class="section-card glass-panel mbento-border-glow">
+                    <div class="section-header">
+                        <mat-icon>description</mat-icon>
+                        <h3>Descripción</h3>
                     </div>
+                    <p class="descripcion">{{ prof.descripcion || 'Sin descripción' }}</p>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="section-card glass-panel mbento-border-glow">
+                    <div class="section-header">
+                        <mat-icon>place</mat-icon>
+                        <h3>Ubicación</h3>
+                    </div>
+                    @if (prof.ubicaciones && prof.ubicaciones.length > 0) {
+                    <div class="location-grid">
+                        <div class="location-item">
+                            <span class="loc-label">Ciudad</span>
+                            <span class="loc-value">{{ prof.ubicaciones[0].ciudad || '—' }}</span>
+                        </div>
+                        <div class="location-item">
+                            <span class="loc-label">Cantón</span>
+                            <span class="loc-value">{{ prof.ubicaciones[0].canton || '—' }}</span>
+                        </div>
+                        <div class="location-item">
+                            <span class="loc-label">Distrito</span>
+                            <span class="loc-value">{{ prof.ubicaciones[0].distrito || '—' }}</span>
+                        </div>
+                        @if (prof.ubicaciones[0].descripcion) {
+                        <div class="location-item full">
+                            <span class="loc-label">Detalle</span>
+                            <span class="loc-value">{{ prof.ubicaciones[0].descripcion }}</span>
+                        </div>
+                        }
+                    </div>
+                    } @else {
+                    <p class="no-data">No hay ubicación registrada</p>
                     }
                 </div>
-                } @else {
-                <p class="no-data">No hay especialidades asociadas</p>
-                }
-            </div>
 
-            <mat-divider></mat-divider>
-
-            <!-- Servicios -->
-            <div class="info-section">
-                <div class="section-header">
-                    <h3>
-                        <mat-icon class="section-icon">list_alt</mat-icon>
-                        Servicios
-                    </h3>
-                    <div class="section-actions">
-                        <span class="servicios-count">
-                            {{ getServiciosActivos() }} / {{ getTotalServicios() }} activos
-                        </span>
-                        <button mat-stroked-button (click)="toggleServiciosFiltro()" class="filter-btn">
-                            <mat-icon>{{ serviciosActivos() ? 'visibility' : 'visibility_off' }}</mat-icon>
-                            {{ serviciosActivos() ? 'Ver todos' : 'Ver activos' }}
-                        </button>
+                <!-- Especialidades -->
+                <div class="section-card glass-panel mbento-border-glow">
+                    <div class="section-header">
+                        <mat-icon>local_offer</mat-icon>
+                        <h3>Especialidades</h3>
                     </div>
-                </div>
-
-                @if (getServiciosFiltrados().length > 0) {
-                <div class="servicios-grid">
-                    @for (servicio of getServiciosFiltrados(); track servicio.id) {
-                    <div class="servicio-card" [class.inactive-servicio]="!servicio.estado">
-                        <div class="servicio-header">
-                            <span class="servicio-nombre">{{ servicio.servicio }}</span>
-                            <span class="servicio-status" [class.active]="servicio.estado"
-                                [class.inactive]="!servicio.estado">
-                                <mat-icon>{{ servicio.estado ? 'check_circle' : 'block' }}</mat-icon>
-                            </span>
+                    @if (prof.especialidades && prof.especialidades.length > 0) {
+                    <div class="especialidades-grid">
+                        @for (esp of prof.especialidades; track esp.id) {
+                        <div class="especialidad-chip" [class.inactive-chip]="!esp.estado">
+                            <mat-icon>{{ esp.estado ? 'verified' : 'disabled' }}</mat-icon>
+                            <span>{{ esp.especialidad }}</span>
                         </div>
-                        <div class="servicio-meta">
-                            <span class="servicio-precio">${{ servicio.precio | number }}</span>
-                            <span class="servicio-modalidad">
-                                <mat-icon class="modalidad-icon">{{ getModalidadInfo(servicio.modalidad).icon
-                                    }}</mat-icon>
-                                {{ getModalidadInfo(servicio.modalidad).label }}
-                            </span>
-                        </div>
-                        <div class="servicio-duracion">
-                            <mat-icon>schedule</mat-icon>
-                            {{ servicio.duracion_estimada }} min
-                        </div>
+                        }
                     </div>
+                    } @else {
+                    <p class="no-data">No hay especialidades asociadas</p>
                     }
                 </div>
-                } @else {
-                <p class="no-data">No hay servicios{{ serviciosActivos() ? ' activos' : '' }}</p>
-                }
             </div>
-        </mat-card-content>
 
-        <mat-card-actions align="end" class="card-actions">
+            <!-- COLUMNA DERECHA: Servicios -->
+            <div class="col-right">
+                <div class="section-card glass-panel mbento-border-glow">
+                    <div class="section-header">
+                        <mat-icon>build</mat-icon>
+                        <h3>Servicios</h3>
+                        <div class="section-actions">
+                            <span class="servicios-count">
+                                {{ getServiciosActivos() }} / {{ getTotalServicios() }} activos
+                            </span>
+                            <button mat-stroked-button (click)="toggleServiciosFiltro()" class="filter-btn">
+                                <mat-icon>{{ serviciosActivos() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                                {{ serviciosActivos() ? 'Todos' : 'Activos' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    @if (getServiciosFiltrados().length > 0) {
+                    <div class="servicios-list">
+                        @for (servicio of getServiciosFiltrados(); track servicio.id) {
+                        <a class="servicio-item mbento-border-glow" [class.inactive]="!servicio.estado"
+                            [routerLink]="['/servicios', servicio.id]">
+                            <div class="servicio-dot" [class.active]="servicio.estado"></div>
+                            <div class="servicio-body">
+                                <span class="servicio-nombre">{{ servicio.servicio }}</span>
+                                <div class="servicio-meta">
+                                    <span class="servicio-precio">${{ servicio.precio | number }}</span>
+                                    <span class="servicio-sep">·</span>
+                                    <span class="servicio-duracion">
+                                        <mat-icon>schedule</mat-icon>
+                                        {{ servicio.duracion_estimada }} min
+                                    </span>
+                                    <span class="servicio-sep">·</span>
+                                    <span class="servicio-modalidad">
+                                        <mat-icon>{{ getModalidadInfo(servicio.modalidad).icon }}</mat-icon>
+                                        {{ getModalidadInfo(servicio.modalidad).label }}
+                                    </span>
+                                </div>
+                            </div>
+                            <mat-icon class="servicio-arrow">arrow_forward</mat-icon>
+                        </a>
+                        }
+                    </div>
+                    } @else {
+                    <p class="no-data">No hay servicios{{ serviciosActivos() ? ' activos' : '' }}</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        </app-magic-bento>
+
+        <!-- ACCIONES -->
+        <div class="detail-actions">
             <button mat-stroked-button (click)="volver()" class="back-action-btn">
                 <mat-icon>arrow_back</mat-icon>
                 Volver
@@ -260,7 +252,7 @@
                 <mat-icon>edit</mat-icon>
                 Editar profesional
             </button>
-        </mat-card-actions>
-    </mat-card>
+        </div>
+    </div>
     }
 </div>

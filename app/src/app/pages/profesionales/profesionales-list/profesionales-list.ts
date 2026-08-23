@@ -127,6 +127,31 @@ export class ProfesionalesList implements OnInit {
     return this.profesionalService.getImageUrl(imageName);
   }
 
+  iniciales(nombre: string): string {
+    if (!nombre) return '?';
+    return nombre.split(' ').map(p => p.charAt(0)).slice(0, 2).join('').toUpperCase();
+  }
+
+  etiquetaModalidad(modalidad?: string): string {
+    if (!modalidad) return 'No especificada';
+    const etiquetas: Record<string, string> = {
+      'PRESENCIAL': 'Presencial',
+      'VIRTUAL': 'Virtual',
+      'HÍBRIDA': 'Híbrida'
+    };
+    return etiquetas[modalidad] ?? modalidad;
+  }
+
+  iconoModalidad(modalidad?: string): string {
+    if (!modalidad) return 'help_outline';
+    const iconos: Record<string, string> = {
+      'PRESENCIAL': 'location_on',
+      'VIRTUAL': 'computer',
+      'HÍBRIDA': 'swap_horiz'
+    };
+    return iconos[modalidad] ?? 'help_outline';
+  }
+
   // Manejar error de carga de imagen
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;

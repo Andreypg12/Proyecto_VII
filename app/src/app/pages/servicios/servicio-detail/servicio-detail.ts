@@ -13,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ServicioService } from '../../../core/services/servicio.service';
 import { Servicio } from '../../../core/models/servicio.model';
 import { ProfesionalService } from '../../../core/services/profesional.service';
+import { MagicBentoComponent } from '../../../shared/components/magic-bento/magic-bento';
 
 @Component({
   selector: 'app-servicio-detail',
@@ -27,6 +28,7 @@ import { ProfesionalService } from '../../../core/services/profesional.service';
     MatChipsModule,
     MatDividerModule,
     MatTooltipModule,
+    MagicBentoComponent,
   ],
   templateUrl: './servicio-detail.html',
   styleUrl: './servicio-detail.css',
@@ -99,6 +101,18 @@ export class ServicioDetail implements OnInit {
 
   getImageUrl(imageName: string): string {
     return this.profesionalService.getImageUrl(imageName);
+  }
+
+  getProfesionalImageUrl(): string {
+    const service = this.servicio();
+    return service?.profesional?.imagen_profesional
+      ? this.profesionalService.getImageUrl(service.profesional.imagen_profesional)
+      : '';
+  }
+
+  iniciales(nombre: string): string {
+    if (!nombre) return '?';
+    return nombre.split(' ').map(p => p.charAt(0)).slice(0, 2).join('').toUpperCase();
   }
 
   // Manejar error de carga de imagen

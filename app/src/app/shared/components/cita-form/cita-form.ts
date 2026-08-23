@@ -70,8 +70,6 @@ export class CitaForm {
     profesionales = input<Profesional[]>([]);
     servicios = input<Servicio[]>([]);
 
-    modalidades = input<Modalidad[]>([]);
-
     saving = input<boolean>(false);
     fechaInicial = input<string | null>(null);
 
@@ -249,10 +247,6 @@ export class CitaForm {
             return undefined;
         });
 
-        required(path.modalidad, {
-            message: 'Debe seleccionar una modalidad'
-        });
-
 
         required(path.comentario_cliente, {
             message:
@@ -321,6 +315,14 @@ export class CitaForm {
                 Number(idProfesional)
             );
         });
+    });
+
+    servicioSeleccionado = computed(() => {
+        const idServicio = this.citaModel().id_servicio;
+        if (!idServicio) {
+            return null;
+        }
+        return this.servicios().find(s => s.id === idServicio) ?? null;
     });
 
     cambiarProfesional(): void {
@@ -395,7 +397,6 @@ export class CitaForm {
         this.citaForm.id_servicio().markAsTouched();
         this.citaForm.fecha().markAsTouched();
         this.citaForm.hora().markAsTouched();
-        this.citaForm.modalidad().markAsTouched();
         this.citaForm.comentario_cliente().markAsTouched();
     }
 
@@ -406,7 +407,6 @@ export class CitaForm {
             this.citaForm.id_servicio().invalid() ||
             this.citaForm.fecha().invalid() ||
             this.citaForm.hora().invalid() ||
-            this.citaForm.modalidad().invalid() ||
             this.citaForm.comentario_cliente().invalid()
         );
     }
@@ -425,6 +425,8 @@ export class CitaForm {
             value.hora
         );
 
+        const servicio = this.servicioSeleccionado();
+
         return {
             id_cliente: Number(value.id_cliente),
             id_profesional: Number(value.id_profesional),
@@ -432,7 +434,7 @@ export class CitaForm {
 
             fecha_hora_inicio: fechaHora.toISOString(),
 
-            modalidad: value.modalidad as Modalidad,
+            modalidad: (servicio?.modalidad ?? value.modalidad ?? 'VIRTUAL') as Modalidad,
 
             comentario_cliente:
                 value.comentario_cliente.trim() || null

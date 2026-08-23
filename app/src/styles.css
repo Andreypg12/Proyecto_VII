@@ -157,6 +157,37 @@ h1, h2, h3, h4, h5, h6 {
   text-shadow: 0 0 20px rgba(186, 242, 255, 0.3);
 }
 
+/* Shiny sweep text — reutilizable en cualquier elemento */
+.shiny-text {
+  --shiny-base: var(--th-on-surface, #d4e4fa);
+  --shiny-sweep: #ffffff;
+  display: inline-block;
+  background: linear-gradient(
+    120deg,
+    var(--shiny-base) 0%,
+    var(--shiny-base) 35%,
+    var(--shiny-sweep) 50%,
+    var(--shiny-base) 65%,
+    var(--shiny-base) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shiny-sweep 3s ease-in-out infinite;
+}
+
+@keyframes shiny-sweep {
+  0%   { background-position: 150% 0; }
+  100% { background-position: -50% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiny-text {
+    animation: none;
+  }
+}
+
 /* Tech grid background */
 .grid-bg {
   background-image:

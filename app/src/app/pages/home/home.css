@@ -586,7 +586,13 @@
     .bento-card:hover {
         transform: translateY(-4px);
         border-color: rgba(186, 242, 255, 0.4);
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 218, 248, 0.06);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(218, 248, 0.06);
+    }
+
+    .bento-card.mbento-border-glow:hover {
+        transform: translateY(-4px);
+        border-color: transparent;
+        box-shadow: none;
     }
 }
 

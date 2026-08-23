@@ -41,7 +41,6 @@
             <mat-option [value]="true">Disponible</mat-option>
             <mat-option [value]="false">No disponible</mat-option>
         </mat-select>
-
     </mat-form-field>
 
     <button mat-stroked-button class="clear-button" (click)="clearFilters()">
@@ -78,59 +77,79 @@
 }
 
 <section class="professionals-grid">
-    @for (profesional of profesionalesFiltrados(); track profesional.id) {
-    <mat-card class="professional-card">
+    @for (profesional of profesionalesFiltrados(); track profesional.id; let i = $index) {
+    <mat-card class="professional-card" [style.animation-delay]="(i * 50) + 'ms'">
+        <div class="card-accent"></div>
+
+        <div class="status-dot" [class.active]="profesional.disponibilidad"
+            [class.inactive]="!profesional.disponibilidad"
+            matTooltip="{{ profesional.disponibilidad ? 'Disponible' : 'No disponible' }}"
+            matTooltipPosition="above">
+        </div>
 
         <mat-card-content>
-            <!-- Imagen del profesional -->
-            <div class="professional-image">
-                @if(profesional.imagen_profesional) {
-                <img [src]="getImageUrl(profesional.imagen_profesional)"
-                    [alt]="profesional.usuario.nombre || 'Profesional'" (error)="handleImageError($event)" />
+            <div class="card-avatar-section">
+                @if (profesional.imagen_profesional) {
+                <img class="avatar-img" [src]="getImageUrl(profesional.imagen_profesional)"
+                    [alt]="profesional.usuario.nombre" (error)="handleImageError($event)" />
                 } @else {
-                <div class="image-placeholder">
-                    <mat-icon>person</mat-icon>
-                </div>
+                <span class="avatar-iniciales">
+                    {{ iniciales(profesional.usuario.nombre) }}
+                </span>
                 }
             </div>
 
-            <div class="professional-header">
-                <h2>{{ profesional.usuario.nombre || 'Sin nombre' }}</h2>
-                <span class="modalidad-badge">{{ profesional.modalidad || 'No especificada' }}</span>
+            <h2 class="card-name">{{ profesional.usuario.nombre || 'Sin nombre' }}</h2>
+            <p class="card-title">{{ profesional.titulo || 'Sin título' }}</p>
+
+            <div class="card-chips">
+                <span class="chip chip-modalidad">
+                    <mat-icon>{{ iconoModalidad(profesional.modalidad) }}</mat-icon>
+                    {{ etiquetaModalidad(profesional.modalidad) }}
+                </span>
+                @if (profesional.annos_experiencia) {
+                <span class="chip chip-experiencia">
+                    <mat-icon>work_history</mat-icon>
+                    {{ profesional.annos_experiencia }} años exp.
+                </span>
+                }
             </div>
 
-            <p class="titulo">{{ profesional.titulo || 'Sin título' }}</p>
+            @if (profesional.especialidades && profesional.especialidades.length > 0) {
+            <div class="especialidades">
+                @for (esp of profesional.especialidades; track esp.id) {
+                @if (esp.estado === true) {
+                <span class="especialidad-tag">{{ esp.especialidad }}</span>
+                }
+                }
+            </div>
+            }
 
-            <div class="professional-meta">
-                <div class="meta-item">
-                    <mat-icon>attach_money</mat-icon>
-                    <span><strong>${{ profesional.tarifa_por_hora | number }}</strong> / hora</span>
+            <div class="card-footer">
+                <div class="card-precio">
+                    <span class="precio-label">Tarifa</span>
+                    <span class="precio-valor">${{ profesional.tarifa_por_hora | number }}</span>
+                    <span class="precio-unit">/ hora</span>
                 </div>
-                <div class="meta-item disponibilidad-switch" [class.available]="profesional.disponibilidad"
+                <div class="disponibilidad-switch" [class.available]="profesional.disponibilidad"
                     [class.unavailable]="!profesional.disponibilidad"
                     (click)="cambiarDisponibilidad(profesional, $event)"
                     matTooltip="{{ profesional.disponibilidad ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
                     matTooltipPosition="above">
-                    <mat-icon class="switch-icon">{{ profesional.disponibilidad ? 'toggle_on' : 'toggle_off'
-                        }}</mat-icon>
-                    <span class="switch-label">{{ profesional.disponibilidad ? 'Disponible' : 'No disponible' }}</span>
+                    <mat-icon class="switch-icon">{{ profesional.disponibilidad ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+                    <span class="switch-label">{{ profesional.disponibilidad ? 'Activo' : 'Inactivo' }}</span>
                 </div>
             </div>
         </mat-card-content>
 
-        <mat-card-actions align="end">
-            <!-- Botón Editar -->
-            <a mat-stroked-button color="accent" [routerLink]="['/profesionales/editar', profesional.id]"
-                class="edit-button">
+        <mat-card-actions align="end" class="card-acciones">
+            <a mat-stroked-button class="admin-btn" [routerLink]="['/profesionales/editar', profesional.id]">
                 <mat-icon>edit</mat-icon>
                 Editar
             </a>
-
-            <!-- Botón Detalle -->
-            <a mat-stroked-button color="primary" [routerLink]="['/profesionales', profesional.id]"
-                class="view-icon-button">
-                Detalle
+            <a mat-stroked-button class="admin-btn" [routerLink]="['/profesionales', profesional.id]">
                 <mat-icon>more_horiz</mat-icon>
+                Detalle
             </a>
         </mat-card-actions>
     </mat-card>
