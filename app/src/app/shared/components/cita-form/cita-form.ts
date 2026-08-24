@@ -76,6 +76,9 @@ export class CitaForm {
     // Modo "reserva directa": el servicio (y su profesional) ya vienen fijos.
     servicioFijo = input<Servicio | null>(null);
 
+    // Cliente fijo (reserva desde la sesión del cliente logueado).
+    clienteFijo = input<Usuario | null>(null);
+
     titulo = input('Registrar cita');
     subtitulo = input('Complete la información requerida para programar la cita.');
 
@@ -178,6 +181,23 @@ export class CitaForm {
                     modalidad: servicio.modalidad || value.modalidad
                 })
             );
+        });
+
+        effect(() => {
+            const cliente = this.clienteFijo();
+
+            if (!cliente) {
+                return;
+            }
+
+            this.citaModel.update(
+                (value) => ({
+                    ...value,
+                    id_cliente: cliente.id
+                })
+            );
+
+            this.citaForm.id_cliente().markAsTouched();
         });
     }
 
@@ -462,18 +482,6 @@ export class CitaForm {
         return `${anio}-${mes}-${dia}`;
     }
 
-    abrirCalendario(input: HTMLInputElement): void {
-        const inputConCalendario = input as HTMLInputElement & {
-            showPicker?: () => void;
-        };
-
-        if (inputConCalendario.showPicker) {
-            inputConCalendario.showPicker();
-            return;
-        }
-
-        input.focus();
-    }
     getImageUrl(imageName: string): string {
         return this.profesionalService.getImageUrl(imageName);
     }

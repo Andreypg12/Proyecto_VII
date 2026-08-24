@@ -310,7 +310,7 @@ export const citaService = {
     },
 
 
-    async cambiarEstado(id: number, data: CambiarEstadoCitaDto) {
+    async cambiarEstado(id: number, data: CambiarEstadoCitaDto, realizadoPor: string = "SISTEMA", usuarioId?: number) {
 
 
         //Busca la cita por su id, solo trae id, estado y fecha hora finalización esperada.
@@ -326,6 +326,9 @@ export const citaService = {
 
                     fecha_hora_finalizacion_esperada:
                         true,
+                    id_cliente: true,
+                    id_profesional: true,
+                    id_servicio: true,
                 },
             });
 
@@ -399,30 +402,48 @@ export const citaService = {
             );
         }
 
-        return prisma.cita.update({
-            where: {
-                id,
-            },
+        return await prisma.$transaction(async (tx) => {
+            const citaActualizada = await tx.cita.update({
+                where: {
+                    id,
+                },
 
-            data: {
-                estado:data.estado,
-                comentario_profesional:comentarioProfesional,
-                fecha_hora_finalizacion_real: data.estado === EstadoCita.COMPLETADA ? new Date() : null,
-            },
+                data: {
+                    estado: data.estado,
+                    comentario_profesional: comentarioProfesional,
+                    fecha_hora_finalizacion_real: data.estado === EstadoCita.COMPLETADA ? new Date() : null,
+                },
 
-            //devolvemos id, estado, comentario profesional, hora finalización real
-            select: {
-                id: true,
-                estado: true,
+                //devolvemos id, estado, comentario profesional, hora finalización real
+                select: {
+                    id: true,
+                    estado: true,
 
-                comentario_profesional:
-                    true,
+                    comentario_profesional:
+                        true,
 
-                fecha_hora_finalizacion_real:
-                    true,
+                    fecha_hora_finalizacion_real:
+                        true,
 
-                updateAt: true,
-            },
+                    updateAt: true,
+                },
+            });
+
+            await tx.historialCita.create({
+                data: {
+                    id_cita: cita.id,
+                    estado_anterior: cita.estado,
+                    estado_nuevo: data.estado,
+                    comentario: comentarioProfesional,
+                    realizado_por: realizadoPor,
+                    id_usuario: usuarioId ?? undefined,
+                    id_cliente: cita.id_cliente,
+                    id_profesional: cita.id_profesional,
+                    id_servicio: cita.id_servicio,
+                }
+            });
+
+            return citaActualizada;
         });
     },
 }

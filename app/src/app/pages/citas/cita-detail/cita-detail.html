@@ -501,32 +501,72 @@
 
             </section>
 
+            <!-- Comentario profesional -->
+            @if (citaActual.comentario_profesional) {
+
+                <section class="detail-section">
+
+                    <h2>
+                        <mat-icon>support_agent</mat-icon>
+                        Comentario del profesional
+                    </h2>
+
+                    <div class="detail-item full comment-box">
+
+                        <span>
+                            Respuesta o motivo registrado
+                        </span>
+
+                        <p>
+                            {{ citaActual.comentario_profesional }}
+                        </p>
+
+                    </div>
+
+                </section>
+            }
+
         </div>
 
-        <!-- Comentario profesional -->
-        @if (citaActual.comentario_profesional) {
-
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>support_agent</mat-icon>
-                    Comentario del profesional
-                </h2>
-
-                <div class="detail-item full comment-box">
-
-                    <span>
-                        Respuesta o motivo registrado
-                    </span>
-
-                    <p>
-                        {{ citaActual.comentario_profesional }}
-                    </p>
-
+        <!-- Historial de cambios -->
+        <section class="detail-section historial-section">
+            <h2>
+                <mat-icon>history</mat-icon>
+                Historial de cambios
+            </h2>
+            @if (historial().length === 0) {
+                <p>No hay historial de cambios registrado.</p>
+            } @else {
+                <div class="timeline">
+                    @for (item of historial(); track item.id) {
+                        <div class="timeline-item">
+                            <div class="timeline-dot" [class.pend]="item.estado_nuevo === 'PENDIENTE'"
+                                [class.acept]="item.estado_nuevo === 'ACEPTADA'"
+                                [class.rech]="item.estado_nuevo === 'RECHAZADA'"
+                                [class.canc]="item.estado_nuevo === 'CANCELADA'"
+                                [class.comp]="item.estado_nuevo === 'COMPLETADA'"></div>
+                            <div class="timeline-content">
+                                <span class="timeline-estado">
+                                    @if (item.estado_anterior === 'PENDIENTE' && item.estado_nuevo === 'PENDIENTE') {
+                                        Registro inicial
+                                    } @else {
+                                        {{ formatearEstado(item.estado_anterior) }} → {{ formatearEstado(item.estado_nuevo) }}
+                                    }
+                                </span>
+                                <span class="timeline-fecha">{{ formatearFechaHora(item.fecha_cambio) }}</span>
+                                @if (item.comentario) {
+                                    <p class="timeline-comentario">{{ item.comentario }}</p>
+                                }
+                                <span class="timeline-autor">
+                                    Por: {{ correoAutor(item) }}
+                                    <span class="timeline-rol"> ({{ formatearRol(item.realizado_por) }})</span>
+                                </span>
+                            </div>
+                        </div>
+                    }
                 </div>
-
-            </section>
-        }
+            }
+        </section>
 
     }
 

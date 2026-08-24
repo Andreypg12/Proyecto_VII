@@ -3,6 +3,7 @@ import { citaController } from "../controllers/cita.controller";
 import { asyncHandler } from "../middlewares/async-handler.middleware";
 import { cambiarEstadoCitaSchema, createCitaSchema } from "../dtos/cita.dto";
 import { validateRequest } from "../middlewares/validate-request.middleware";
+import { authenticateToken } from "../middlewares/auth.middleware";
 
 export class CitaRoutes {
 
@@ -21,7 +22,7 @@ export class CitaRoutes {
         router.post("/", validateRequest(createCitaSchema), asyncHandler(controller.crear));
 
         // PATCH CAMBIAR ESTADO
-        router.patch("/:id/estado", validateRequest(cambiarEstadoCitaSchema), asyncHandler(controller.cambiarEstado));
+        router.patch("/:id/estado", authenticateToken, validateRequest(cambiarEstadoCitaSchema), asyncHandler(controller.cambiarEstado));
 
         // GET CITA POR ID
         router.get("/:id", asyncHandler(controller.obtenerPorId));

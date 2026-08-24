@@ -7,6 +7,7 @@
     <mat-card-content>
         <form class="cita-form" novalidate (submit)="$event.preventDefault(); submit()">
             <!-- CLIENTE -->
+            @if (!clienteFijo()) {
             <section class="form-section section-client">
                 <div class="section-title">
                     <div>
@@ -31,6 +32,7 @@
                     }
                 </mat-form-field>
             </section>
+            }
 
             <!-- PROFESIONAL Y SERVICIO -->
             @if (servicioFijo(); as servicio) {
@@ -162,10 +164,6 @@
                     <mat-form-field appearance="outline">
                         <mat-label>Fecha</mat-label>
                         <input #fechaInput matInput type="date" [formField]="citaForm.fecha" />
-                        <button mat-icon-button matSuffix type="button" aria-label="Abrir calendario"
-                            (click)="abrirCalendario(fechaInput)">
-                            <mat-icon>calendar_month</mat-icon>
-                        </button>
                         @if (citaForm.fecha().touched() && citaForm.fecha().invalid()) {
                         <mat-error>{{ citaForm.fecha().errors()[0].message }}</mat-error>
                         }

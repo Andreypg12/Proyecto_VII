@@ -6,6 +6,7 @@ import { parseId } from "../utils/parse-id";
 import { sendSuccess } from "../utils/http-response";
 
 import { EstadoCita } from "../../generated/prisma/enums";
+import { AuthRequest } from "../middlewares/auth.middleware";
 
 export class citaController {
 
@@ -128,18 +129,23 @@ export class citaController {
         });
     }
 
-    cambiarEstado = async (request: Request, response: Response, next: NextFunction) => {
+    cambiarEstado = async (request: AuthRequest, response: Response, next: NextFunction) => {
 
         // Obtiene y valida el identificador de la cita.
         const id = parseId(
             request.params.id
         );
 
+        const realizadoPor = request.user?.rol || "SISTEMA";
+        const usuarioId = request.user?.id;
+
         // Envía el nuevo estado y el comentario al servicio.
         const cita =
             await citaService.cambiarEstado(
                 id,
-                request.body
+                request.body,
+                realizadoPor,
+                usuarioId
             );
 
         return sendSuccess(

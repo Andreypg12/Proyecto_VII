@@ -310,9 +310,86 @@
     .state-actions {
         flex-direction: column;
     }
+}
 
-    .state-button {
-        width: 100%;
-    }
+/* TIMELINE DE HISTORIAL */
+.historial-section {
+    margin-top: 3rem !important;
+}
 
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin-top: 2rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #1e293b;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 2.5rem;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -2rem;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #475569;
+    border: 3px solid #020617;
+    z-index: 1;
+}
+
+.timeline-dot.pend { background: #facc15; }
+.timeline-dot.acept { background: #4ade80; }
+.timeline-dot.rech { background: #fb7185; }
+.timeline-dot.canc { background: #cbd5e1; }
+.timeline-dot.comp { background: #60a5fa; }
+
+.timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.timeline-estado {
+    font-weight: 700;
+    color: #f8fafc;
+    font-size: 1rem;
+}
+
+.timeline-fecha {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.timeline-comentario {
+    margin: 0.75rem 0;
+    padding: 0.75rem 1rem;
+    background: #0f172a;
+    border-left: 3px solid #334155;
+    border-radius: 0 0.5rem 0.5rem 0;
+    color: #e2e8f0;
+    font-style: italic;
+}
+
+.timeline-autor {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }

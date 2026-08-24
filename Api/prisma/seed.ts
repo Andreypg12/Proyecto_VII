@@ -10,14 +10,15 @@ async function main() {
     // 1. Limpieza de datos
 
     const models = [
-    prisma.valoracion,
-    prisma.cita,
-    prisma.servicio,
-    prisma.ubicacionProfesional,
-    prisma.perfilProfesional,
-    prisma.categoriaServicio,
-    prisma.especialidad,
-    prisma.usuario,
+        prisma.historialCita,
+        prisma.valoracion,
+        prisma.cita,
+        prisma.servicio,
+        prisma.ubicacionProfesional,
+        prisma.perfilProfesional,
+        prisma.categoriaServicio,
+        prisma.especialidad,
+        prisma.usuario,
     ];
 
     for (const model of models) {
@@ -25,6 +26,7 @@ async function main() {
     }
 
     const tablasAutoIncrement = [
+        "historial_cita",
         "valoracion",
         "cita",
         "servicio",
@@ -81,7 +83,7 @@ async function main() {
             { email: "sebastian.mora@correo.com", nombre: "Sebastián", apellidos: "Mora Jiménez", password: passwordHash, rol: Rol.PROFESIONAL },
             { email: "valeria@correo.com", nombre: "Valeria", apellidos: "Méndez", password: passwordHash, rol: Rol.PROFESIONAL },
             { email: "franklin@correo.com", nombre: "Franklin", apellidos: "Montoya", password: passwordHash, rol: Rol.PROFESIONAL },
-            { email: "camila.solis@correo.com", nombre: "Camila", apellidos: "Solís Hernández", password: passwordHash, rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO},
+            { email: "camila.solis@correo.com", nombre: "Camila", apellidos: "Solís Hernández", password: passwordHash, rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO },
             { email: "andrey@correo.com", nombre: "Andrey", apellidos: "Pérez", password: passwordHash, rol: Rol.CLIENTE, estado: EstadoUsuario.BLOQUEADO },
             { email: "fabián@correo.com", nombre: "Fabián", apellidos: "Zamora", password: passwordHash, rol: Rol.CLIENTE },
             { email: "gael@correo.com", nombre: "Gael", apellidos: "Osorio", password: passwordHash, rol: Rol.CLIENTE },
@@ -267,7 +269,7 @@ async function main() {
         ]
     });
 
-    
+
 
     //Seeds servicios
     // Seeds servicios con especialidades relacionadas
@@ -614,7 +616,97 @@ async function main() {
         ]
     });
 
-    
+    // =====================================================
+    // HISTORIALES DE CITA (trazabilidad de cambios de estado)
+    // Se crean registros simulando la evolución de cada cita.
+    // =====================================================
+
+    const citas = await prisma.cita.findMany({
+        select: { id: true, estado: true, id_cliente: true, id_profesional: true, id_servicio: true }
+    });
+
+    for (const cita of citas) {
+        const historiales: any[] = [];
+
+        // Toda cita inicia en PENDIENTE
+        historiales.push({
+            id_cita: cita.id,
+            estado_anterior: "PENDIENTE",
+            estado_nuevo: "PENDIENTE",
+            comentario: "Cita creada por el cliente.",
+            realizado_por: "CLIENTE",
+            id_usuario: cita.id_cliente,
+            fecha_cambio: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3)
+        });
+
+        if (cita.estado === "ACEPTADA" || cita.estado === "COMPLETADA" || cita.estado === "CANCELADA" || cita.estado === "RECHAZADA") {
+            historiales.push({
+                id_cita: cita.id,
+                estado_anterior: "PENDIENTE",
+                estado_nuevo: "ACEPTADA",
+                comentario: "El profesional aceptó la solicitud de cita.",
+                realizado_por: "PROFESIONAL",
+                id_usuario: cita.id_profesional,
+                fecha_cambio: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2)
+            });
+        }
+
+        if (cita.estado === "COMPLETADA" || cita.estado === "CANCELADA") {
+            if (cita.estado === "COMPLETADA") {
+                historiales.push({
+                    id_cita: cita.id,
+                    estado_anterior: "ACEPTADA",
+                    estado_nuevo: "COMPLETADA",
+                    comentario: "Servicio finalizado satisfactoriamente.",
+                    realizado_por: "PROFESIONAL",
+                    id_usuario: cita.id_profesional,
+                    fecha_cambio: new Date(Date.now() - 1000 * 60 * 60 * 12)
+                });
+            } else {
+                historiales.push({
+                    id_cita: cita.id,
+                    estado_anterior: "ACEPTADA",
+                    estado_nuevo: "CANCELADA",
+                    comentario: "El cliente solicitó la cancelación de la cita.",
+                    realizado_por: "CLIENTE",
+                    id_usuario: cita.id_cliente,
+                    fecha_cambio: new Date(Date.now() - 1000 * 60 * 60 * 12)
+                });
+            }
+        }
+
+        if (cita.estado === "RECHAZADA") {
+            historiales.push({
+                id_cita: cita.id,
+                estado_anterior: "ACEPTADA",
+                estado_nuevo: "RECHAZADA",
+                comentario: "El profesional no pudo atender la solicitud por conflictos de horario.",
+                realizado_por: "PROFESIONAL",
+                id_usuario: cita.id_profesional,
+                fecha_cambio: new Date(Date.now() - 1000 * 60 * 60 * 12)
+            });
+        }
+
+        for (const h of historiales) {
+            await prisma.historialCita.create({
+                data: {
+                    id_cita: h.id_cita,
+                    estado_anterior: h.estado_anterior as any,
+                    estado_nuevo: h.estado_nuevo as any,
+                    comentario: h.comentario,
+                    realizado_por: h.realizado_por,
+                    id_usuario: h.id_usuario,
+                    fecha_cambio: h.fecha_cambio,
+                    id_cliente: cita.id_cliente,
+                    id_profesional: cita.id_profesional,
+                    id_servicio: cita.id_servicio
+                }
+            });
+        }
+    }
+
+    console.log(`✅ Historiales de cita creados: ${citas.length} citas procesadas`);
+
 }
 main()
     .catch((e) => {

@@ -5,7 +5,7 @@ import { parseId } from "../utils/parse-id";
 import { sendSuccess } from "../utils/http-response";
 import { Rol } from "../../generated/prisma/enums";
 
-import {AuthRequest} from "../middlewares/auth.middleware";
+import { AuthRequest } from "../middlewares/auth.middleware";
 import { success } from "zod";
 
 export class usuarioController {
@@ -46,11 +46,11 @@ export class usuarioController {
     };
 
     //Obtener por ID
-    obtenerPorId = async (request: Request,response: Response,next: NextFunction) => {
+    obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {
 
         const id = parseId(request.params.id);
 
-        const usuario =await usuarioService.obtenerPorId(id);
+        const usuario = await usuarioService.obtenerPorId(id);
         if (!usuario) {
             return response
                 .status(StatusCodes.NOT_FOUND)
@@ -64,46 +64,46 @@ export class usuarioController {
         }
 
         return response.status(StatusCodes.OK).json({
-                success: true,
-                data: usuario
-            });
+            success: true,
+            data: usuario
+        });
     };
 
-      // Registrar
-        registrar = async (request: Request,response: Response,next: NextFunction) => {
+    // Registrar
+    registrar = async (request: Request, response: Response, next: NextFunction) => {
 
-                try {
-                    const usuario = await usuarioService.registrar(request.body);
+        try {
+            const usuario = await usuarioService.registrar(request.body);
 
-                    return sendSuccess(
-                        response,
-                        usuario,
-                        "Usuario registrado correctamente",
-                        StatusCodes.CREATED
-                    );
+            return sendSuccess(
+                response,
+                usuario,
+                "Usuario registrado correctamente",
+                StatusCodes.CREATED
+            );
 
-                } catch (error) {
+        } catch (error) {
 
-                    const message =
-                        error instanceof Error
-                            ? error.message
-                            : "";
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : "";
 
-                    if (message ==="El correo ya está registrado") {
+            if (message === "El correo ya está registrado") {
 
-                        return response.status(StatusCodes.CONFLICT).json({
-                                success: false,
-                                message:
-                                    "El correo ya está registrado"
-                            });
-                    }
-                    next(error);
-                }
-            };
+                return response.status(StatusCodes.CONFLICT).json({
+                    success: false,
+                    message:
+                        "El correo ya está registrado"
+                });
+            }
+            next(error);
+        }
+    };
 
 
-        //Login
-        login = async (request: Request,response: Response,next: NextFunction) => {
+    //Login
+    login = async (request: Request, response: Response, next: NextFunction) => {
 
         try {
             const resultado = await usuarioService.login(request.body);
@@ -122,13 +122,13 @@ export class usuarioController {
                     : "Credenciales incorrectas";
 
 
-            if (message ==="Correo o contraseña incorrectos" || message === "El usuario se encuentra bloqueado") {
+            if (message === "Correo o contraseña incorrectos" || message === "El usuario se encuentra bloqueado") {
 
                 return response.status(StatusCodes.UNAUTHORIZED).json({
-                        success: false,
-                        message:
-                            "Credenciales incorrectas"
-                    });
+                    success: false,
+                    message:
+                        "Credenciales incorrectas"
+                });
             }
             next(error);
         }
@@ -186,20 +186,20 @@ export class usuarioController {
         );
     };
 
-    perfil = async ( request: AuthRequest, response: Response, next: NextFunction) => {
+    perfil = async (request: AuthRequest, response: Response, next: NextFunction) => {
 
         const usuarioId = request.user?.id;
         if (!usuarioId) {
             return response
                 .status(StatusCodes.UNAUTHORIZED)
-                .json({ success: false, message: "Usuario no autenticado" + usuarioId});
+                .json({ success: false, message: "Usuario no autenticado" + usuarioId });
         }
 
         const usuario = await usuarioService.perfil(usuarioId);
         if (!usuario) {
             return response
-            .status(StatusCodes.NOT_FOUND)
-            .json({ success: false, message: "El usuario autenticado no existe: " + usuarioId});
+                .status(StatusCodes.NOT_FOUND)
+                .json({ success: false, message: "El usuario autenticado no existe: " + usuarioId });
         }
 
         return sendSuccess(
@@ -211,7 +211,7 @@ export class usuarioController {
 
 
     // Actualizar perfil del usuario autenticado
-    actualizarPerfil = async ( request: AuthRequest, response: Response, next: NextFunction) => {
+    actualizarPerfil = async (request: AuthRequest, response: Response, next: NextFunction) => {
         const usuarioId = request.user?.id;
 
         if (!usuarioId) {
@@ -224,12 +224,12 @@ export class usuarioController {
         }
 
         try {
-            const usuario = await usuarioService.actualizarPerfil( usuarioId, request.body);
-            return sendSuccess( response, usuario, "Perfil actualizado correctamente");
+            const usuario = await usuarioService.actualizarPerfil(usuarioId, request.body);
+            return sendSuccess(response, usuario, "Perfil actualizado correctamente");
         } catch (error) {
 
-            const message = error instanceof Error ? error.message: "";
-            if ( message === "El correo ya está registrado") {
+            const message = error instanceof Error ? error.message : "";
+            if (message === "El correo ya está registrado") {
 
                 return response
                     .status(StatusCodes.CONFLICT)
