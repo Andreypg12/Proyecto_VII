@@ -85,6 +85,7 @@ export class CitaForm {
     guardar = output<CreateCitaDto>();
     cancelar = output<void>();
 
+
     private readonly profesionalService = inject(ProfesionalService);
 
 
@@ -297,6 +298,7 @@ export class CitaForm {
     });
 
     isSubmitting = computed(() => this.saving());
+
 
     clientesDisponibles = computed(() =>
         this.clientes().filter(

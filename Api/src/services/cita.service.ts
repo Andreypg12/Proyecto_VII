@@ -3,6 +3,8 @@ import { EstadoCita, EstadoUsuario, Modalidad, Rol, } from '../../generated/pris
 import { CambiarEstadoCitaDto, CreateCitaDto, } from '../dtos/cita.dto';
 import { AppError } from '../utils/app-error';
 
+import { AuthTokenPayload } from "../middlewares/auth.middleware";
+
 interface FiltrosCita {
     estado?: EstadoCita;
     idProfesional?: number;
@@ -27,21 +29,77 @@ export const citaService = {
         };
     },
 
+    
 
-    async listar(filtros?: FiltrosCita) {
+    async listar(
+        filtros: FiltrosCita | undefined,
+        usuarioAutenticado: AuthTokenPayload
+    ) {
 
         const where: any = {};
 
-        if (filtros?.estado) { where.estado = filtros.estado; }
 
-        if (filtros?.idProfesional) { where.id_profesional = filtros.idProfesional; }
+        // FILTRO SEGÚN EL ROL
 
-        //se ejecuta cuando se recibió al menos una de las dos fechas.
-        if (filtros?.fechaDesde || filtros?.fechaHasta) {
+        // CLIENTE:
+        // solamente puede ver sus propias citas
+        if (
+            usuarioAutenticado.rol === Rol.CLIENTE
+        ) {
+
+            where.id_cliente =
+                usuarioAutenticado.id;
+
+        }
+
+
+        // PROFESIONAL:
+        // solamente puede ver citas asociadas
+        // a su propio perfil profesional
+        if (
+            usuarioAutenticado.rol === Rol.PROFESIONAL
+        ) {
+
+            where.profesional = {
+                id_usuario:
+                    usuarioAutenticado.id
+            };
+
+        }
+
+
+        // ADMINISTRADOR:
+        // puede filtrar por cualquier profesional
+        if (
+            usuarioAutenticado.rol === Rol.ADMINISTRADOR &&
+            filtros?.idProfesional
+        ) {
+
+            where.id_profesional =
+                filtros.idProfesional;
+
+        }
+
+
+        // FILTRO POR ESTADO
+
+        if (filtros?.estado) {
+            where.estado =
+                filtros.estado;
+        }
+
+
+        // FILTRO POR FECHAS
+
+        if (
+            filtros?.fechaDesde ||
+            filtros?.fechaHasta
+        ) {
 
             where.fecha_hora_inicio = {};
 
             if (filtros.fechaDesde) {
+
                 where.fecha_hora_inicio.gte =
                     new Date(
                         `${filtros.fechaDesde}T00:00:00`
@@ -49,6 +107,7 @@ export const citaService = {
             }
 
             if (filtros.fechaHasta) {
+
                 where.fecha_hora_inicio.lte =
                     new Date(
                         `${filtros.fechaHasta}T23:59:59.999`
@@ -56,10 +115,15 @@ export const citaService = {
             }
         }
 
+
+        // CONSULTA
+
         return prisma.cita.findMany({
+
             where,
 
             select: {
+
                 id: true,
 
                 fecha_hora_inicio: true,
@@ -71,59 +135,101 @@ export const citaService = {
                     true,
 
                 comentario_cliente: true,
+
                 comentario_profesional: true,
+
                 monto_estimado: true,
+
                 modalidad: true,
+
                 estado: true,
+
                 createdAt: true,
+
                 updateAt: true,
 
+
                 cliente: {
+
                     select: {
+
                         id: true,
+
                         nombre: true,
+
                         apellidos: true,
+
                         email: true,
+
                     },
+
                 },
 
+
                 profesional: {
+
                     select: {
+
                         id: true,
+
                         titulo: true,
+
                         disponibilidad: true,
 
                         usuario: {
+
                             select: {
+
                                 id: true,
+
                                 nombre: true,
+
                                 apellidos: true,
+
                                 email: true,
+
                             },
+
                         },
+
                     },
+
                 },
 
+
                 servicio: {
+
                     select: {
+
                         id: true,
+
                         servicio: true,
+
                         descripcion: true,
+
                         precio: true,
 
                         duracion_estimada:
                             true,
 
                         modalidad: true,
+
                     },
+
                 },
+
             },
 
+
             orderBy: {
+
                 fecha_hora_inicio:
                     'desc',
+
             },
+
         });
+
     },
 
 
