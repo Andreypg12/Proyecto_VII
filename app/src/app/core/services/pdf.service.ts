@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import type {
+    Content,
     TDocumentDefinitions
 } from 'pdfmake/interfaces';
 
@@ -121,24 +122,12 @@ export class PdfService {
 
             content: [
 
-                {
-                    text: 'TECHHIRE',
-                    style: 'marca'
-                },
-
-                {
-                    text:
-                        'Reporte de citas por estado',
-
-                    style: 'titulo'
-                },
-
-                {
-                    text:
-                        'Resumen de las citas registradas según su estado actual.',
-
-                    style: 'subtitulo'
-                },
+                this.construirEncabezado(
+                    'Reporte de citas por estado',
+                    'Resumen de las citas registradas según su estado actual.',
+                    'CITAS · ESTADO',
+                    fechaGeneracion
+                ),
 
 
                 {
@@ -328,27 +317,6 @@ export class PdfService {
                             () =>
                                 '#D7E1E8'
                     }
-                },
-
-
-                {
-                    margin: [
-                        0,
-                        25,
-                        0,
-                        0
-                    ],
-
-                    text:
-                        `Generado: ${fechaGeneracion}`,
-
-                    fontSize: 9,
-
-                    color:
-                        '#64748b',
-
-                    alignment:
-                        'right'
                 }
 
             ],
@@ -394,6 +362,20 @@ export class PdfService {
 
                     color:
                         '#64748b'
+                },
+
+
+                etiqueta: {
+
+                    fontSize: 9,
+
+                    bold: true,
+
+                    color:
+                        '#087F8C',
+
+                    characterSpacing:
+                        1
                 },
 
 
@@ -519,22 +501,12 @@ export class PdfService {
 
             content: [
 
-                {
-                    text: 'TECHHIRE',
-                    style: 'marca'
-                },
-
-                {
-                    text:
-                        'Reporte de citas por profesional',
-                    style: 'titulo'
-                },
-
-                {
-                    text:
-                        'Resumen de citas registradas, completadas y porcentaje de finalización por profesional.',
-                    style: 'subtitulo'
-                },
+                this.construirEncabezado(
+                    'Reporte de citas por profesional',
+                    'Resumen de citas registradas, completadas y porcentaje de finalización por profesional.',
+                    'CITAS · PROFESIONAL',
+                    fechaGeneracion
+                ),
 
                 {
                     text:
@@ -542,7 +514,7 @@ export class PdfService {
                     style: 'seccion',
                     margin: [
                         0,
-                        25,
+                        4,
                         0,
                         10
                     ]
@@ -623,26 +595,6 @@ export class PdfService {
                         vLineColor:
                             () => '#D7E1E8'
                     }
-                },
-
-                {
-                    margin: [
-                        0,
-                        25,
-                        0,
-                        0
-                    ],
-
-                    text:
-                        `Generado: ${fechaGeneracion}`,
-
-                    fontSize: 9,
-
-                    color:
-                        '#64748b',
-
-                    alignment:
-                        'right'
                 }
 
             ],
@@ -671,6 +623,13 @@ export class PdfService {
                 subtitulo: {
                     fontSize: 10,
                     color: '#64748b'
+                },
+
+                etiqueta: {
+                    fontSize: 9,
+                    bold: true,
+                    color: '#087F8C',
+                    characterSpacing: 1
                 },
 
                 seccion: {
@@ -819,22 +778,12 @@ export class PdfService {
 
             content: [
 
-                {
-                    text: 'TECHHIRE',
-                    style: 'marca'
-                },
-
-                {
-                    text:
-                        'Reporte de calificaciones',
-                    style: 'titulo'
-                },
-
-                {
-                    text:
-                        'Resumen de calificaciones, reseñas y rendimiento de los servicios profesionales.',
-                    style: 'subtitulo'
-                },
+                this.construirEncabezado(
+                    'Reporte de calificaciones',
+                    'Resumen de calificaciones, reseñas y rendimiento de los servicios profesionales.',
+                    'CALIFICACIONES',
+                    fechaGeneracion
+                ),
 
 
                 {
@@ -845,7 +794,7 @@ export class PdfService {
 
                     margin: [
                         0,
-                        25,
+                        4,
                         0,
                         10
                     ]
@@ -969,27 +918,6 @@ export class PdfService {
 
                     color:
                         '#64748b'
-                },
-
-
-                {
-                    margin: [
-                        0,
-                        18,
-                        0,
-                        0
-                    ],
-
-                    text:
-                        `Generado: ${fechaGeneracion}`,
-
-                    fontSize: 9,
-
-                    color:
-                        '#64748b',
-
-                    alignment:
-                        'right'
                 }
 
             ],
@@ -1038,6 +966,20 @@ export class PdfService {
                 },
 
 
+                etiqueta: {
+
+                    fontSize: 9,
+
+                    bold: true,
+
+                    color:
+                        '#087F8C',
+
+                    characterSpacing:
+                        1
+                },
+
+
                 seccion: {
 
                     fontSize: 12,
@@ -1073,6 +1015,70 @@ export class PdfService {
             .download(
                 'reporte-calificaciones.pdf'
             );
+    }
+
+
+    /**
+     * Construye el encabezado compartido de los 3 reportes:
+     * marca + título + subtítulo a la izquierda, etiqueta del
+     * tipo de reporte y fecha de generación a la derecha, con
+     * una línea de acento debajo.
+     */
+    private construirEncabezado(
+        titulo: string,
+        subtitulo: string,
+        etiqueta: string,
+        fechaGeneracion: string
+    ): Content {
+
+        return {
+            stack: [
+
+                {
+                    columns: [
+                        {
+                            width: '*',
+                            stack: [
+                                { text: 'TECHHIRE', style: 'marca' },
+                                { text: titulo, style: 'titulo' },
+                                { text: subtitulo, style: 'subtitulo' }
+                            ]
+                        },
+                        {
+                            width: 'auto',
+                            stack: [
+                                {
+                                    text: etiqueta,
+                                    style: 'etiqueta',
+                                    alignment: 'right'
+                                },
+                                {
+                                    text: fechaGeneracion,
+                                    fontSize: 8,
+                                    color: '#94a3b8',
+                                    alignment: 'right',
+                                    margin: [0, 4, 0, 0]
+                                }
+                            ]
+                        }
+                    ]
+                },
+
+                {
+                    canvas: [
+                        {
+                            type: 'line',
+                            x1: 0, y1: 0,
+                            x2: 515, y2: 0,
+                            lineWidth: 1.5,
+                            lineColor: '#087F8C'
+                        }
+                    ],
+                    margin: [0, 12, 0, 18]
+                }
+
+            ]
+        };
     }
 
 
