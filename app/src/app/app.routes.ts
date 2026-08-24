@@ -32,6 +32,8 @@ import { roleGuard } from './core/guards/role.guard';
 import { Perfil } from './pages/usuarios/perfil/perfil';
 import { Registro } from './pages/registro/registro';
 
+import { Reportes } from './pages/reportes/reportes'
+
 //Full calendar proceso
 import { CitasAgenda } from './pages/citas/agenda/agenda';
 
@@ -79,6 +81,9 @@ export const routes: Routes = [
             { path: 'citas/nueva/:servicioId', component: CitaCreateComplete, title: 'Reservar cita', canActivate: [authGuard, roleGuard(['CLIENTE'])] },
             { path: 'citas/agenda', component: CitasAgenda, title: 'Agenda FullCalendar', canActivate: [authGuard, roleGuard(['ADMINISTRADOR', 'PROFESIONAL'])] },
             { path: 'citas/:id', component: CitaDetail, title: 'Detalle de cita', canActivate: [authGuard] },
+
+            // Reportes
+            {path: 'reportes', component: Reportes, title: 'Reportes | TechHire', canActivate: [authGuard, roleGuard(['ADMINISTRADOR', 'PROFESIONAL'])]},
         ]
     },
 

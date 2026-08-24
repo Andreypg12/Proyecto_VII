@@ -43,6 +43,28 @@
                 <mat-icon class="caret">expand_more</mat-icon>
             </button>
             }
+
+            @if (
+                usuario()?.rol === 'ADMINISTRADOR' ||
+                usuario()?.rol === 'PROFESIONAL'
+            ) {
+
+                <a
+                    class="nav-pill"
+                    role="tab"
+                    routerLink="/reportes"
+                    routerLinkActive="active">
+
+                    <mat-icon>assessment</mat-icon>
+
+                    <span>
+                        Reportes
+                    </span>
+
+                </a>
+
+            }
+
         </nav>
 
         <span class="spacer"></span>
@@ -199,6 +221,15 @@
         </a>
     }
 
+    @if ( usuario()?.rol === 'ADMINISTRADOR' || usuario()?.rol === 'PROFESIONAL' ) {
+        <a
+            mat-menu-item
+            routerLink="/reportes">
+            <mat-icon> assessment </mat-icon>
+            <span> Reportes </span>
+        </a>
+    }
+
     <mat-divider class="menu-divider"></mat-divider>
     @for (item of menuListadosVisible(); track item.path) {
         <a mat-menu-item [routerLink]="item.path">
@@ -206,9 +237,8 @@
             <span>{{ item.label }}</span>
         </a>
     }
-
+    
     <mat-divider class="menu-divider"></mat-divider>
-
     @if (usuario(); as usuarioActual) {
 
         <div mat-menu-item disabled>
@@ -219,7 +249,6 @@
                 - {{ nombreRol() }}
             </span>
         </div>
-
 
         <a mat-menu-item routerLink="/perfil">
             <mat-icon> manage_accounts </mat-icon>
