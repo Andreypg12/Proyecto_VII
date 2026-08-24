@@ -485,7 +485,7 @@ mat-error {
     height: 14px;
 }
 
-/* Tarjeta resumen del servicio */
+/* Tarjeta resumen del servicio (estilo glass tipo franja superior) */
 .servicio-resumen {
     position: relative;
     z-index: 1;
@@ -493,11 +493,42 @@ mat-error {
     grid-template-columns: auto 1fr auto;
     gap: 18px;
     align-items: center;
-    padding: 18px 20px;
-    background: linear-gradient(135deg, var(--surface-hover) 0%, var(--surface-gray) 100%);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-section);
-    box-shadow: var(--shadow-soft);
+    padding: 18px 24px;
+    background: var(--th-surface-container, linear-gradient(135deg, var(--surface-hover) 0%, var(--surface-gray) 100%));
+    border: 1px solid var(--th-outline-variant, var(--border-light));
+    border-radius: var(--th-radius-xl, var(--radius-section));
+    box-shadow: 0 8px 30px rgba(1, 15, 31, 0.5);
+    overflow: hidden;
+    animation: resumen-strip-in 300ms var(--th-ease-out, ease-out) both;
+}
+
+.servicio-resumen::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--th-primary, var(--accent-teal-light)), transparent);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+@keyframes resumen-strip-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .servicio-resumen {
+        animation: none;
+    }
 }
 
 .resumen-icono {
@@ -523,19 +554,21 @@ mat-error {
 
 .resumen-categoria {
     display: block;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--accent-teal-light);
+    letter-spacing: 0.08em;
+    color: var(--th-primary, var(--accent-teal-light));
     margin-bottom: 4px;
 }
 
 .resumen-info h4 {
     margin: 0 0 4px;
-    font-size: 1.15rem;
+    font-family: var(--th-font-display, inherit);
+    font-size: 1.35rem;
     font-weight: 700;
-    color: var(--text-dark);
+    letter-spacing: -0.02em;
+    color: var(--th-on-surface, var(--text-dark));
 }
 
 .resumen-descripcion {
@@ -558,21 +591,21 @@ mat-error {
 .meta-pill {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 16px;
-    background: var(--surface-light);
-    border: 1px solid var(--border-light);
-    color: var(--text-mid);
-    font-size: 0.76rem;
-    font-weight: 600;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: var(--th-radius-full, 16px);
+    background: var(--th-surface-container-high, var(--surface-light));
+    border: 1px solid var(--th-outline-variant, var(--border-light));
+    color: var(--th-on-surface-variant, var(--text-mid));
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .meta-pill mat-icon {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    color: var(--accent-teal-light);
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+    color: var(--th-primary, var(--accent-teal-light));
 }
 
 .resumen-precio {

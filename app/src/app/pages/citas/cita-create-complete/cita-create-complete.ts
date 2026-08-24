@@ -27,10 +27,10 @@ import {
 import { Usuario } from '../../../core/models/usuario.model';
 import { Servicio } from '../../../core/models/servicio.model';
 
-import { UsuarioService } from '../../../core/services/usuarios.service';
 import { ServicioService } from '../../../core/services/servicio.service';
 import { CitaService } from '../../../core/services/cita.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-cita-create-complete',
@@ -48,7 +48,7 @@ import { NotificationService } from '../../../core/services/notification.service
 export class CitaCreateComplete implements OnInit, OnDestroy {
 
     servicio = signal<Servicio | null>(null);
-    clientes = signal<Usuario[]>([]);
+    clienteActual = signal<Usuario | null>(null);
     modalidades = signal<Modalidad[]>([]);
 
     loading = signal(false);
@@ -58,10 +58,10 @@ export class CitaCreateComplete implements OnInit, OnDestroy {
     private suscripcion: Subscription | null = null;
 
     constructor(
-        private usuarioService: UsuarioService,
         private servicioService: ServicioService,
         private citaService: CitaService,
         private notification: NotificationService,
+        private auth: AuthService,
         private router: Router,
         private route: ActivatedRoute
     ) { }
@@ -85,17 +85,22 @@ export class CitaCreateComplete implements OnInit, OnDestroy {
     private cargarDatos(servicioId: number): void {
         this.loading.set(true);
 
+        const usuarioLogueado = this.auth.usuario();
+
+        if (!usuarioLogueado) {
+            this.error.set('Debes iniciar sesión para reservar una cita.');
+            this.loading.set(false);
+            return;
+        }
+
+        this.clienteActual.set(usuarioLogueado);
+
         this.suscripcion = forkJoin({
             servicio: this.servicioService.obtenerPorId(servicioId),
-            usuarios: this.usuarioService.listar(),
             configuracion: this.citaService.obtenerConfiguracion()
         }).subscribe({
             next: (respuestas) => {
                 this.servicio.set(respuestas.servicio.data);
-
-                this.clientes.set(
-                    this.obtenerArreglo<Usuario>(respuestas.usuarios)
-                );
 
                 const modalidadesRecibidas =
                     respuestas.configuracion.data.modalidades;

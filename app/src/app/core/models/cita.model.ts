@@ -105,3 +105,17 @@ export interface ResultadoCambioEstadoCita {
     fecha_hora_finalizacion_real: string | null;
     updateAt: string;
 }
+
+export interface HistorialCita {
+    id: number;
+    estado_anterior: EstadoCita;
+    estado_nuevo: EstadoCita;
+    comentario: string | null;
+    realizado_por: string;
+    fecha_cambio: string;
+    id_usuario: number | null;
+    cliente: ClienteCita;
+    profesional: { usuario: UsuarioProfesionalCita };
+    servicio: { servicio: string };
+    usuario?: { id: number; email: string; nombre: string; apellidos: string };
+}

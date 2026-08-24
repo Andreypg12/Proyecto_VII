@@ -81,10 +81,6 @@ export class MainLayout {
             label: 'Servicios',
             path: '/servicios',
             icon: 'miscellaneous_services',
-            roles: [
-                'PROFESIONAL',
-                'CLIENTE'
-            ]
         },
 
         {

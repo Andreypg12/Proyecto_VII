@@ -25,32 +25,8 @@
         </button>
     </div>
     } @else if (servicio(); as servicio) {
-    <div class="reserva-strip">
-        <div class="strip-izquierdo">
-            <span class="strip-categoria">
-                {{ servicio.categoria?.categoria || 'Servicio' }}
-            </span>
-            <h2>{{ servicio.servicio }}</h2>
-        </div>
-        <div class="strip-meta">
-            <span class="strip-pill">
-                <mat-icon>person</mat-icon>
-                {{ servicio.profesional.usuario.nombre }}
-                {{ servicio.profesional.usuario.apellidos }}
-            </span>
-            <span class="strip-pill">
-                <mat-icon>schedule</mat-icon>
-                {{ formatearDuracion(servicio.duracion_estimada) }}
-            </span>
-            <span class="strip-pill">
-                <mat-icon>location_on</mat-icon>
-                {{ etiquetaModalidad(servicio.modalidad) }}
-            </span>
-        </div>
-    </div>
-
     <app-cita-form
-        [clientes]="clientes()"
+        [clienteFijo]="clienteActual()"
         [profesionales]="servicio.profesional ? [servicio.profesional] : []"
         [servicios]="[servicio]"
         [saving]="saving()"

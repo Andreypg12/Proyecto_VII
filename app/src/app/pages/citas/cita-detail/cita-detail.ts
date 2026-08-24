@@ -18,6 +18,7 @@ import {
   CambiarEstadoCitaDto,
   Cita,
   EstadoCita,
+  HistorialCita,
   Modalidad
 } from '../../../core/models/cita.model';
 
@@ -52,6 +53,7 @@ export class CitaDetail implements OnInit {
   private readonly citaService = inject(CitaService);
 
   cita = signal<Cita | null>(null);
+  historial = signal<HistorialCita[]>([]);
   loading = signal<boolean>(false);
   error = signal<string>('');
 
@@ -90,6 +92,7 @@ export class CitaDetail implements OnInit {
       .subscribe({
         next: (response) => {
           this.cita.set(response.data);
+          this.cargarHistorial(id);
         },
 
         error: (
@@ -103,6 +106,41 @@ export class CitaDetail implements OnInit {
           this.error.set(mensaje);
         }
       });
+  }
+
+  cargarHistorial(idCita: number): void {
+    this.citaService.obtenerHistorial(idCita).subscribe({
+      next: (response) => {
+        this.historial.set(response.data || []);
+      },
+      error: () => {
+        console.error('No se pudo cargar el historial de la cita.');
+      }
+    });
+  }
+
+  // Devuelve el correo de quien realizó el cambio (prioriza el usuario registrado).
+  correoAutor(item: HistorialCita): string {
+    if (item.usuario?.email) {
+      return item.usuario.email;
+    }
+    if (item.realizado_por === 'CLIENTE' && item.cliente) {
+      return `${item.cliente.nombre} ${item.cliente.apellidos}`;
+    }
+    if (item.realizado_por === 'PROFESIONAL' && item.profesional?.usuario) {
+      return `${item.profesional.usuario.nombre} ${item.profesional.usuario.apellidos}`;
+    }
+    return 'Sistema';
+  }
+
+  // Convierte el rol a texto legible (sin mayúsculas completas).
+  formatearRol(rol: string): string {
+    switch (rol) {
+      case 'CLIENTE': return 'Cliente';
+      case 'PROFESIONAL': return 'Profesional';
+      case 'ADMINISTRADOR': return 'Administrador';
+      default: return rol.charAt(0) + rol.slice(1).toLowerCase();
+    }
   }
 
   // Valida, confirma y solicita al backend el cambio de estado de la cita.
@@ -211,6 +249,7 @@ export class CitaDetail implements OnInit {
           );
 
           this.comentarioEstado.set('');
+          this.cargarHistorial(citaActual.id);
 
           this.mensajeEstado.set(
             response.message ??
