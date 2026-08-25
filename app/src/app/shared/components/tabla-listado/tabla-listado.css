@@ -90,3 +90,38 @@
     width: 34%;
     text-align: center;
 }
+
+/* Calificar button */
+.action-btn.calificar {
+    background: rgba(251, 191, 36, 0.1);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.action-btn.calificar:hover {
+    background: rgba(251, 191, 36, 0.2);
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.15);
+}
+
+.no-valoracion {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.stars-cell {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+}
+
+.star-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: rgba(255, 255, 255, 0.12);
+}
+
+.star-icon.star-filled {
+    color: #fbbf24;
+}

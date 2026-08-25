@@ -22,6 +22,9 @@ import { finalize } from 'rxjs';
 
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../core/models/usuario.model';
@@ -37,6 +40,9 @@ import { LoginRequest } from '../../../core/models/usuario.model';
         FormField,
         MatIconModule,
         MatProgressSpinnerModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
     ],
 
     templateUrl: './login.html',

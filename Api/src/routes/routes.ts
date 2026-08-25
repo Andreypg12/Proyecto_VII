@@ -9,6 +9,7 @@ import { ImageRoutes } from "./image.routes";
 import { CitaRoutes } from "./cita.routes";
 import { HistorialCitaRoutes } from "./historialCita.routes";
 import { ReporteRoutes } from "./reporte.routes";
+import { ValoracionRoutes } from "./valoracion.routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -24,6 +25,7 @@ export class AppRoutes {
         router.use('/cita', CitaRoutes.routes)
         router.use('/historial-cita', HistorialCitaRoutes.routes)
         router.use( "/reporte", ReporteRoutes.routes);
+        router.use("/valoracion", ValoracionRoutes.routes);
         return router;
     }
 }
