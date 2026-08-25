@@ -45,7 +45,7 @@ export class UsuarioRoutes {
 
             //Cambios estado
             router.put('/activar/:id', asyncHandler(controller.activar));
-            router.put('/bloquear/:id', asyncHandler(controller.bloquear));
+            router.put('/bloquear/:id',authenticateToken, asyncHandler(controller.bloquear));
 
         return router;
     }

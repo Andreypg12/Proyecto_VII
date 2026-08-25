@@ -88,7 +88,6 @@ export const citaService = {
                 filtros.estado;
         }
 
-
         // FILTRO POR FECHAS
 
         if (
@@ -107,7 +106,6 @@ export const citaService = {
             }
 
             if (filtros.fechaHasta) {
-
                 where.fecha_hora_inicio.lte =
                     new Date(
                         `${filtros.fechaHasta}T23:59:59.999`
@@ -118,51 +116,29 @@ export const citaService = {
 
         // CONSULTA
 
-        return prisma.cita.findMany({
-
-            where,
+        return prisma.cita.findMany({ where,
 
             select: {
-
                 id: true,
-
                 fecha_hora_inicio: true,
-
-                fecha_hora_finalizacion_esperada:
-                    true,
-
-                fecha_hora_finalizacion_real:
-                    true,
-
+                fecha_hora_finalizacion_esperada: true,
+                fecha_hora_finalizacion_real: true,
                 comentario_cliente: true,
-
                 comentario_profesional: true,
-
                 monto_estimado: true,
-
                 modalidad: true,
-
                 estado: true,
-
                 createdAt: true,
-
                 updateAt: true,
 
 
                 cliente: {
-
                     select: {
-
                         id: true,
-
                         nombre: true,
-
                         apellidos: true,
-
                         email: true,
-
                     },
-
                 },
 
 
@@ -437,140 +413,185 @@ export const citaService = {
     },
 
 
-    async cambiarEstado(id: number, data: CambiarEstadoCitaDto, realizadoPor: string = "SISTEMA", usuarioId?: number) {
+    async cambiarEstado( id: number, data: CambiarEstadoCitaDto, usuarioAutenticado: AuthTokenPayload) {
 
-
-        //Busca la cita por su id, solo trae id, estado y fecha hora finalización esperada.
+        // Buscar cita y los datos necesarios para
+        // comprobar quién es el cliente y quién es
+        // el profesional asignado.
         const cita =
             await prisma.cita.findUnique({
-                where: {
-                    id,
-                },
+
+                where: { id,},
 
                 select: {
                     id: true,
                     estado: true,
-
-                    fecha_hora_finalizacion_esperada:
-                        true,
+                    fecha_hora_finalizacion_esperada: true,
                     id_cliente: true,
                     id_profesional: true,
                     id_servicio: true,
+                    profesional: {
+                        select: {
+                            id_usuario: true,
+                        },
+                    },
                 },
             });
 
+
         if (!cita) {
-            throw AppError.badRequest(
-                'La cita seleccionada no existe'
-            );
+            throw AppError.badRequest( "La cita seleccionada no existe");
         }
 
-        //Verificar cuales serán los cambios que si están permitidos
+
+        // Identificar quien hace la acción
+        const esClientePropietario =
+            usuarioAutenticado.rol === Rol.CLIENTE &&
+            cita.id_cliente === usuarioAutenticado.id;
+
+
+        const esProfesionalAsignado =
+            usuarioAutenticado.rol === Rol.PROFESIONAL &&
+            cita.profesional.id_usuario ===
+                usuarioAutenticado.id;
+
+
+        // Validar transición + Rol
         let cambioPermitido = false;
+
 
         switch (cita.estado) {
 
+            // Cita Pendiente
             case EstadoCita.PENDIENTE:
 
-                if (
-                    data.estado === EstadoCita.ACEPTADA ||
-                    data.estado === EstadoCita.RECHAZADA
-                ) {
+                // Profesional asignado puede aceptar
+                if ( data.estado === EstadoCita.ACEPTADA && esProfesionalAsignado) {
                     cambioPermitido = true;
                 }
 
+                // Profesional asignado puede rechazar
+                if ( data.estado === EstadoCita.RECHAZADA && esProfesionalAsignado) {
+                    cambioPermitido = true;
+                }
+
+                // Cliente dueño puede cancelar
+                if ( data.estado === EstadoCita.CANCELADA && esClientePropietario) {
+                    cambioPermitido = true;
+                }
                 break;
 
-
+            // Cita Aceptada
             case EstadoCita.ACEPTADA:
 
-                if (
-                    data.estado === EstadoCita.COMPLETADA ||
-                    data.estado === EstadoCita.CANCELADA
-                ) {
+                // Profesional asignado puede completar
+                if ( data.estado === EstadoCita.COMPLETADA && esProfesionalAsignado) {
                     cambioPermitido = true;
                 }
 
+                // Cliente dueño o profesional asignado
+                // pueden cancelar una cita aceptada.
+                if (data.estado === EstadoCita.CANCELADA && ( esClientePropietario || esProfesionalAsignado)) {
+                    cambioPermitido = true;
+                }
                 break;
 
-
+            // RECHAZADA, CANCELADA y COMPLETADA
+            // son estados finales.
             default:
                 cambioPermitido = false;
                 break;
         }
 
+
         if (!cambioPermitido) {
+
             throw AppError.badRequest(
-                `No es posible cambiar una cita ` +
+                `No tiene permiso para cambiar una cita ` +
                 `de ${cita.estado} a ${data.estado}`
             );
+
+        }
+
+        // Validar Completada
+        if ( data.estado === EstadoCita.COMPLETADA && new Date() < cita.fecha_hora_finalizacion_esperada) {
+            throw AppError.badRequest( "La cita todavía no puede marcarse como completada");
+        }
+
+        // MOTIVO / COMENTARIO
+        const motivo = data.comentario_profesional?.trim() || null;
+
+
+        // Rechazo siempre requiere motivo
+        if ( data.estado === EstadoCita.RECHAZADA && !motivo) {
+
+            throw AppError.badRequest("Debe indicar el motivo por el que se rechaza la cita");
         }
 
 
-        //En caso de que la fecha actual aún sea menor que la fecha esperada
-        if (data.estado === EstadoCita.COMPLETADA && new Date() < cita.fecha_hora_finalizacion_esperada) {
-            throw AppError.badRequest(
-                'La cita todavía no puede marcarse como completada'
-            );
+        // Cancelación de una cita ACEPTADA
+        // requiere motivo.
+        if ( cita.estado === EstadoCita.ACEPTADA && data.estado === EstadoCita.CANCELADA && !motivo) {
+
+            throw AppError.badRequest( "Debe indicar el motivo por el que se cancela la cita");
         }
 
-        //Preparar el comentario, darle "formato"
-        const comentarioProfesional = data.comentario_profesional?.trim() || null;
 
-        if (data.estado === EstadoCita.RECHAZADA && !comentarioProfesional) {
-            throw AppError.badRequest(
-                'Debe indicar el motivo por el que se rechaza la cita'
-            );
-        }
+        // Actualizar + Historial
+        return await prisma.$transaction(
+            async (tx) => {
 
-        if (data.estado === EstadoCita.CANCELADA && !comentarioProfesional) {
-            throw AppError.badRequest(
-                'Debe indicar el motivo por el que se cancela la cita'
-            );
-        }
+                const citaActualizada =
+                    await tx.cita.update({
 
-        return await prisma.$transaction(async (tx) => {
-            const citaActualizada = await tx.cita.update({
-                where: {
-                    id,
-                },
+                        where: { id,},
 
-                data: {
-                    estado: data.estado,
-                    comentario_profesional: comentarioProfesional,
-                    fecha_hora_finalizacion_real: data.estado === EstadoCita.COMPLETADA ? new Date() : null,
-                },
+                        data: {
+                            estado: data.estado,
 
-                //devolvemos id, estado, comentario profesional, hora finalización real
-                select: {
-                    id: true,
-                    estado: true,
+                            // Solo se guarda aquí si
+                            // quien escribe es profesional.
+                            comentario_profesional:
+                                usuarioAutenticado.rol ===
+                                Rol.PROFESIONAL
+                                    ? motivo
+                                    : undefined,
 
-                    comentario_profesional:
-                        true,
+                            fecha_hora_finalizacion_real:
+                                data.estado ===
+                                EstadoCita.COMPLETADA
+                                    ? new Date()
+                                    : undefined,
+                        },
+                        select: {
+                            id: true,
+                            estado: true,
+                            comentario_profesional: true,
+                            fecha_hora_finalizacion_real: true,
+                            updateAt: true,
+                        },
+                    });
 
-                    fecha_hora_finalizacion_real:
-                        true,
 
-                    updateAt: true,
-                },
-            });
+                await tx.historialCita.create({
 
-            await tx.historialCita.create({
-                data: {
-                    id_cita: cita.id,
-                    estado_anterior: cita.estado,
-                    estado_nuevo: data.estado,
-                    comentario: comentarioProfesional,
-                    realizado_por: realizadoPor,
-                    id_usuario: usuarioId ?? undefined,
-                    id_cliente: cita.id_cliente,
-                    id_profesional: cita.id_profesional,
-                    id_servicio: cita.id_servicio,
-                }
-            });
+                    data: {
 
-            return citaActualizada;
-        });
+                        id_cita: cita.id,
+                        estado_anterior: cita.estado,
+                        estado_nuevo: data.estado,
+                        comentario: motivo,
+                        realizado_por: usuarioAutenticado.rol,
+                        id_usuario: usuarioAutenticado.id,
+                        id_cliente: cita.id_cliente,
+                        id_profesional: cita.id_profesional,
+                        id_servicio: cita.id_servicio,
+                    },
+
+                });
+
+                return citaActualizada;
+            }
+        );
     },
 }

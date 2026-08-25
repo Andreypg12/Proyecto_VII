@@ -60,8 +60,8 @@ export const routes: Routes = [
             { path: 'categoria-servicio/:id', component: CategoriaServicioDetail, title: 'Detalle categoría servicio', canActivate: [authGuard, roleGuard(['ADMINISTRADOR'])] },
 
             // Especialidades
-            { path: 'especialidades', component: EspecialidadList, title: 'Especialidades', canActivate: [authGuard, roleGuard(['ADMINISTRADOR'])] },
-            { path: 'especialidades/:id', component: EspecialidadDetail, title: 'Detalle especialidad', canActivate: [authGuard, roleGuard(['ADMINISTRADOR'])] },
+            { path: 'especialidades', component: EspecialidadList, title: 'Especialidades', canActivate: [authGuard, roleGuard(['ADMINISTRADOR', 'PROFESIONAL'])] },
+            { path: 'especialidades/:id', component: EspecialidadDetail, title: 'Detalle especialidad', canActivate: [authGuard, roleGuard(['ADMINISTRADOR', 'PROFESIONAL'])] },
 
             // Servicios
             { path: 'servicios', component: ServicioList, title: 'Servicios' },

@@ -4,6 +4,7 @@ import { ServicioFilters, servicioService } from '../services/servicio.service';
 import { AppError } from '../utils/app-error';
 import { sendSuccess } from '../utils/http-response';
 import { parseId } from '../utils/parse-id';
+import { AuthRequest } from '../middlewares/auth.middleware';
 
 export class ServicioController {
     async listar(req: Request, res: Response) {
@@ -63,23 +64,56 @@ export class ServicioController {
         );
     };
 
-    actualizar = async (request: Request, response: Response, next: NextFunction) => {
+    actualizar = async ( request: AuthRequest, response: Response, next: NextFunction) => {
+
+        const usuarioAutenticado = request.user;
+
+        if (!usuarioAutenticado) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+        }
+
         const id = parseId(request.params.id);
-        const servicio = await servicioService.actualizar(id, request.body);
-        return sendSuccess(
-            response,
-            servicio,
-            "Servicio actualizado correctamente"
-        );
+
+        const servicio =
+            await servicioService.actualizar(
+                id,
+                request.body,
+                usuarioAutenticado
+            );
+
+        return sendSuccess( response, servicio, "Servicio actualizado correctamente");
     };
 
-    cambiarEstado = async (request: Request, response: Response, next: NextFunction) => {
+    cambiarEstado = async ( request: AuthRequest, response: Response, next: NextFunction) => {
+
+        const usuarioAutenticado = request.user;
+
+        if (!usuarioAutenticado) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+        }
+
         const id = parseId(request.params.id);
-        const servicio = await servicioService.cambiarEstado(id);
+
+        const servicio =
+            await servicioService.cambiarEstado(
+                id,
+                usuarioAutenticado
+            );
+
         return sendSuccess(
             response,
             servicio,
-            "Cambio de estado completado"
+            "Estado del servicio actualizado correctamente"
         );
     };
 }

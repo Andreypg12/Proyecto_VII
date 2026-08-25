@@ -240,18 +240,23 @@ export const usuarioService = {
 
 
     // Bloquear
-    async bloquear(id: number) {
+    async bloquear( id: number, usuarioAutenticadoId: number) {
+
+        // Evitar que el usuario autenticado
+        // pueda bloquear su propia cuenta
+        if (id === usuarioAutenticadoId) { throw AppError.badRequest( "No puede bloquear su propia cuenta" );}
+
         const usuario = await this.obtenerPorId(id);
+
         if (!usuario) {
-            throw AppError.notFound(
-                `Usuario con ID ${id} no encontrado`
-            );
+            throw AppError.notFound( `Usuario con ID ${id} no encontrado` );
         }
+
 
         return await prisma.usuario.update({
 
             where: { id },
-            data: { estado: EstadoUsuario.BLOQUEADO },
+            data: {estado: EstadoUsuario.BLOQUEADO},
 
             select: {
                 id: true,
@@ -262,6 +267,7 @@ export const usuarioService = {
                 rol: true,
                 updateAt: true
             }
+
         });
     },
 

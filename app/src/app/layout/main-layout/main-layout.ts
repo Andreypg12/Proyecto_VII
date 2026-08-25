@@ -88,7 +88,8 @@ export class MainLayout {
             path: '/especialidades',
             icon: 'medical_services',
             roles: [
-                'ADMINISTRADOR'
+                'ADMINISTRADOR',
+                'PROFESIONAL'
             ]
         },
 

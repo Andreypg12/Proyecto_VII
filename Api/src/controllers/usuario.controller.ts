@@ -148,10 +148,28 @@ export class usuarioController {
     };
 
     //Bloquear
-    bloquear = async (request: Request, response: Response, next: NextFunction) => {
+    bloquear = async ( request: AuthRequest, response: Response, next: NextFunction) => {
 
-        const id = parseId(request.params.id);
-        const usuario = await usuarioService.bloquear(id);
+        const usuarioAutenticado = request.user;
+
+        if (!usuarioAutenticado) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+        }
+
+        const id = parseId(
+            request.params.id
+        );
+
+        const usuario =
+            await usuarioService.bloquear(
+                id,
+                usuarioAutenticado.id
+            );
 
         return sendSuccess(
             response,

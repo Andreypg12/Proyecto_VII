@@ -35,6 +35,8 @@ export class TablaListado {
   cambiarEstado = output<any>();
   calificarCita = output<any>();
 
+  readonly mostrarCambioEstado = input<boolean>(true);
+
   formatearEstadoCita(estado: string): string {
     if (!estado) {
       return '';
