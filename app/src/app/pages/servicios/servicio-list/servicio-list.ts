@@ -21,6 +21,8 @@ import { Servicio } from '../../../core/models/servicio.model';
 import { CategoriaServicio } from '../../../core/models/categoriaServicio.model';
 import { NotificationService } from '../../../core/services/notification.service';
 
+import { AuthService } from '../../../core/services/auth.service';
+
 @Component({
   selector: 'app-servicio-list',
   imports: [
@@ -42,9 +44,11 @@ import { NotificationService } from '../../../core/services/notification.service
 })
 export class ServicioList implements OnInit, OnDestroy {
   private readonly servicioService = inject(ServicioService);
-  private readonly router = inject(Router); // ← Inyectar Router
-  private routerSubscription: Subscription | null = null; // ← Para limpiar suscripción
+  private readonly router = inject(Router); 
+  private routerSubscription: Subscription | null = null; 
   private readonly notification = inject(NotificationService);
+
+  readonly authService = inject(AuthService);
 
   // Listado de servicios
   servicios = signal<Servicio[]>([]);
@@ -305,5 +309,24 @@ export class ServicioList implements OnInit, OnDestroy {
         );
       },
     });
+  }
+
+  esServicioPropio(servicio: Servicio): boolean {
+
+      const usuario =
+          this.authService.usuario();
+
+      if (!usuario) {
+          return false;
+      }
+
+      if (usuario.rol !== 'PROFESIONAL') {
+          return false;
+      }
+
+      return (
+          servicio.profesional?.usuario?.id ===
+          usuario.id
+      );
   }
 }

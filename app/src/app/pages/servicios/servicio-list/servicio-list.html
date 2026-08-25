@@ -162,6 +162,8 @@
                     <span class="precio-label">Desde</span>
                     <span class="precio-valor">${{ service.precio | number }}</span>
                 </div>
+
+                @if (esServicioPropio(service)) {
                 <div class="estado-switch" [class.active]="service.estado" [class.inactive]="!service.estado"
                     (click)="cambiarEstado(service, $event)"
                     matTooltip="{{ service.estado ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
@@ -169,6 +171,7 @@
                     <mat-icon class="switch-icon">{{ service.estado ? 'toggle_on' : 'toggle_off' }}</mat-icon>
                     <span class="switch-label">{{ service.estado ? 'Activo' : 'Inactivo' }}</span>
                 </div>
+                }
             </div>
         </mat-card-content>
 
@@ -183,10 +186,15 @@
         </mat-card-actions>
 
         <div class="admin-row">
+
+            @if (esServicioPropio(service)) {
+
             <a mat-stroked-button class="admin-btn" [routerLink]="['/servicios/editar', service.id]">
                 <mat-icon>edit</mat-icon>
                 Editar
             </a>
+
+            }
             <a mat-stroked-button class="admin-btn" [routerLink]="['/servicios', service.id]">
                 <mat-icon>more_horiz</mat-icon>
                 Detalle

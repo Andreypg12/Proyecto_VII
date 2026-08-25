@@ -219,23 +219,30 @@ export class citaController {
         });
     }
 
-    cambiarEstado = async (request: AuthRequest, response: Response, next: NextFunction) => {
 
-        // Obtiene y valida el identificador de la cita.
-        const id = parseId(
-            request.params.id
-        );
+    cambiarEstado = async ( request: AuthRequest, response: Response, next: NextFunction) => {
 
-        const realizadoPor = request.user?.rol || "SISTEMA";
-        const usuarioId = request.user?.id;
+        const usuarioAutenticado = request.user;
 
-        // Envía el nuevo estado y el comentario al servicio.
+        if (!usuarioAutenticado) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado",
+                });
+        }
+
+        // Obtiene y valida el identificador de la cita
+        const id = parseId( request.params.id);
+
+        // El service recibe el usuario completo
+        // para validar rol + pertenencia de la cita
         const cita =
             await citaService.cambiarEstado(
                 id,
                 request.body,
-                realizadoPor,
-                usuarioId
+                usuarioAutenticado
             );
 
         return sendSuccess(

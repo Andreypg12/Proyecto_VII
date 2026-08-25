@@ -98,47 +98,68 @@
                         }
 
                         <!-- Botones segun el cambio de estado -->
+
                         <!-- Categorías y especialidades -->
-                        @if (typeof item.estado === 'boolean') {
+                        @if (
+                            mostrarCambioEstado() &&
+                            typeof item.estado === 'boolean'
+                        ) {
 
-                        @if (item.estado) {
+                            @if (item.estado) {
 
-                        <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
-                            <mat-icon>toggle_off</mat-icon>
-                            Desactivar
-                        </button>
+                                <button
+                                    class="action-btn deactivate"
+                                    type="button"
+                                    (click)="cambiarEstado.emit(item)"
+                                >
+                                    <mat-icon>toggle_off</mat-icon>
+                                    Desactivar
+                                </button>
 
-                        } @else {
+                            } @else {
 
-                        <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
-                            <mat-icon>toggle_on</mat-icon>
-                            Activar
-                        </button>
+                                <button
+                                    class="action-btn activate"
+                                    type="button"
+                                    (click)="cambiarEstado.emit(item)"
+                                >
+                                    <mat-icon>toggle_on</mat-icon>
+                                    Activar
+                                </button>
 
-                        }
+                            }
 
                         }
 
                         <!-- Usuarios -->
-                        @else if (item.estado === 'ACTIVO' || item.estado === 'BLOQUEADO') {
+                        @else if (
+                            item.estado === 'ACTIVO' ||
+                            item.estado === 'BLOQUEADO'
+                        ) {
 
-                        @if (item.estado === 'ACTIVO') {
+                            @if (item.estado === 'ACTIVO') {
 
-                        <!-- Si está activo, muestra botón para Bloquear -->
-                        <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
-                            <mat-icon>lock</mat-icon>
-                            Bloquear
-                        </button>
+                                <button
+                                    class="action-btn deactivate"
+                                    type="button"
+                                    (click)="cambiarEstado.emit(item)"
+                                >
+                                    <mat-icon>lock</mat-icon>
+                                    Bloquear
+                                </button>
 
-                        } @else {
+                            } @else {
 
-                        <!-- Si está bloqueado, muestra botón para Activar (Desbloquear) -->
-                        <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
-                            <mat-icon>lock_open</mat-icon>
-                            Activar
-                        </button>
+                                <button
+                                    class="action-btn activate"
+                                    type="button"
+                                    (click)="cambiarEstado.emit(item)"
+                                >
+                                    <mat-icon>lock_open</mat-icon>
+                                    Activar
+                                </button>
 
-                        }
+                            }
 
                         }
 

@@ -65,6 +65,22 @@ export class CitaDetail implements OnInit {
 
   readonly usuarioActualId = computed(() => this.authService.usuario()?.id ?? null);
 
+  readonly rolActual = computed(
+      () => this.authService.usuario()?.rol ?? null
+  );
+
+  readonly esCliente = computed(
+      () => this.rolActual() === 'CLIENTE'
+  );
+
+  readonly esProfesional = computed(
+      () => this.rolActual() === 'PROFESIONAL'
+  );
+
+  readonly esAdministrador = computed(
+      () => this.rolActual() === 'ADMINISTRADOR'
+  );
+
   private readonly transiciones: Record<EstadoCita, EstadoCita[]> = {
     'PENDIENTE': ['ACEPTADA', 'RECHAZADA', 'CANCELADA'],
     'ACEPTADA': ['COMPLETADA', 'CANCELADA'],
@@ -149,18 +165,77 @@ export class CitaDetail implements OnInit {
     return `${item.profesional.usuario.nombre} ${item.profesional.usuario.apellidos}`;
   }
 
-  // ── Estado ──
+  //  Estado 
 
-  puedeCambiarA(estado: EstadoCita): boolean {
-    const c = this.cita();
-    return c ? (this.transiciones[c.estado]?.includes(estado) ?? false) : false;
+  puedeCambiarA(nuevoEstado: EstadoCita): boolean {
+
+      const cita = this.cita();
+      const usuario = this.authService.usuario();
+
+      if (!cita || !usuario) {
+          return false;
+      }
+
+
+      const esClientePropietario =
+          usuario.rol === 'CLIENTE' &&
+          cita.cliente.id === usuario.id;
+
+
+      const esProfesionalAsignado =
+          usuario.rol === 'PROFESIONAL' &&
+          cita.profesional.usuario.id === usuario.id;
+
+
+      // Pendiente
+      if (cita.estado === 'PENDIENTE') {
+
+          if (
+              nuevoEstado === 'ACEPTADA' ||
+              nuevoEstado === 'RECHAZADA'
+          ) {
+              return esProfesionalAsignado;
+          }
+
+          if (nuevoEstado === 'CANCELADA') {
+              return esClientePropietario;
+          }
+
+          return false;
+      }
+
+
+      // Aceptada
+      if (cita.estado === 'ACEPTADA') {
+
+          if (nuevoEstado === 'COMPLETADA') {
+              return esProfesionalAsignado;
+          }
+
+          if (nuevoEstado === 'CANCELADA') {
+              return (
+                  esClientePropietario ||
+                  esProfesionalAsignado
+              );
+          }
+
+          return false;
+      }
+
+
+      // Rechazada, cancelada, completada
+      return false;
   }
 
   tieneTransiciones(): boolean {
-    const c = this.cita();
-    if (!c) return false;
-    return (this.transiciones[c.estado]?.length ?? 0) > 0;
-  }
+
+    return (
+        this.puedeCambiarA('ACEPTADA') ||
+        this.puedeCambiarA('RECHAZADA') ||
+        this.puedeCambiarA('COMPLETADA') ||
+        this.puedeCambiarA('CANCELADA')
+    );
+}
 
   esEstadoFinal(estado: EstadoCita): boolean {
     return ['RECHAZADA', 'CANCELADA', 'COMPLETADA'].includes(estado);
@@ -171,38 +246,79 @@ export class CitaDetail implements OnInit {
   }
 
   cambiarEstado(nuevoEstado: EstadoCita): void {
+
     const c = this.cita();
-    if (!c) return;
+
+    if (!c || this.cambiandoEstado()) {
+        return;
+    }
 
     this.cambiandoEstado.set(true);
     this.mensajeEstado.set('');
     this.errorEstado.set('');
 
     const dto: CambiarEstadoCitaDto = {
-      estado: nuevoEstado,
-      comentario_profesional: this.comentarioEstado() || undefined,
+        estado: nuevoEstado,
+        comentario_profesional:
+            this.comentarioEstado().trim() || undefined,
     };
 
-    this.citaService.cambiarEstado(c.id, dto)
-      .pipe(finalize(() => this.cambiandoEstado.set(false)))
-      .subscribe({
-        next: (res) => {
-          this.cita.set(res.data as any);
-          this.mensajeEstado.set(res.message || `Estado cambiado a ${this.formatearEstado(nuevoEstado)}.`);
-          this.comentarioEstado.set('');
-          this.cargarHistorial(c.id);
-          Swal.fire({
-            title: 'Estado actualizado',
-            text: `La cita ahora está: ${this.formatearEstado(nuevoEstado)}`,
-            icon: 'success', timer: 2000, showConfirmButton: false,
-            background: '#0f172a', color: '#f8fafc',
-          });
-        },
-        error: (err: HttpErrorResponse) => {
-          this.errorEstado.set(err.error?.message || 'Error al cambiar el estado.');
-        },
-      });
-  }
+    this.citaService
+        .cambiarEstado(c.id, dto)
+        .pipe(
+            finalize(() => {
+                this.cambiandoEstado.set(false);
+            })
+        )
+        .subscribe({
+
+            next: (res) => {
+
+                
+                this.cita.update((actual) => {
+
+                    if (!actual) {
+                        return actual;
+                    }
+
+                    return {
+                        ...actual,
+                        ...res.data,
+                    } as Cita;
+                });
+
+                this.mensajeEstado.set(
+                    res.message ||
+                    `Estado cambiado a ${this.formatearEstado(nuevoEstado)}.`
+                );
+
+                this.comentarioEstado.set('');
+
+                // Refrescar historial después del cambio
+                this.cargarHistorial(c.id);
+
+                Swal.fire({
+                    title: 'Estado actualizado',
+                    text:
+                        `La cita ahora está: ${this.formatearEstado(nuevoEstado)}`,
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#0f172a',
+                    color: '#f8fafc',
+                });
+            },
+
+            error: (err: HttpErrorResponse) => {
+
+                this.errorEstado.set(
+                    err.error?.message ||
+                    'Error al cambiar el estado.'
+                );
+            },
+
+        });
+}
 
   // ── Valoración ──
 

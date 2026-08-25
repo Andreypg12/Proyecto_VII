@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -9,6 +9,8 @@ import { EspecialidadService } from '../../../core/services/especialidad.service
 import { NotificationService } from '../../../core/services/notification.service';
 import { Especialidad } from '../../../core/models/especialidad.model';
 
+import { AuthService } from '../../../core/services/auth.service';
+
 @Component({
   selector: 'app-especialidad-list',
   standalone: true,
@@ -18,6 +20,15 @@ import { Especialidad } from '../../../core/models/especialidad.model';
 })
 export class EspecialidadList {
   especialidades = signal<Especialidad[]>([]);
+
+  private readonly authService =
+    inject(AuthService);
+
+  readonly esAdministrador =
+      computed(() =>
+          this.authService.usuario()?.rol ===
+          'ADMINISTRADOR'
+      );
 
   buscar = signal('');
   estado = signal<boolean | undefined>(undefined);

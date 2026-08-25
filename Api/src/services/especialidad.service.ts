@@ -1,6 +1,9 @@
 import { id } from "zod/locales";
 import { prisma } from "../config/prisma";
 import { CreateEspecialidadDto, UpdateEspecialidadDto } from "../dtos/especialidad.dto";
+import { AuthTokenPayload } from "../middlewares/auth.middleware";
+import { Rol } from "../../generated/prisma/enums";
+import { AppError } from "../utils/app-error";
 
 export const especialidadService = {
 
@@ -111,45 +114,77 @@ export const especialidadService = {
         });
     },
 
-    async activar(id: number) {
-        const especialidad = await this.obtenerPorId(id);
+    async activar( id: number, usuarioAutenticado: AuthTokenPayload) {
+
+        if (
+            usuarioAutenticado.rol !==
+            Rol.ADMINISTRADOR
+        ) {
+
+            throw AppError.badRequest(
+                "No tiene permiso para activar especialidades"
+            );
+
+        }
+
+        const especialidad =
+            await this.obtenerPorId(id);
 
         if (!especialidad) {
-            return false;
+
+            throw AppError.notFound(
+                `Especialidad con ID ${id} no encontrada`
+            );
+
         }
 
         return await prisma.especialidad.update({
-            where: { id },
+
+            where: {
+                id
+            },
+
             data: {
                 estado: true
-            },
-            select: {
-                id: true,
-                especialidad: true,
-                descripcion: true,
-                estado: true,
-            },
+            }
+
         });
     },
 
-    async desactivar(id: number) {
-        const especialidad = await this.obtenerPorId(id);
+    async desactivar( id: number, usuarioAutenticado: AuthTokenPayload ) {
+
+        if (
+            usuarioAutenticado.rol !==
+            Rol.ADMINISTRADOR
+        ) {
+
+            throw AppError.badRequest(
+                "No tiene permiso para desactivar especialidades"
+            );
+
+        }
+
+        const especialidad =
+            await this.obtenerPorId(id);
 
         if (!especialidad) {
-            return false;
+
+            throw AppError.notFound(
+                `Especialidad con ID ${id} no encontrada`
+            );
+
         }
 
         return await prisma.especialidad.update({
-            where: { id },
+
+            where: {
+                id
+            },
+
             data: {
                 estado: false
-            },
-            select: {
-                id: true,
-                especialidad: true,
-                descripcion: true,
-                estado: true,
-            },
+            }
+
         });
     },
 

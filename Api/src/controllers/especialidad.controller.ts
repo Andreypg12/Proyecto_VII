@@ -5,6 +5,7 @@ import { sendSuccess } from "../utils/http-response";
 import { prisma } from "../config/prisma";
 import { array, success } from "zod";
 import { parseId } from "../utils/parse-id";
+import { AuthRequest } from "../middlewares/auth.middleware";
 
 export class especialidadController {
 
@@ -80,17 +81,29 @@ export class especialidadController {
         );
     };
 
-    activar = async (request: Request, response: Response, next: NextFunction) => {
-        const id = parseId(request.params.id);
+    activar = async ( request: AuthRequest, response: Response, next: NextFunction) => {
 
-        const especialidad = await especialidadService.activar(id);
+        const usuarioAutenticado =request.user;
 
-        if (!especialidad) {
-            return response.status(StatusCodes.NOT_FOUND).json({
-                success: false,
-                message: "Especialidad no encontrada",
-            });
+        if (!usuarioAutenticado) {
+
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+
         }
+
+        const id =
+            parseId(request.params.id);
+
+        const especialidad =
+            await especialidadService.activar(
+                id,
+                usuarioAutenticado
+            );
 
         return sendSuccess(
             response,
@@ -99,17 +112,30 @@ export class especialidadController {
         );
     };
 
-    desactivar = async (request: Request, response: Response, next: NextFunction) => {
-        const id = parseId(request.params.id);
+    desactivar = async ( request: AuthRequest, response: Response, next: NextFunction) => {
 
-        const especialidad = await especialidadService.desactivar(id);
+        const usuarioAutenticado =
+            request.user;
 
-        if (!especialidad) {
-            return response.status(StatusCodes.NOT_FOUND).json({
-                success: false,
-                message: "Especialidad no encontrada",
-            });
+        if (!usuarioAutenticado) {
+
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+
         }
+
+        const id =
+            parseId(request.params.id);
+
+        const especialidad =
+            await especialidadService.desactivar(
+                id,
+                usuarioAutenticado
+            );
 
         return sendSuccess(
             response,
