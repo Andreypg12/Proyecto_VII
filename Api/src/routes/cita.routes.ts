@@ -16,10 +16,10 @@ export class CitaRoutes {
         router.get("/configuracion", asyncHandler(controller.obtenerConfiguracion));
 
         // GET LISTADO
-        router.get("/", asyncHandler(controller.listar));
+        router.get("/", authenticateToken, asyncHandler(controller.listar));
 
         // POST CREAR CITA
-        router.post("/", validateRequest(createCitaSchema), asyncHandler(controller.crear));
+        router.post("/",authenticateToken, validateRequest(createCitaSchema), asyncHandler(controller.crear));
 
         // PATCH CAMBIAR ESTADO
         router.patch("/:id/estado", authenticateToken, validateRequest(cambiarEstadoCitaSchema), asyncHandler(controller.cambiarEstado));

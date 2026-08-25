@@ -7,32 +7,79 @@
     <mat-card-content>
         <form class="cita-form" novalidate (submit)="$event.preventDefault(); submit()">
             <!-- CLIENTE -->
-            @if (!clienteFijo()) {
-            <section class="form-section section-client">
-                <div class="section-title">
-                    <div>
-                        <h3>Cliente</h3>
-                        <p>Seleccione el cliente que solicita la cita.</p>
-                    </div>
-                </div>
+                @if (clienteFijo(); as cliente) {
 
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Cliente</mat-label>
-                    <mat-select [formField]="citaForm.id_cliente">
-                        <mat-option [value]="null">Seleccione un cliente</mat-option>
-                        @for (cliente of clientesDisponibles(); track cliente.id) {
-                        <mat-option [value]="cliente.id">
-                            {{ cliente.nombre }} {{ cliente.apellidos }} — {{ cliente.email }}
-                        </mat-option>
-                        }
-                    </mat-select>
-                    <mat-icon matSuffix>person</mat-icon>
-                    @if (citaForm.id_cliente().touched() && citaForm.id_cliente().invalid()) {
-                    <mat-error>{{ citaForm.id_cliente().errors()[0].message }}</mat-error>
-                    }
-                </mat-form-field>
-            </section>
-            }
+                    <section class="form-section section-client">
+                        <div class="section-title">
+                            <div>
+                                <h3>Cliente</h3>
+                                <p>La cita será registrada a nombre de tu cuenta.</p>
+                            </div>
+                        </div>
+
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Cliente</mat-label>
+
+                            <input
+                                matInput
+                                readonly
+                                [value]="cliente.nombre + ' ' + cliente.apellidos + ' — ' + cliente.email"
+                            />
+
+                            <mat-icon matSuffix>person</mat-icon>
+                        </mat-form-field>
+                    </section>
+
+                } @else {
+
+                    <section class="form-section section-client">
+                        <div class="section-title">
+                            <div>
+                                <h3>Cliente</h3>
+                                <p>Seleccione el cliente que solicita la cita.</p>
+                            </div>
+                        </div>
+
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Cliente</mat-label>
+
+                            <mat-select [formField]="citaForm.id_cliente">
+
+                                <mat-option [value]="null">
+                                    Seleccione un cliente
+                                </mat-option>
+
+                                @for (
+                                    cliente of clientesDisponibles();
+                                    track cliente.id
+                                ) {
+                                    <mat-option [value]="cliente.id">
+
+                                        {{ cliente.nombre }}
+                                        {{ cliente.apellidos }}
+                                        —
+                                        {{ cliente.email }}
+
+                                    </mat-option>
+                                }
+
+                            </mat-select>
+
+                            <mat-icon matSuffix>person</mat-icon>
+
+                            @if (
+                                citaForm.id_cliente().touched() &&
+                                citaForm.id_cliente().invalid()
+                            ) {
+                                <mat-error>
+                                    {{ citaForm.id_cliente().errors()[0].message }}
+                                </mat-error>
+                            }
+
+                        </mat-form-field>
+                    </section>
+
+                }
 
             <!-- PROFESIONAL Y SERVICIO -->
             @if (servicioFijo(); as servicio) {

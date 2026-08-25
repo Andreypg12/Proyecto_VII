@@ -1,7 +1,8 @@
 import {
     Component,
     OnInit,
-    signal
+    signal,
+    computed
 } from '@angular/core';
 
 import {
@@ -20,6 +21,8 @@ import {ProfesionalService} from '../../../core/services/profesional.service';
 import {ServicioService} from '../../../core/services/servicio.service';
 import {CitaService} from '../../../core/services/cita.service';
 import {NotificationService} from '../../../core/services/notification.service';
+
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-cita-create',
@@ -40,6 +43,20 @@ export class CitaCreate implements OnInit {
     loading = signal(false);
     saving = signal(false);
 
+    readonly clienteFijo = computed<Usuario | null>(() => {
+
+        const usuario = this.authservice.usuario();
+
+            if (
+                usuario &&
+                usuario.rol === 'CLIENTE'
+            ) {
+                return usuario;
+            }
+
+            return null;
+    });
+
     fechaInicial: string | null = null;
 
     constructor(
@@ -49,7 +66,8 @@ export class CitaCreate implements OnInit {
         private citaService: CitaService,
         private notification: NotificationService,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private authservice: AuthService,
     ) { }
 
     ngOnInit(): void {
