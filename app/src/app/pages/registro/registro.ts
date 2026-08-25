@@ -15,7 +15,7 @@ import {
 } from '@angular/forms/signals';
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -44,6 +44,7 @@ interface RegistroFormModel {
     standalone: true,
 
     imports: [
+        RouterLink,
         FormField,
         MatFormFieldModule,
         MatInputModule,

@@ -167,6 +167,8 @@
         <app-tabla-listado
             [columnas]="columnas"
             [datos]="citasFiltradas()"
+            [mostrarCalificar]="puedeCalificar"
+            (calificarCita)="onCalificarCita($event)"
             rutaDetalle="/citas"
         />
 

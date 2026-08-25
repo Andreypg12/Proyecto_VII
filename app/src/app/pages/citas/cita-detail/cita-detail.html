@@ -1,572 +1,376 @@
 <div class="page-container">
 
     <a class="back-btn" routerLink="/citas">
-        ← Volver a citas
+        <mat-icon>arrow_back</mat-icon>
+        Volver a citas
     </a>
 
+    <!-- LOADING -->
     @if (loading()) {
-
-    <div class="status-card">
+    <div class="state-card loading-card shimmer-border">
+        <div class="spinner"></div>
         Cargando información de la cita...
     </div>
-
     }
 
+    <!-- ERROR -->
     @if (error()) {
+    <div class="state-card error-card">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ error() }}</span>
+    </div>
+    }
 
-    <div class="status-card error">
-        {{ error() }}
+    <!-- CONTENIDO PRINCIPAL -->
+    @if (!loading() && !error() && cita(); as c) {
+
+    <!-- ═══════════════ HERO ═══════════════ -->
+    <div class="hero glass-panel">
+        <div class="hero-accent"></div>
+        <div class="hero-body">
+            <div class="hero-info">
+                <span class="hero-label">Detalle de cita</span>
+                <h1 class="hero-title shiny-text">#{{ c.id }}</h1>
+                <p class="hero-meta">
+                    {{ c.servicio.servicio }}
+                    <span class="meta-dot">·</span>
+                    {{ formatearFecha(c.fecha_hora_inicio) }}
+                    <span class="meta-dot">·</span>
+                    {{ formatearModalidad(c.modalidad) }}
+                </p>
+            </div>
+            <span class="badge-status"
+                [class.st-pendiente]="c.estado === 'PENDIENTE'"
+                [class.st-aceptada]="c.estado === 'ACEPTADA'"
+                [class.st-rechazada]="c.estado === 'RECHAZADA'"
+                [class.st-cancelada]="c.estado === 'CANCELADA'"
+                [class.st-completada]="c.estado === 'COMPLETADA'">
+                {{ formatearEstado(c.estado) }}
+            </span>
+        </div>
     </div>
 
-    }
+    <!-- ═══════════════ STAT CARDS ═══════════════ -->
+    <div class="stats-row">
+        <div class="stat-card glass-panel">
+            <mat-icon class="stat-icon">calendar_today</mat-icon>
+            <div class="stat-content">
+                <span class="stat-label">Fecha</span>
+                <strong class="stat-value">{{ formatearFecha(c.fecha_hora_inicio) }}</strong>
+            </div>
+        </div>
+        <div class="stat-card glass-panel">
+            <mat-icon class="stat-icon">schedule</mat-icon>
+            <div class="stat-content">
+                <span class="stat-label">Hora</span>
+                <strong class="stat-value">{{ formatearHora(c.fecha_hora_inicio) }}</strong>
+            </div>
+        </div>
+        <div class="stat-card glass-panel">
+            <mat-icon class="stat-icon">payments</mat-icon>
+            <div class="stat-content">
+                <span class="stat-label">Monto</span>
+                <strong class="stat-value stat-primary">{{ formatearMonto(c.monto_estimado) }}</strong>
+            </div>
+        </div>
+        <div class="stat-card glass-panel">
+            <mat-icon class="stat-icon">timer</mat-icon>
+            <div class="stat-content">
+                <span class="stat-label">Duración</span>
+                <strong class="stat-value">{{ formatearDuracion(c.servicio.duracion_estimada) }}</strong>
+            </div>
+        </div>
+    </div>
 
-    @if (!loading() && !error() && cita(); as citaActual) {
+    <!-- ═══════════════ 2-COLUMN CONTENT ═══════════════ -->
+    <div class="content-columns">
 
-    <div class="detail-header">
+        <!-- COLUMNA IZQUIERDA -->
+        <div class="col-left">
 
-        <div>
-            <h1>
-                Detalle de cita
-                #{{ citaActual.id }}
-            </h1>
+            <!-- SERVICIO -->
+            <div class="section-card glass-panel">
+                <div class="card-accent"></div>
+                <div class="card-header">
+                    <mat-icon>miscellaneous_services</mat-icon>
+                    <h2>Servicio</h2>
+                </div>
+                <div class="card-body">
+                    <div class="info-rows">
+                        <div class="info-row">
+                            <span class="info-label">Nombre</span>
+                            <strong>{{ c.servicio.servicio }}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Precio</span>
+                            <strong class="text-primary">{{ formatearMonto(c.servicio.precio) }}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Duración</span>
+                            <strong>{{ formatearDuracion(c.servicio.duracion_estimada) }}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Modalidad</span>
+                            <strong>{{ formatearModalidad(c.servicio.modalidad) }}</strong>
+                        </div>
+                    </div>
+                    @if (c.servicio.descripcion) {
+                    <div class="card-description">
+                        <span class="info-label">Descripción</span>
+                        <p>{{ c.servicio.descripcion }}</p>
+                    </div>
+                    }
+                </div>
+            </div>
 
-            <p>
-                Información completa de la cita
-                registrada.
-            </p>
+            <!-- COMENTARIO DEL CLIENTE -->
+            <div class="section-card glass-panel">
+                <div class="card-accent"></div>
+                <div class="card-header">
+                    <mat-icon>comment</mat-icon>
+                    <h2>Comentario del cliente</h2>
+                </div>
+                <div class="card-body">
+                    <p class="comment-text">{{ c.comentario_cliente || 'Sin comentarios.' }}</p>
+                </div>
+            </div>
+
+            <!-- COMENTARIO DEL PROFESIONAL -->
+            @if (c.comentario_profesional) {
+            <div class="section-card glass-panel">
+                <div class="card-accent accent-cyan"></div>
+                <div class="card-header">
+                    <mat-icon>support_agent</mat-icon>
+                    <h2>Comentario del profesional</h2>
+                </div>
+                <div class="card-body">
+                    <p class="comment-text">{{ c.comentario_profesional }}</p>
+                </div>
+            </div>
+            }
+
         </div>
 
-        <span class="badge detail-status" [class.cita-pendiente]="citaActual.estado === 'PENDIENTE'"
-            [class.cita-aceptada]="citaActual.estado === 'ACEPTADA'"
-            [class.cita-rechazada]="citaActual.estado === 'RECHAZADA'"
-            [class.cita-cancelada]="citaActual.estado === 'CANCELADA'"
-            [class.cita-completada]="citaActual.estado === 'COMPLETADA'">
-            {{
-            formatearEstado(
-            citaActual.estado
-            )
-            }}
-        </span>
+        <!-- COLUMNA DERECHA -->
+        <div class="col-right">
 
-    </div>
+            <!-- CLIENTE -->
+            <div class="section-card glass-panel">
+                <div class="card-accent"></div>
+                <div class="card-header">
+                    <mat-icon>person</mat-icon>
+                    <h2>Cliente</h2>
+                </div>
+                <div class="card-body">
+                    <div class="person-block">
+                        <div class="person-avatar">{{ c.cliente.nombre.charAt(0) }}{{ c.cliente.apellidos.charAt(0) }}</div>
+                        <div class="person-info">
+                            <strong class="person-name">{{ c.cliente.nombre }} {{ c.cliente.apellidos }}</strong>
+                            <span class="person-detail">{{ c.cliente.email }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Cambio de estado -->
-    <section class="state-management">
+            <!-- PROFESIONAL -->
+            <div class="section-card glass-panel">
+                <div class="card-accent accent-cyan"></div>
+                <div class="card-header">
+                    <mat-icon>badge</mat-icon>
+                    <h2>Profesional</h2>
+                </div>
+                <div class="card-body">
+                    <div class="person-block">
+                        <div class="person-avatar avatar-cyan">{{ c.profesional.usuario.nombre.charAt(0) }}{{ c.profesional.usuario.apellidos.charAt(0) }}</div>
+                        <div class="person-info">
+                            <strong class="person-name">{{ c.profesional.usuario.nombre }} {{ c.profesional.usuario.apellidos }}</strong>
+                            <span class="person-detail">{{ c.profesional.titulo }}</span>
+                            <span class="person-detail">{{ c.profesional.usuario.email }}</span>
+                            <span class="person-detail">{{ c.profesional.telefono || 'Sin teléfono' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="state-management-header">
-
-            <div>
-                <h2>
-                    <mat-icon>published_with_changes</mat-icon>
-                    Gestión de la cita
-                </h2>
-
-                <p>
-                    Estado actual:
-                    <strong>
-                        {{ formatearEstado(citaActual.estado) }}
-                    </strong>
-                </p>
+            <!-- PROGRAMACIÓN -->
+            <div class="section-card glass-panel">
+                <div class="card-accent accent-cyan"></div>
+                <div class="card-header">
+                    <mat-icon>event</mat-icon>
+                    <h2>Programación</h2>
+                </div>
+                <div class="card-body">
+                    <div class="info-rows">
+                        <div class="info-row">
+                            <span class="info-label">Inicio</span>
+                            <strong>{{ formatearFechaHora(c.fecha_hora_inicio) }}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fin esperado</span>
+                            <strong>{{ formatearFechaHora(c.fecha_hora_finalizacion_esperada) }}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fin real</span>
+                            <strong>{{ c.fecha_hora_finalizacion_real ? formatearFechaHora(c.fecha_hora_finalizacion_real) : '—' }}</strong>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
 
-        @if (
-        puedeCambiarA('RECHAZADA') ||
-        puedeCambiarA('CANCELADA')
-        ) {
+    </div>
 
-        <div class="state-comment">
-
-            <label for="comentarioEstado">
-                Motivo
-            </label>
-
-            <textarea id="comentarioEstado" rows="4" maxlength="500"
-                placeholder="Indique el motivo del rechazo o la cancelación" [value]="comentarioEstado()"
-                [disabled]="cambiandoEstado()" (input)="actualizarComentarioEstado($event)"></textarea>
-
-            <small>
-                {{ comentarioEstado().length }}/500
-            </small>
-
+    <!-- ═══════════════ GESTIÓN DE ESTADO ═══════════════ -->
+    @if (tieneTransiciones()) {
+    <div class="section-card glass-panel state-card">
+        <div class="card-accent"></div>
+        <div class="card-header">
+            <mat-icon>published_with_changes</mat-icon>
+            <h2>Gestión de la cita</h2>
         </div>
-        }
+        <div class="card-body">
+            @if (puedeCambiarA('RECHAZADA') || puedeCambiarA('CANCELADA')) {
+            <div class="state-field">
+                <label for="comentarioEstado">Motivo</label>
+                <textarea id="comentarioEstado" rows="3" maxlength="500"
+                    placeholder="Indique el motivo..."
+                    [value]="comentarioEstado()"
+                    [disabled]="cambiandoEstado()"
+                    (input)="actualizarComentarioEstado($event)"></textarea>
+                <small>{{ comentarioEstado().length }}/500</small>
+            </div>
+            }
 
-        <div class="state-actions">
+            <div class="state-actions">
+                @if (puedeCambiarA('ACEPTADA')) {
+                <button class="btn-state btn-accept" [disabled]="cambiandoEstado()" (click)="cambiarEstado('ACEPTADA')">
+                    <mat-icon>check_circle</mat-icon> Aceptar
+                </button>
+                }
+                @if (puedeCambiarA('RECHAZADA')) {
+                <button class="btn-state btn-reject" [disabled]="cambiandoEstado()" (click)="cambiarEstado('RECHAZADA')">
+                    <mat-icon>block</mat-icon> Rechazar
+                </button>
+                }
+                @if (puedeCambiarA('COMPLETADA')) {
+                <button class="btn-state btn-complete" [disabled]="cambiandoEstado()" (click)="cambiarEstado('COMPLETADA')">
+                    <mat-icon>task_alt</mat-icon> Completar
+                </button>
+                }
+                @if (puedeCambiarA('CANCELADA')) {
+                <button class="btn-state btn-cancel" [disabled]="cambiandoEstado()" (click)="cambiarEstado('CANCELADA')">
+                    <mat-icon>cancel</mat-icon> Cancelar
+                </button>
+                }
+            </div>
 
-            @if (puedeCambiarA('ACEPTADA')) {
+            @if (cambiandoEstado()) {
+            <div class="state-msg info"><div class="spinner small"></div> Actualizando...</div>
+            }
+            @if (mensajeEstado()) {
+            <div class="state-msg success"><mat-icon>check_circle</mat-icon> {{ mensajeEstado() }}</div>
+            }
+            @if (errorEstado()) {
+            <div class="state-msg error"><mat-icon>error</mat-icon> {{ errorEstado() }}</div>
+            }
+            @if (esEstadoFinal(c.estado)) {
+            <div class="state-msg locked"><mat-icon>lock</mat-icon> Estado final — sin cambios posibles.</div>
+            }
+        </div>
+    </div>
+    }
 
-            <button type="button" class="state-button accept" [disabled]="cambiandoEstado()"
-                (click)="cambiarEstado('ACEPTADA')">
-                <mat-icon>check_circle</mat-icon>
-                Aceptar cita
+    <!-- ═══════════════ VALORACIÓN ═══════════════ -->
+    @if (c.valoracion && c.valoracion.length > 0) {
+    <div class="section-card glass-panel valoracion-card">
+        <div class="card-accent accent-gold"></div>
+        <div class="card-header">
+            <mat-icon>star</mat-icon>
+            <h2>Valoración</h2>
+        </div>
+        <div class="card-body">
+            <div class="val-stars">
+                @for (i of [1,2,3,4,5]; track i) {
+                <mat-icon class="val-star" [class.val-star-filled]="i <= c.valoracion[0].puntuacion">
+                    {{ i <= c.valoracion[0].puntuacion ? 'star' : 'star_border' }}
+                </mat-icon>
+                }
+            </div>
+            <p class="val-comment">{{ c.valoracion[0].comentario }}</p>
+            <span class="val-author">— {{ c.cliente.nombre }} {{ c.cliente.apellidos }}</span>
+        </div>
+    </div>
+    } @else if (c.estado === 'COMPLETADA' && authService.usuario()?.id === c.cliente.id) {
+    <div class="section-card glass-panel valoracion-card">
+        <div class="card-accent accent-gold"></div>
+        <div class="card-header">
+            <mat-icon>star_border</mat-icon>
+            <h2>Valorar esta cita</h2>
+        </div>
+        <div class="card-body valoracion-cta">
+            <p class="val-cta-text">¿Cómo fue tu experiencia con este servicio?</p>
+            <button class="btn-calificar" (click)="abrirModalValoracion()">
+                <mat-icon>star_border</mat-icon>
+                Calificar esta cita
             </button>
-            }
-
-            @if (puedeCambiarA('RECHAZADA')) {
-
-            <button type="button" class="state-button reject" [disabled]="cambiandoEstado()"
-                (click)="cambiarEstado('RECHAZADA')">
-                <mat-icon>block</mat-icon>
-                Rechazar cita
-            </button>
-            }
-
-            @if (puedeCambiarA('COMPLETADA')) {
-
-            <button type="button" class="state-button complete" [disabled]="cambiandoEstado()"
-                (click)="cambiarEstado('COMPLETADA')">
-                <mat-icon>task_alt</mat-icon>
-                Completar cita
-            </button>
-            }
-
-            @if (puedeCambiarA('CANCELADA')) {
-
-            <button type="button" class="state-button cancel" [disabled]="cambiandoEstado()"
-                (click)="cambiarEstado('CANCELADA')">
-                <mat-icon>cancel</mat-icon>
-                Cancelar cita
-            </button>
-            }
-
         </div>
+    </div>
+    }
 
-        @if (cambiandoEstado()) {
-
-        <div class="state-message loading">
-            Actualizando el estado de la cita...
+    <!-- ═══════════════ HISTORIAL ═══════════════ -->
+    <div class="section-card glass-panel">
+        <div class="card-accent"></div>
+        <div class="card-header">
+            <mat-icon>history</mat-icon>
+            <h2>Historial de cambios</h2>
         </div>
-        }
-
-        @if (mensajeEstado()) {
-
-        <div class="state-message success">
-            <mat-icon>check_circle</mat-icon>
-            {{ mensajeEstado() }}
-        </div>
-        }
-
-        @if (errorEstado()) {
-
-        <div class="state-message error">
-            <mat-icon>error</mat-icon>
-            {{ errorEstado() }}
-        </div>
-        }
-
-        @if (esEstadoFinal(citaActual.estado)) {
-
-        <div class="state-message final">
-
-            <mat-icon>lock</mat-icon>
-
-            Esta cita se encuentra en un estado final y
-            no admite más cambios.
-
-        </div>
-        }
-
-    </section>
-
-    <div class="detail-card">
-
-            <!-- PROGRAMACIÓN -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>
-                        calendar_month
-                    </mat-icon>
-
-                    Programación
-                </h2>
-
-                <div class="detail-grid">
-
-                    <div class="detail-item">
-                        <span>Fecha</span>
-
-                        <strong>
-                            {{
-                            formatearFecha(
-                            citaActual
-                            .fecha_hora_inicio
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Hora</span>
-
-                        <strong>
-                            {{
-                            formatearHora(
-                            citaActual
-                            .fecha_hora_inicio
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Modalidad</span>
-
-                        <strong>
-                            {{
-                            formatearModalidad(
-                            citaActual.modalidad
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Estado</span>
-
-                        <strong>
-                            {{
-                            formatearEstado(
-                            citaActual.estado
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>
-                            Finalización esperada
-                        </span>
-
-                        <strong>
-                            {{
-                            formatearFechaHora(
-                            citaActual
-                            .fecha_hora_finalizacion_esperada
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>
-                            Finalización real
-                        </span>
-
-                        <strong>
-                            @if (
-                            citaActual
-                            .fecha_hora_finalizacion_real
-                            ) {
-                            {{
-                            formatearFechaHora(
-                            citaActual
-                            .fecha_hora_finalizacion_real
-                            )
-                            }}
-                            } @else {
-                            No registrada
-                            }
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Monto estimado</span>
-
-                        <strong>
-                            {{
-                            formatearMonto(
-                            citaActual
-                            .monto_estimado
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- CLIENTE -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>person</mat-icon>
-                    Cliente
-                </h2>
-
-                <div class="detail-grid">
-
-                    <div class="detail-item">
-                        <span>Nombre completo</span>
-
-                        <strong>
-                            {{
-                            citaActual.cliente.nombre
-                            }}
-
-                            {{
-                            citaActual.cliente.apellidos
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Correo electrónico</span>
-
-                        <strong>
-                            {{
-                            citaActual.cliente.email
-                            }}
-                        </strong>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- PROFESIONAL -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>badge</mat-icon>
-                    Profesional
-                </h2>
-
-                <div class="detail-grid">
-
-                    <div class="detail-item">
-                        <span>Nombre completo</span>
-
-                        <strong>
-                            {{
-                            citaActual
-                            .profesional
-                            .usuario
-                            .nombre
-                            }}
-
-                            {{
-                            citaActual
-                            .profesional
-                            .usuario
-                            .apellidos
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Título profesional</span>
-
-                        <strong>
-                            {{
-                            citaActual
-                            .profesional
-                            .titulo
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Correo electrónico</span>
-
-                        <strong>
-                            {{
-                            citaActual
-                            .profesional
-                            .usuario
-                            .email
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>Teléfono</span>
-
-                        <strong>
-                            {{
-                            citaActual
-                            .profesional
-                            .telefono ||
-                            'No disponible'
-                            }}
-                        </strong>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- SERVICIO -->
-            <section class="detail-section">
-
-                <h2>
-                    <mat-icon>
-                        miscellaneous_services
-                    </mat-icon>
-
-                    Servicio
-                </h2>
-
-                <div class="detail-grid">
-
-                    <div class="detail-item">
-                        <span>Servicio</span>
-
-                        <strong>
-                            {{
-                            citaActual
-                            .servicio
-                            .servicio
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>
-                            Duración estimada
-                        </span>
-
-                        <strong>
-                            {{
-                            formatearDuracion(
-                            citaActual
-                            .servicio
-                            .duracion_estimada
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item">
-                        <span>
-                            Precio del servicio
-                        </span>
-
-                        <strong>
-                            {{
-                            formatearMonto(
-                            citaActual
-                            .servicio
-                            .precio
-                            )
-                            }}
-                        </strong>
-                    </div>
-
-                    <div class="detail-item full">
-                        <span>
-                            Descripción del servicio
-                        </span>
-
-                        <strong>
-                            {{
-                            citaActual
-                            .servicio
-                            .descripcion ||
-                            'Sin descripción'
-                            }}
-                        </strong>
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- COMENTARIO -->
-            <section class="detail-section">
-
-                    <h2>
-                        <mat-icon>comment</mat-icon>
-                        Comentario del cliente
-                    </h2>
-
-                    <div class="detail-item full comment-box">
-
-                        <span>
-                            Descripción o comentario
-                        </span>
-
-                        <p>
-                            {{
-                            citaActual
-                            .comentario_cliente ||
-                            'No se registraron comentarios.'
-                            }}
-                        </p>
-
-                    </div>
-
-            </section>
-
-            <!-- Comentario profesional -->
-            @if (citaActual.comentario_profesional) {
-
-                <section class="detail-section">
-
-                    <h2>
-                        <mat-icon>support_agent</mat-icon>
-                        Comentario del profesional
-                    </h2>
-
-                    <div class="detail-item full comment-box">
-
-                        <span>
-                            Respuesta o motivo registrado
-                        </span>
-
-                        <p>
-                            {{ citaActual.comentario_profesional }}
-                        </p>
-
-                    </div>
-
-                </section>
-            }
-
-        </div>
-
-        <!-- Historial de cambios -->
-        <section class="detail-section historial-section">
-            <h2>
-                <mat-icon>history</mat-icon>
-                Historial de cambios
-            </h2>
+        <div class="card-body">
             @if (historial().length === 0) {
-                <p>No hay historial de cambios registrado.</p>
+            <p class="text-muted">Sin historial registrado.</p>
             } @else {
-                <div class="timeline">
-                    @for (item of historial(); track item.id) {
-                        <div class="timeline-item">
-                            <div class="timeline-dot" [class.pend]="item.estado_nuevo === 'PENDIENTE'"
-                                [class.acept]="item.estado_nuevo === 'ACEPTADA'"
-                                [class.rech]="item.estado_nuevo === 'RECHAZADA'"
-                                [class.canc]="item.estado_nuevo === 'CANCELADA'"
-                                [class.comp]="item.estado_nuevo === 'COMPLETADA'"></div>
-                            <div class="timeline-content">
-                                <span class="timeline-estado">
-                                    @if (item.estado_anterior === 'PENDIENTE' && item.estado_nuevo === 'PENDIENTE') {
-                                        Registro inicial
-                                    } @else {
-                                        {{ formatearEstado(item.estado_anterior) }} → {{ formatearEstado(item.estado_nuevo) }}
-                                    }
-                                </span>
-                                <span class="timeline-fecha">{{ formatearFechaHora(item.fecha_cambio) }}</span>
-                                @if (item.comentario) {
-                                    <p class="timeline-comentario">{{ item.comentario }}</p>
-                                }
-                                <span class="timeline-autor">
-                                    Por: {{ correoAutor(item) }}
-                                    <span class="timeline-rol"> ({{ formatearRol(item.realizado_por) }})</span>
-                                </span>
-                            </div>
-                        </div>
-                    }
+            <div class="timeline">
+                @for (item of historial(); track item.id; let idx = $index) {
+                <div class="tl-item" [style.animation-delay]="(0.1 + idx * 0.06) + 's'">
+                    <div class="tl-dot"
+                        [class.dot-pend]="item.estado_nuevo === 'PENDIENTE'"
+                        [class.dot-acept]="item.estado_nuevo === 'ACEPTADA'"
+                        [class.dot-rech]="item.estado_nuevo === 'RECHAZADA'"
+                        [class.dot-canc]="item.estado_nuevo === 'CANCELADA'"
+                        [class.dot-comp]="item.estado_nuevo === 'COMPLETADA'">
+                    </div>
+                    <div class="tl-content">
+                        <span class="tl-estado">
+                            @if (item.estado_anterior === 'PENDIENTE' && item.estado_nuevo === 'PENDIENTE') {
+                                Registro inicial
+                            } @else {
+                                {{ formatearEstado(item.estado_anterior) }} → {{ formatearEstado(item.estado_nuevo) }}
+                            }
+                        </span>
+                        <span class="tl-fecha">{{ formatearFechaHora(item.fecha_cambio) }}</span>
+                        @if (item.comentario) {
+                        <p class="tl-comentario">{{ item.comentario }}</p>
+                        }
+                        <span class="tl-autor">{{ correoAutor(item) }} <span class="tl-rol">({{ formatearRol(item.realizado_por) }})</span></span>
+                    </div>
                 </div>
+                }
+            </div>
             }
-        </section>
+        </div>
+    </div>
+
+    <!-- MODAL VALORACIÓN -->
+    @if (mostrarModalValoracion()) {
+    <app-valoracion-modal
+        [idCita]="modalIdCita()"
+        [idProfesional]="modalIdProfesional()"
+        [idCliente]="modalIdCliente()"
+        [nombreServicio]="modalNombreServicio()"
+        [nombreProfesional]="modalNombreProfesional()"
+        (cerrar)="cerrarModalValoracion()"
+        (guardado)="guardarValoracion($event)" />
+    }
 
     }
 

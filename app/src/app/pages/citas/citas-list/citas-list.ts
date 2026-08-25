@@ -6,7 +6,7 @@ import {
   signal
 } from '@angular/core';
 
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 
@@ -19,6 +19,9 @@ import {
 
 import { CitaService } from
   '../../../core/services/cita.service';
+
+import { AuthService } from
+  '../../../core/services/auth.service';
 
 import { FiltrosGenerales } from
   '../../../shared/components/filtros-generales/filtros-generales';
@@ -36,6 +39,7 @@ interface CitaListadoItem {
   fecha: string;
   hora: string;
   estado: EstadoCita;
+  valoracion: number | null;
 }
 
 interface ProfesionalFiltro {
@@ -59,6 +63,9 @@ export class CitasList implements OnInit {
 
   private readonly citaService =
     inject(CitaService);
+
+  private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   citas = signal<Cita[]>([]);
 
@@ -104,6 +111,11 @@ export class CitasList implements OnInit {
       titulo: 'Hora',
       campo: 'hora',
       tipo: 'texto'
+    },
+    {
+      titulo: 'Valoración',
+      campo: 'valoracion',
+      tipo: 'valoracion'
     },
     {
       titulo: 'Estado',
@@ -163,15 +175,15 @@ export class CitasList implements OnInit {
     const desde =
       this.fechaDesde()
         ? new Date(
-            `${this.fechaDesde()}T00:00:00`
-          )
+          `${this.fechaDesde()}T00:00:00`
+        )
         : null;
 
     const hasta =
       this.fechaHasta()
         ? new Date(
-            `${this.fechaHasta()}T23:59:59`
-          )
+          `${this.fechaHasta()}T23:59:59`
+        )
         : null;
 
     return this.citas()
@@ -211,7 +223,7 @@ export class CitasList implements OnInit {
         const coincideProfesional =
           !idProfesional ||
           cita.profesional.id ===
-            idProfesional;
+          idProfesional;
 
         const coincideDesde =
           !desde ||
@@ -254,7 +266,9 @@ export class CitasList implements OnInit {
           ),
 
         estado:
-          cita.estado
+          cita.estado,
+
+        valoracion: (cita.valoracion && cita.valoracion.length > 0) ? cita.valoracion[0].puntuacion : null
       }));
   });
 
@@ -360,5 +374,21 @@ export class CitasList implements OnInit {
         minute: '2-digit'
       }
     ).format(new Date(fecha));
+  }
+
+  puedeCalificar = (item: any): boolean => {
+    const usuario = this.authService.usuario();
+    if (!usuario) return false;
+    const cita = this.citas().find(c => c.id === item.id);
+    if (!cita) return false;
+    return (
+      cita.estado === 'COMPLETADA' &&
+      (!cita.valoracion || cita.valoracion.length === 0) &&
+      usuario.id === cita.cliente.id
+    );
+  };
+
+  onCalificarCita(item: any): void {
+    this.router.navigate(['/citas', item.id]);
   }
 }

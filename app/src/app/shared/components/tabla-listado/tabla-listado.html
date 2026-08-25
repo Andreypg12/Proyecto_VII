@@ -58,6 +58,22 @@
 
                     }
 
+                    <!-- Valoración (estrellas) -->
+                    @else if (columna.tipo === 'valoracion') {
+
+                    @if (item[columna.campo]) {
+                    <div class="stars-cell">
+                        @for (estrella of [1,2,3,4,5]; track estrella) {
+                        <mat-icon class="star-icon" [class.star-filled]="estrella <= item[columna.campo]">
+                            {{ estrella <= item[columna.campo] ? 'star' : 'star_border' }} </mat-icon>
+                                }
+                    </div>
+                    } @else {
+                    <span class="no-valoracion">Sin valorar</span>
+                    }
+
+                    }
+
                     <!-- Texto normal -->
                     @else {{{ item[columna.campo] }}}
 
@@ -73,6 +89,13 @@
                             <mat-icon>visibility</mat-icon>
                             Ver
                         </a>
+
+                        @if (mostrarCalificar()(item)) {
+                        <button class="action-btn calificar" type="button" (click)="calificarCita.emit(item)">
+                            <mat-icon>star_border</mat-icon>
+                            Calificar
+                        </button>
+                        }
 
                         <!-- Botones segun el cambio de estado -->
                         <!-- Categorías y especialidades -->
@@ -101,7 +124,7 @@
 
                         @if (item.estado === 'ACTIVO') {
 
-                            <!-- Si está activo, muestra botón para Bloquear -->
+                        <!-- Si está activo, muestra botón para Bloquear -->
                         <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
                             <mat-icon>lock</mat-icon>
                             Bloquear
@@ -109,7 +132,7 @@
 
                         } @else {
 
-                            <!-- Si está bloqueado, muestra botón para Activar (Desbloquear) -->
+                        <!-- Si está bloqueado, muestra botón para Activar (Desbloquear) -->
                         <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
                             <mat-icon>lock_open</mat-icon>
                             Activar

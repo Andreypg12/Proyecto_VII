@@ -218,6 +218,15 @@ export const citaService = {
 
                 },
 
+                valoracion: {
+                    select: {
+                        id: true,
+                        puntuacion: true,
+                        comentario: true,
+                        createdAt: true,
+                    },
+                },
+
             },
 
 
@@ -304,6 +313,18 @@ export const citaService = {
 
                         modalidad: true,
                         estado: true,
+                    },
+                },
+
+                valoracion: {
+                    select: {
+                        id: true,
+                        puntuacion: true,
+                        comentario: true,
+                        createdAt: true,
+                        cliente: {
+                            select: { id: true, nombre: true, apellidos: true },
+                        },
                     },
                 },
             },

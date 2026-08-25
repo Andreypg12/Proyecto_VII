@@ -181,11 +181,15 @@
                     ">
 
                     @if (guardando()) {
-                    <mat-spinner diameter="18" />
-                    Guardando...
+                    <ng-container>
+                        <mat-spinner diameter="18" />
+                        Guardando...
+                    </ng-container>
                     } @else {
-                    <mat-icon> save </mat-icon>
-                    Guardar cambios
+                    <ng-container>
+                        <mat-icon>save</mat-icon>
+                        Guardar cambios
+                    </ng-container>
                     }
                 </button>
             </div>

@@ -10,7 +10,8 @@ export interface ColumnaTabla {
     | 'texto'
     | 'estado'
     | 'estado-usuario'
-    | 'estado-cita';
+    | 'estado-cita'
+    | 'valoracion';
 }
 
 @Component({
@@ -29,7 +30,10 @@ export class TablaListado {
   datos = input.required<any[]>();
   rutaDetalle = input.required<string>();
 
+  mostrarCalificar = input<(item: any) => boolean>(() => false);
+
   cambiarEstado = output<any>();
+  calificarCita = output<any>();
 
   formatearEstadoCita(estado: string): string {
     if (!estado) {

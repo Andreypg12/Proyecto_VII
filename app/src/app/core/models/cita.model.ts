@@ -1,6 +1,18 @@
 export type EstadoCita = string;
 export type Modalidad = string;
 
+export interface ValoracionCita {
+    id: number;
+    puntuacion: number;
+    comentario: string;
+    createdAt: string;
+    cliente?: {
+        id: number;
+        nombre: string;
+        apellidos: string;
+    };
+}
+
 export interface ConfiguracionCita {
     modalidades: Modalidad[];
     estados: EstadoCita[];
@@ -59,6 +71,8 @@ export interface Cita {
     cliente: ClienteCita;
     profesional: ProfesionalCita;
     servicio: ServicioCita;
+
+    valoracion?: ValoracionCita[] | null;
 
     createdAt?: string;
     updateAt?: string;
