@@ -71,7 +71,7 @@ export const routes: Routes = [
 
             // Profesionales
             { path: 'profesionales', component: ProfesionalesList, title: 'Profesionales' },
-            { path: 'profesionales/crear', component: ProfesionalCreatePage, title: 'Registrar profesional', canActivate: [authGuard, roleGuard(['ADMINISTRADOR','PROFESIONAL'])] },
+            { path: 'profesionales/crear', component: ProfesionalCreatePage, title: 'Registrar profesional' },
             { path: 'profesionales/editar/:id', component: ProfesionalEditPage, title: 'Actualizar profesional', canActivate: [authGuard, roleGuard(['PROFESIONAL'])] },
             { path: 'profesionales/:id', component: ProfesionalDetail, title: 'Profesional' },
 

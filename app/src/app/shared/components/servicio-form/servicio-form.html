@@ -95,26 +95,6 @@
                         }
                     </mat-form-field>
 
-                    @if (!isEdit()){
-                    <mat-form-field appearance="outline">
-                        <mat-label>Profesional</mat-label>
-                        <mat-select [formField]="servicioForm.profesional_id">
-                            <mat-option [value]="0">
-                                Seleccione un profesional
-                            </mat-option>
-                            @for (profesional of profesionales(); track profesional.id) {
-                            <mat-option [value]="profesional.id">
-                                {{ profesional.usuario.nombre || 'Sin nombre' }}
-                            </mat-option>
-                            }
-                        </mat-select>
-                        @if (servicioForm.profesional_id().touched() && servicioForm.profesional_id().invalid()) {
-                        <mat-error>
-                            {{ servicioForm.profesional_id().errors()[0].message }}
-                        </mat-error>
-                        }
-                    </mat-form-field>
-                    }
                     <div class="estado-box">
                         <mat-checkbox [formField]="servicioForm.estado">
                             Servicio activo

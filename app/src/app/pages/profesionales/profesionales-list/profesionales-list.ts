@@ -63,7 +63,7 @@ export class ProfesionalesList implements OnInit {
 
         return (
             rol === 'ADMINISTRADOR' ||
-            rol === 'PROFESIONAL'
+            rol === undefined
         );
 
     });

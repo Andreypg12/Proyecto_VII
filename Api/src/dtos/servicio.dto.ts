@@ -35,7 +35,8 @@ export const createServicioSchema = z.object({
     profesional_id: z
         .number()
         .int()
-        .positive("El profesional es obligatorio"),
+        .positive("El profesional es obligatorio")
+        .optional(),
 
     categoria_id: z
         .number()

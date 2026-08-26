@@ -2,7 +2,9 @@ import { Rol } from "../../generated/prisma/enums";
 import { prisma } from "../config/prisma";
 import { UpdateEspecialidadDto } from "../dtos/especialidad.dto";
 import { CreateProfesionalDto, UpdateProfesionalDto } from "../dtos/profesional.dto";
+import { ImageService } from "./image.service";
 import { AppError } from "../utils/app-error";
+import bcrypt from "bcryptjs";
 
 
 export interface ProfesionalFilters {
@@ -162,12 +164,14 @@ export const profesionalService = {
             await this.validateEspecialidades(data.especialidades_Ids)
         }
 
+        const hashedPassword = await bcrypt.hash(data.usuario.password, 10);
+
         const usuario = await prisma.usuario.create({
             data: {
                 email: data.usuario.email,
                 nombre: data.usuario.nombre,
                 apellidos: data.usuario.apellidos,
-                password: data.usuario.password,
+                password: hashedPassword,
                 rol: Rol.PROFESIONAL
             }
         })
@@ -204,12 +208,17 @@ export const profesionalService = {
 
     },
 
-    async actualizar(id: number, data: UpdateProfesionalDto) {
+    async actualizar(id: number, data: UpdateProfesionalDto, usuarioAutenticado?: { id: number }) {
 
         const profesionalExistente = await this.obtenerPorId(id)
 
         if (profesionalExistente == null)
             return
+
+        // Validar que solo el profesional propietario puede editar su perfil
+        if (profesionalExistente && usuarioAutenticado && profesionalExistente.usuario.id !== usuarioAutenticado.id) {
+            throw AppError.badRequest("No puede editar el perfil de otro profesional");
+        }
 
         if (data.especialidades_Ids?.length) {
             await this.validateEspecialidades(data.especialidades_Ids)
@@ -228,6 +237,13 @@ export const profesionalService = {
         }
 
 
+        // Borrar imagen anterior si se está actualizando por una nueva
+        if (data.imagen_profesional && profesionalExistente.imagen_profesional && data.imagen_profesional !== profesionalExistente.imagen_profesional) {
+            if (profesionalExistente.imagen_profesional !== "image-not-found.jpg") {
+                await new ImageService().deleteImageIfExists(profesionalExistente.imagen_profesional);
+            }
+        }
+
         const profesional = await prisma.perfilProfesional.update({
             where: { id },
             data: {
@@ -235,10 +251,10 @@ export const profesionalService = {
                 descripcion: data.descripcion,
                 tarifa_por_hora: data.tarifa_por_hora,
                 annos_experiencia: data.annos_experiencia,
-                imagen_profesional: data.imagen_profesional ?? "image-not-found.jpg",
-                disponibilidad: data.disponibilidad ?? true,
+                imagen_profesional: data.imagen_profesional ?? profesionalExistente.imagen_profesional,
+                disponibilidad: data.disponibilidad ?? profesionalExistente.disponibilidad,
                 modalidad: data.modalidad,
-                telefono: data.telefono ?? "00000000",
+                telefono: data.telefono ?? profesionalExistente.telefono,
                 especialidades: data.especialidades_Ids ? {
                     set: data.especialidades_Ids.map((id) => ({ id })),
                 }

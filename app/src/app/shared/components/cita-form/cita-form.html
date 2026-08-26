@@ -120,9 +120,10 @@
                         </strong>
                         <span class="pro-titulo">{{ servicio.profesional.titulo }}</span>
                     </div>
-                    <span class="disponible-chip">
-                        <mat-icon>verified</mat-icon>
-                        Disponible
+
+                    <span class="disponible-chip" [class.no-disponible]="!servicio.profesional.disponibilidad">
+                        <mat-icon>{{ servicio.profesional.disponibilidad ? 'verified' : 'block' }}</mat-icon>
+                        {{ servicio.profesional.disponibilidad ? 'Disponible' : 'No disponible' }}
                     </span>
                 </div>
             </section>
