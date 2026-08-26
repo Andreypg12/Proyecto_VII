@@ -58,7 +58,7 @@ export const citaService = {
         }));
     },
 
-    
+
 
     async listar(
         filtros: FiltrosCita | undefined,
@@ -145,7 +145,8 @@ export const citaService = {
 
         // CONSULTA
 
-        return prisma.cita.findMany({ where,
+        return prisma.cita.findMany({
+            where,
 
             select: {
                 id: true,
@@ -471,7 +472,7 @@ export const citaService = {
     },
 
 
-    async cambiarEstado( id: number, data: CambiarEstadoCitaDto, usuarioAutenticado: AuthTokenPayload) {
+    async cambiarEstado(id: number, data: CambiarEstadoCitaDto, usuarioAutenticado: AuthTokenPayload) {
 
         // Buscar cita y los datos necesarios para
         // comprobar quién es el cliente y quién es
@@ -479,7 +480,7 @@ export const citaService = {
         const cita =
             await prisma.cita.findUnique({
 
-                where: { id,},
+                where: { id, },
 
                 select: {
                     id: true,
@@ -498,7 +499,7 @@ export const citaService = {
 
 
         if (!cita) {
-            throw AppError.badRequest( "La cita seleccionada no existe");
+            throw AppError.badRequest("La cita seleccionada no existe");
         }
 
 
@@ -511,7 +512,7 @@ export const citaService = {
         const esProfesionalAsignado =
             usuarioAutenticado.rol === Rol.PROFESIONAL &&
             cita.profesional.id_usuario ===
-                usuarioAutenticado.id;
+            usuarioAutenticado.id;
 
 
         // Validar transición + Rol
@@ -524,17 +525,17 @@ export const citaService = {
             case EstadoCita.PENDIENTE:
 
                 // Profesional asignado puede aceptar
-                if ( data.estado === EstadoCita.ACEPTADA && esProfesionalAsignado) {
+                if (data.estado === EstadoCita.ACEPTADA && esProfesionalAsignado) {
                     cambioPermitido = true;
                 }
 
                 // Profesional asignado puede rechazar
-                if ( data.estado === EstadoCita.RECHAZADA && esProfesionalAsignado) {
+                if (data.estado === EstadoCita.RECHAZADA && esProfesionalAsignado) {
                     cambioPermitido = true;
                 }
 
                 // Cliente dueño puede cancelar
-                if ( data.estado === EstadoCita.CANCELADA && esClientePropietario) {
+                if (data.estado === EstadoCita.CANCELADA && esClientePropietario) {
                     cambioPermitido = true;
                 }
                 break;
@@ -543,13 +544,13 @@ export const citaService = {
             case EstadoCita.ACEPTADA:
 
                 // Profesional asignado puede completar
-                if ( data.estado === EstadoCita.COMPLETADA && esProfesionalAsignado) {
+                if (data.estado === EstadoCita.COMPLETADA && esProfesionalAsignado) {
                     cambioPermitido = true;
                 }
 
                 // Cliente dueño o profesional asignado
                 // pueden cancelar una cita aceptada.
-                if (data.estado === EstadoCita.CANCELADA && ( esClientePropietario || esProfesionalAsignado)) {
+                if (data.estado === EstadoCita.CANCELADA && (esClientePropietario || esProfesionalAsignado)) {
                     cambioPermitido = true;
                 }
                 break;
@@ -572,8 +573,8 @@ export const citaService = {
         }
 
         // Validar Completada
-        if ( data.estado === EstadoCita.COMPLETADA && new Date() < cita.fecha_hora_finalizacion_esperada) {
-            throw AppError.badRequest( "La cita todavía no puede marcarse como completada");
+        if (data.estado === EstadoCita.COMPLETADA && new Date() < cita.fecha_hora_finalizacion_esperada) {
+            throw AppError.badRequest("La cita todavía no puede marcarse como completada");
         }
 
         // MOTIVO / COMENTARIO
@@ -581,7 +582,7 @@ export const citaService = {
 
 
         // Rechazo siempre requiere motivo
-        if ( data.estado === EstadoCita.RECHAZADA && !motivo) {
+        if (data.estado === EstadoCita.RECHAZADA && !motivo) {
 
             throw AppError.badRequest("Debe indicar el motivo por el que se rechaza la cita");
         }
@@ -589,9 +590,9 @@ export const citaService = {
 
         // Cancelación de una cita ACEPTADA
         // requiere motivo.
-        if ( cita.estado === EstadoCita.ACEPTADA && data.estado === EstadoCita.CANCELADA && !motivo) {
+        if (cita.estado === EstadoCita.ACEPTADA && data.estado === EstadoCita.CANCELADA && !motivo) {
 
-            throw AppError.badRequest( "Debe indicar el motivo por el que se cancela la cita");
+            throw AppError.badRequest("Debe indicar el motivo por el que se cancela la cita");
         }
 
 
@@ -602,7 +603,7 @@ export const citaService = {
                 const citaActualizada =
                     await tx.cita.update({
 
-                        where: { id,},
+                        where: { id, },
 
                         data: {
                             estado: data.estado,
@@ -611,13 +612,13 @@ export const citaService = {
                             // quien escribe es profesional.
                             comentario_profesional:
                                 usuarioAutenticado.rol ===
-                                Rol.PROFESIONAL
+                                    Rol.PROFESIONAL
                                     ? motivo
                                     : undefined,
 
                             fecha_hora_finalizacion_real:
                                 data.estado ===
-                                EstadoCita.COMPLETADA
+                                    EstadoCita.COMPLETADA
                                     ? new Date()
                                     : undefined,
                         },

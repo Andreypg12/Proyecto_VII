@@ -213,14 +213,22 @@ export const servicioService = {
         });
     },
 
-    async crear(data: CreateServicioDto) {
+    async crear(data: CreateServicioDto, usuarioAutenticado: AuthTokenPayload) {
+
+        if (usuarioAutenticado.rol !== Rol.PROFESIONAL) {
+            throw AppError.badRequest("Solo los profesionales pueden crear servicios");
+        }
+
+        const profesional = await prisma.perfilProfesional.findFirst({
+            where: { id_usuario: usuarioAutenticado.id }
+        });
+
+        if (!profesional) {
+            throw AppError.notFound("Perfil de profesional no encontrado para este usuario");
+        }
 
         if (data.categoria_id) {
             await this.validateCategoria(data.categoria_id)
-        }
-
-        if (data.profesional_id) {
-            await this.validateProfesional(data.profesional_id)
         }
 
         if (data.especialidades_Ids?.length) {
@@ -234,7 +242,7 @@ export const servicioService = {
                 precio: data.precio,
                 duracion_estimada: data.duracion_estimada,
                 modalidad: data.modalidad,
-                id_profesional: data.profesional_id,
+                id_profesional: profesional.id,
                 id_categoria: data.categoria_id,
                 especialidades: {
                     connect: data.especialidades_Ids?.map(id => ({ id })) || []

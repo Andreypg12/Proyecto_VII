@@ -177,9 +177,9 @@ export class ServicioForm {
       message: 'Se debe seleccionar una modalidad'
     })
 
-    required(path.profesional_id, {
+    /* required(path.profesional_id, {
       message: 'Debe seleccionar un profesional'
-    })
+    }) */
 
     required(path.categoria_id, {
       message: 'Debe seleccionar una categoría'
@@ -290,7 +290,6 @@ export class ServicioForm {
     this.servicioForm.duracion_estimada().markAsTouched()
     this.servicioForm.estado().markAsTouched()
     this.servicioForm.modalidad().markAsTouched()
-    this.servicioForm.profesional_id().markAsTouched()
     this.servicioForm.categoria_id().markAsTouched()
     this.servicioForm.especialidades_Ids().markAsTouched()
   }
@@ -303,7 +302,6 @@ export class ServicioForm {
       this.servicioForm.duracion_estimada().invalid() ||
       this.servicioForm.estado().invalid() ||
       this.servicioForm.modalidad().invalid() ||
-      this.servicioForm.profesional_id().invalid() ||
       this.servicioForm.categoria_id().invalid() ||
       this.servicioForm.especialidades_Ids().invalid()
     )
@@ -324,7 +322,6 @@ export class ServicioForm {
       duracion_estimada: Number(value.duracion_estimada),
       estado: value.estado,
       modalidad: value.modalidad as Modalidad,
-      profesional_id: Number(value.profesional_id),
       categoria_id: Number(value.categoria_id),
       especialidades_Ids: value.especialidades_Ids,
     }

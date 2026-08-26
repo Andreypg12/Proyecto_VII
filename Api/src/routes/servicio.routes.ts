@@ -19,6 +19,7 @@ export class ServicioRoutes {
 
         router.post(
             "/",
+            authenticateToken,
             validateRequest(createServicioSchema),
             asyncHandler(controller.crear)
         )

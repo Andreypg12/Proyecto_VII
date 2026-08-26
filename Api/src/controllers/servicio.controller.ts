@@ -54,8 +54,17 @@ export class ServicioController {
         return response.status(StatusCodes.OK).json({ success: true, data: servicio });
     };
 
-    crear = async (request: Request, response: Response, next: NextFunction) => {
-        const servicio = await servicioService.crear(request.body);
+    crear = async (request: AuthRequest, response: Response, next: NextFunction) => {
+        const usuarioAutenticado = request.user;
+        if (!usuarioAutenticado) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado"
+                });
+        }
+        const servicio = await servicioService.crear(request.body, usuarioAutenticado);
         return sendSuccess(
             response,
             servicio,

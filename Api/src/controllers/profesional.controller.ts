@@ -52,7 +52,8 @@ export class ProfesionalController {
 
     actualizar = async (request: Request, response: Response, next: NextFunction) => {
         const id = parseId(request.params.id);
-        const profesional = await profesionalService.actualizar(id, request.body);
+        const usuarioAutenticado = (request as any).user;
+        const profesional = await profesionalService.actualizar(id, request.body, usuarioAutenticado ? { id: usuarioAutenticado.id } : undefined);
         return sendSuccess(
             response,
             profesional,

@@ -62,10 +62,6 @@ export class MainLayout {
             label: 'Profesionales',
             path: '/profesionales',
             icon: 'badge',
-            roles: [
-                'ADMINISTRADOR',
-                'CLIENTE'
-            ]
         },
 
         {
