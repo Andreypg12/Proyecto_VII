@@ -260,9 +260,7 @@ export const reporteService = {
                     profesional.valoracion;
 
 
-                // ==========================================
                 // PROMEDIO GENERAL DEL PROFESIONAL
-                // ==========================================
 
                 const cantidadResenas =
                     valoraciones.length;
@@ -287,9 +285,7 @@ export const reporteService = {
                         : 0;
 
 
-                // ==========================================
                 // AGRUPAR CALIFICACIONES POR SERVICIO
-                // ==========================================
 
                 const serviciosMap =
                     new Map<
@@ -339,9 +335,7 @@ export const reporteService = {
                 }
 
 
-                // ==========================================
                 // CALCULAR PROMEDIO DE CADA SERVICIO
-                // ==========================================
 
                 const servicios =
                     Array.from(
@@ -366,9 +360,7 @@ export const reporteService = {
                     );
 
 
-                // ==========================================
                 // MEJOR SERVICIO CALIFICADO
-                // ==========================================
 
                 const mejorPromedio =
                     servicios.length > 0
@@ -381,11 +373,9 @@ export const reporteService = {
                         : null;
 
 
-                /*
-                * Usamos un arreglo porque puede haber
-                * dos o más servicios empatados con
-                * la mejor calificación.
-                */
+                
+               // Usamos un arreglo porque puede haber
+               // dos o más servicios empatados con la mejor calificación.
                 const mejoresServicios =
                     mejorPromedio !== null
                         ? servicios
@@ -405,10 +395,7 @@ export const reporteService = {
                             )
                         : [];
 
-
-                // ==========================================
                 // SERVICIOS CON BAJA CALIFICACIÓN
-                // ==========================================
 
                 const serviciosBajaCalificacion =
                     servicios
@@ -428,9 +415,7 @@ export const reporteService = {
                         );
 
 
-                // ==========================================
                 // RESULTADO
-                // ==========================================
 
                 return {
 

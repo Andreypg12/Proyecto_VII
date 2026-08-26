@@ -16,6 +16,8 @@ import { RouterLink } from '@angular/router';
 import { ProfesionalService } from '../../../core/services/profesional.service';
 import { Profesional } from '../../../core/models/profesional.model';
 
+import { AuthService } from '../../../core/services/auth.service';
+
 @Component({
   selector: 'app-profesional-list',
   imports: [
@@ -50,6 +52,8 @@ export class ProfesionalesList implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
 
+  private readonly authService =
+    inject(AuthService);
 
 
   ngOnInit(): void {
@@ -203,5 +207,38 @@ export class ProfesionalesList implements OnInit {
         );
       },
     });
+  }
+
+  puedeCambiarDisponibilidad( profesional: Profesional ): boolean {
+
+      const usuario =
+          this.authService.usuario();
+
+      if (!usuario) {
+          return false;
+      }
+
+      // El cliente nunca puede cambiar
+      // la disponibilidad de un profesional
+      if (usuario.rol === 'CLIENTE') {
+          return false;
+      }
+
+      // El profesional solamente puede
+      // cambiar su propia disponibilidad
+      if (usuario.rol === 'PROFESIONAL') {
+
+          return (
+              Number(
+                  profesional.id_usuario ??
+                  profesional.usuario?.id
+              )
+              ===
+              Number(usuario.id)
+          );
+
+      }
+
+      return false;
   }
 }
