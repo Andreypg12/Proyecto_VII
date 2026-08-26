@@ -253,10 +253,15 @@
                     <mat-icon>block</mat-icon> Rechazar
                 </button>
                 }
-                @if (puedeCambiarA('COMPLETADA')) {
-                <button class="btn-state btn-complete" [disabled]="cambiandoEstado()" (click)="cambiarEstado('COMPLETADA')">
+                @if (puedeCambiarA('COMPLETADA') || horaCompletarNoLlego()) {
+                <button class="btn-state btn-complete"
+                    [disabled]="cambiandoEstado() || !puedeCambiarA('COMPLETADA')"
+                    (click)="cambiarEstado('COMPLETADA')">
                     <mat-icon>task_alt</mat-icon> Completar
                 </button>
+                @if (horaCompletarNoLlego()) {
+                <span class="hint-locked">Disponible después de {{ formatearFechaHora(cita()!.fecha_hora_finalizacion_esperada) }}</span>
+                }
                 }
                 @if (puedeCambiarA('CANCELADA')) {
                 <button class="btn-state btn-cancel" [disabled]="cambiandoEstado()" (click)="cambiarEstado('CANCELADA')">

@@ -1,15 +1,5 @@
 <section class="reserva-page">
 
-    <header class="reserva-header">
-        <div class="reserva-header-glow"></div>
-        <span class="tech-eyebrow">Reserva en línea</span>
-        <h1>Reservar cita</h1>
-        <p>
-            Confirmá el servicio, elegí el momento y el profesional coordinará
-            contigo los siguientes pasos.
-        </p>
-    </header>
-
     @if (loading()) {
     <div class="state loading">
         <mat-spinner diameter="46" />
@@ -25,17 +15,10 @@
         </button>
     </div>
     } @else if (servicio(); as servicio) {
-    <app-cita-form
-        [clienteFijo]="clienteActual()"
-        [profesionales]="servicio.profesional ? [servicio.profesional] : []"
-        [servicios]="[servicio]"
-        [saving]="saving()"
-        [servicioFijo]="servicio"
-        titulo="Reservar cita"
+    <app-cita-form [clienteFijo]="clienteActual()" [profesionales]="servicio.profesional ? [servicio.profesional] : []"
+        [servicios]="[servicio]" [saving]="saving()" [servicioFijo]="servicio" titulo="Reservar cita"
         subtitulo="Completá tu información y seleccioná el momento que prefieras para coordinar con el profesional."
-        (guardar)="guardarCita($event)"
-        (cancelar)="cancelar()"
-    />
+        (guardar)="guardarCita($event)" (cancelar)="cancelar()" />
     }
 
 </section>

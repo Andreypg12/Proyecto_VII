@@ -2,6 +2,7 @@ import { Especialidad } from "./especialidad.model";
 import { Servicio } from "./servicio.model";
 import { UbicacionProfesional } from "./ubicacionProfesional.model";
 import { Usuario } from "./usuario.model";
+import { Valoracion } from "./valoracion.model";
 
 export type Modalidad = 'PRESENCIAL' | 'VIRTUAL' | 'HÍBRIDA';
 
@@ -22,6 +23,11 @@ export interface Profesional {
     servicios?: Servicio[];
     ubicaciones?: UbicacionProfesional[];
     especialidades?: Especialidad[];
+    valoracion?: Valoracion[];
+
+    // Calculados
+    promedioCalificacion?: number;
+    totalValoraciones?: number;
 }
 
 export interface ProfesionalFormModel {

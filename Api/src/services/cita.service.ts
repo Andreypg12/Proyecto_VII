@@ -29,6 +29,35 @@ export const citaService = {
         };
     },
 
+    async obtenerDisponibilidad(idProfesional: number, fecha: string) {
+
+        const inicioDia = new Date(`${fecha}T00:00:00`);
+        const finDia = new Date(`${fecha}T23:59:59`);
+
+        const citas = await prisma.cita.findMany({
+            where: {
+                id_profesional: idProfesional,
+                estado: EstadoCita.ACEPTADA,
+                fecha_hora_inicio: {
+                    gte: inicioDia,
+                    lte: finDia,
+                },
+            },
+            select: {
+                fecha_hora_inicio: true,
+                fecha_hora_finalizacion_esperada: true,
+            },
+            orderBy: {
+                fecha_hora_inicio: 'asc',
+            },
+        });
+
+        return citas.map(c => ({
+            inicio: c.fecha_hora_inicio.toISOString(),
+            fin: c.fecha_hora_finalizacion_esperada.toISOString(),
+        }));
+    },
+
     
 
     async listar(
@@ -218,9 +247,9 @@ export const citaService = {
     },
 
 
-    async obtenerPorId(id: number) {
+    async obtenerPorId(id: number, usuarioAutenticado: AuthTokenPayload) {
 
-        return prisma.cita.findUnique({
+        const cita = await prisma.cita.findUnique({
             where: {
                 id,
             },
@@ -241,6 +270,8 @@ export const citaService = {
                 estado: true,
                 createdAt: true,
                 updateAt: true,
+                id_cliente: true,
+                id_profesional: true,
 
                 cliente: {
                     select: {
@@ -254,6 +285,7 @@ export const citaService = {
                 profesional: {
                     select: {
                         id: true,
+                        id_usuario: true,
                         titulo: true,
                         descripcion: true,
 
@@ -305,6 +337,19 @@ export const citaService = {
                 },
             },
         });
+
+        if (!cita) return null;
+
+        // Autorización
+        if (usuarioAutenticado.rol === Rol.CLIENTE && cita.id_cliente !== usuarioAutenticado.id) {
+            throw AppError.forbidden('No tiene acceso a esta cita');
+        }
+
+        if (usuarioAutenticado.rol === Rol.PROFESIONAL && cita.profesional.id_usuario !== usuarioAutenticado.id) {
+            throw AppError.forbidden('No tiene acceso a esta cita');
+        }
+
+        return cita;
     },
 
 
@@ -384,6 +429,19 @@ export const citaService = {
         const fechaFinalizacionEsperada = new Date(fechaInicio);
 
         fechaFinalizacionEsperada.setMinutes(fechaFinalizacionEsperada.getMinutes() + servicio.duracion_estimada);
+
+        // Validar solapamiento
+        const conflicto = await prisma.cita.findFirst({
+            where: {
+                id_profesional: data.id_profesional,
+                estado: { notIn: [EstadoCita.CANCELADA, EstadoCita.RECHAZADA] },
+                fecha_hora_inicio: { lt: fechaFinalizacionEsperada },
+                fecha_hora_finalizacion_esperada: { gt: fechaInicio }
+            }
+        });
+        if (conflicto) {
+            throw AppError.badRequest('El profesional ya tiene otra cita en este horario.');
+        }
 
         return prisma.cita.create({
             data: {

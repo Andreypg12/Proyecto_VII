@@ -209,7 +209,9 @@ export class CitaDetail implements OnInit {
       if (cita.estado === 'ACEPTADA') {
 
           if (nuevoEstado === 'COMPLETADA') {
-              return esProfesionalAsignado;
+              const ahora = new Date();
+              const finEsperada = new Date(cita.fecha_hora_finalizacion_esperada);
+              return esProfesionalAsignado && ahora >= finEsperada;
           }
 
           if (nuevoEstado === 'CANCELADA') {
@@ -225,6 +227,21 @@ export class CitaDetail implements OnInit {
 
       // Rechazada, cancelada, completada
       return false;
+  }
+
+  horaCompletarNoLlego(): boolean {
+      const cita = this.cita();
+      const usuario = this.authService.usuario();
+
+      if (!cita || !usuario) return false;
+
+      const esProfesionalAsignado =
+          usuario.rol === 'PROFESIONAL' &&
+          cita.profesional.usuario.id === usuario.id;
+
+      if (cita.estado !== 'ACEPTADA' || !esProfesionalAsignado) return false;
+
+      return new Date() < new Date(cita.fecha_hora_finalizacion_esperada);
   }
 
   tieneTransiciones(): boolean {
