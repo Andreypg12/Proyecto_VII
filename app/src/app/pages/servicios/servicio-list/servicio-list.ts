@@ -89,18 +89,63 @@ export class ServicioList implements OnInit, OnDestroy {
     }
   }
 
+  private filtrarServiciosPorRol(
+    servicios: Servicio[]
+  ): Servicio[] {
+
+    const usuario = this.authService.usuario();
+
+    // Sin sesión:
+    // el catálogo de servicios es público.
+    if (!usuario) {
+      return servicios;
+    }
+
+    // Cliente y administrador pueden consultar
+    // el catálogo completo.
+    if (usuario.rol !== 'PROFESIONAL') {
+      return servicios;
+    }
+
+    // El profesional solamente visualiza
+    // los servicios asociados a su usuario.
+    return servicios.filter(
+      (servicio) =>
+        Number(
+          servicio.profesional?.usuario?.id
+        ) === Number(usuario.id)
+    );
+  }
+
   loadServicios(): void {
     this.loading.set(true);
     this.error.set(null);
 
     this.servicioService.listar().subscribe({
       next: (response) => {
-        console.log('Servicios cargados:', response.data.length);
-        this.servicios.set(response.data);
+
+        const serviciosVisibles =
+          this.filtrarServiciosPorRol(
+            response.data
+          );
+
+        console.log(
+          'Servicios cargados:',
+          serviciosVisibles.length
+        );
+
+        this.servicios.set(
+          serviciosVisibles
+        );
+
         this.loading.set(false);
 
-        //Calcular rango de precios con los nuevos datos
-        this.calcularRangoPrecios(response.data);
+        // El rango de precios se calcula
+        // solamente con los servicios que
+        // el usuario puede visualizar.
+        this.calcularRangoPrecios(
+          serviciosVisibles
+        );
       },
       error: (err) => {
         console.error('❌ Error al cargar servicios:', err);
