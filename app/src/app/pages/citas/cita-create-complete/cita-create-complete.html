@@ -1,0 +1,24 @@
+<section class="reserva-page">
+
+    @if (loading()) {
+    <div class="state loading">
+        <mat-spinner diameter="46" />
+        <p>Cargando el servicio…</p>
+    </div>
+    } @else if (error(); as mensaje) {
+    <div class="state error">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ mensaje }}</p>
+        <button mat-stroked-button class="volver-btn" (click)="volver()">
+            <mat-icon>arrow_back</mat-icon>
+            Volver a servicios
+        </button>
+    </div>
+    } @else if (servicio(); as servicio) {
+    <app-cita-form [clienteFijo]="clienteActual()" [profesionales]="servicio.profesional ? [servicio.profesional] : []"
+        [servicios]="[servicio]" [saving]="saving()" [servicioFijo]="servicio" titulo="Reservar cita"
+        subtitulo="Completá tu información y seleccioná el momento que prefieras para coordinar con el profesional."
+        (guardar)="guardarCita($event)" (cancelar)="cancelar()" />
+    }
+
+</section>

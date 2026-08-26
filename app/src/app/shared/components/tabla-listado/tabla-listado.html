@@ -12,11 +12,9 @@
                     {{ columna.titulo }}
                 </th>
                 }
-
                 <th>Acciones</th>
             </tr>
         </thead>
-
         <tbody>
 
             @for (item of datos();track item.id) {
@@ -58,6 +56,22 @@
 
                     }
 
+                    <!-- Valoración (estrellas) -->
+                    @else if (columna.tipo === 'valoracion') {
+
+                    @if (item[columna.campo]) {
+                    <div class="stars-cell">
+                        @for (estrella of [1,2,3,4,5]; track estrella) {
+                        <mat-icon class="star-icon" [class.star-filled]="estrella <= item[columna.campo]">
+                            {{ estrella <= item[columna.campo] ? 'star' : 'star_border' }} </mat-icon>
+                                }
+                    </div>
+                    } @else {
+                    <span class="no-valoracion">Sin valorar</span>
+                    }
+
+                    }
+
                     <!-- Texto normal -->
                     @else {{{ item[columna.campo] }}}
 
@@ -74,9 +88,20 @@
                             Ver
                         </a>
 
+                        @if (mostrarCalificar()(item)) {
+                        <button class="action-btn calificar" type="button" (click)="calificarCita.emit(item)">
+                            <mat-icon>star_border</mat-icon>
+                            Calificar
+                        </button>
+                        }
+
                         <!-- Botones segun el cambio de estado -->
+
                         <!-- Categorías y especialidades -->
-                        @if (typeof item.estado === 'boolean') {
+                        @if (
+                        mostrarCambioEstado() &&
+                        typeof item.estado === 'boolean'
+                        ) {
 
                         @if (item.estado) {
 
@@ -97,11 +122,13 @@
                         }
 
                         <!-- Usuarios -->
-                        @else if (item.estado === 'ACTIVO' || item.estado === 'BLOQUEADO') {
+                        @else if (
+                        item.estado === 'ACTIVO' ||
+                        item.estado === 'BLOQUEADO'
+                        ) {
 
                         @if (item.estado === 'ACTIVO') {
 
-                            <!-- Si está activo, muestra botón para Bloquear -->
                         <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
                             <mat-icon>lock</mat-icon>
                             Bloquear
@@ -109,7 +136,6 @@
 
                         } @else {
 
-                            <!-- Si está bloqueado, muestra botón para Activar (Desbloquear) -->
                         <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
                             <mat-icon>lock_open</mat-icon>
                             Activar
@@ -118,16 +144,10 @@
                         }
 
                         }
-
                     </div>
-
                 </td>
-
             </tr>
             }
-
         </tbody>
-
     </table>
-
 </div>

@@ -1,5 +1,7 @@
+import { Rol } from "../../generated/prisma/enums";
 import { prisma } from "../config/prisma";
 import { CreateServicioDto, UpdateServicioDto } from "../dtos/servicio.dto";
+import { AuthTokenPayload } from "../middlewares/auth.middleware";
 import { AppError } from "../utils/app-error";
 
 export interface ServicioFilters {
@@ -211,14 +213,22 @@ export const servicioService = {
         });
     },
 
-    async crear(data: CreateServicioDto) {
+    async crear(data: CreateServicioDto, usuarioAutenticado: AuthTokenPayload) {
+
+        if (usuarioAutenticado.rol !== Rol.PROFESIONAL) {
+            throw AppError.badRequest("Solo los profesionales pueden crear servicios");
+        }
+
+        const profesional = await prisma.perfilProfesional.findFirst({
+            where: { id_usuario: usuarioAutenticado.id }
+        });
+
+        if (!profesional) {
+            throw AppError.notFound("Perfil de profesional no encontrado para este usuario");
+        }
 
         if (data.categoria_id) {
             await this.validateCategoria(data.categoria_id)
-        }
-
-        if (data.profesional_id) {
-            await this.validateProfesional(data.profesional_id)
         }
 
         if (data.especialidades_Ids?.length) {
@@ -232,7 +242,7 @@ export const servicioService = {
                 precio: data.precio,
                 duracion_estimada: data.duracion_estimada,
                 modalidad: data.modalidad,
-                id_profesional: data.profesional_id,
+                id_profesional: profesional.id,
                 id_categoria: data.categoria_id,
                 especialidades: {
                     connect: data.especialidades_Ids?.map(id => ({ id })) || []
@@ -246,25 +256,61 @@ export const servicioService = {
         })
     },
 
-    async actualizar(id: number, data: UpdateServicioDto) {
+    async actualizar( id: number, data: UpdateServicioDto, usuarioAutenticado: AuthTokenPayload) {
 
-        await this.obtenerPorId(id)
+        const servicioActual =
+            await prisma.servicio.findUnique({
 
+                where: { id },
+
+                select: {
+                    id: true,
+                    id_profesional: true,
+
+                    profesional: {
+                        select: {
+                            id: true,
+                            id_usuario: true
+                        }
+                    }
+                }
+
+            });
+
+
+        if (!servicioActual) {
+            throw AppError.notFound( `Servicio con ID ${id} no encontrado`);
+        }
+
+
+        if (usuarioAutenticado.rol !== Rol.PROFESIONAL) {
+            throw AppError.badRequest("No tiene permiso para modificar este servicio");
+        }
+
+
+        if ( servicioActual.profesional.id_usuario !== usuarioAutenticado.id) {
+            throw AppError.badRequest("No puede modificar un servicio que pertenece a otro profesional");
+        }
+
+
+        // Validar categoría
         if (data.categoria_id) {
-            await this.validateCategoria(data.categoria_id)
+            await this.validateCategoria( data.categoria_id);
         }
 
-        if (data.profesional_id) {
-            await this.validateProfesional(data.profesional_id)
-        }
 
+        // Validar especialidades
         if (data.especialidades_Ids?.length) {
-            await this.validateEspecialidades(data.especialidades_Ids)
+            await this.validateEspecialidades( data.especialidades_Ids);
         }
+
 
         return await prisma.servicio.update({
+
             where: { id },
+
             data: {
+
                 servicio: data.servicio,
                 descripcion: data.descripcion,
                 precio: data.precio,
@@ -272,39 +318,70 @@ export const servicioService = {
                 modalidad: data.modalidad,
                 id_categoria: data.categoria_id,
                 estado: data.estado,
-                especialidades: data.especialidades_Ids ? {
-                    set: data.especialidades_Ids.map((id) => ({ id })),
-                }
-                    : undefined,
+                especialidades:
+                    data.especialidades_Ids
+                        ? {
+                            set:
+                                data.especialidades_Ids.map(
+                                    (id) => ({ id })
+                                )
+                        }
+                        : undefined,
+
             },
+
             include: {
-                especialidades: true,
+                especialidades:true,
                 categoria: true,
                 profesional: true
             }
-        })
+
+        });
     },
 
-    async cambiarEstado(id: number) {
+    async cambiarEstado( id: number, usuarioAutenticado: AuthTokenPayload ) {
 
-        const servicio = await this.obtenerPorId(id);
+        const servicio = await prisma.servicio.findUnique({
+                where: { id },
+                select: {
+                    id: true,
+                    estado: true,
+
+                    profesional: {
+                        select: {
+                            id_usuario: true
+                        }
+                    }
+                }
+
+            });
 
         if (!servicio) {
-            throw AppError.notFound(`Servicio con ID ${id} no encontrado`);
+            throw AppError.notFound( `Servicio con ID ${id} no encontrado` );
         }
 
+        if (usuarioAutenticado.rol !== Rol.PROFESIONAL ) {
+            throw AppError.badRequest("No tiene permiso para modificar el estado de este servicio" );
+        }
+
+        if ( servicio.profesional.id_usuario !== usuarioAutenticado.id ) {
+            throw AppError.badRequest( "No puede modificar un servicio que pertenece a otro profesional" );
+        }
+
+
         return await prisma.servicio.update({
+
             where: { id },
-            data: {
-                estado: !servicio.estado
-            },
+
+            data: { estado: !servicio.estado },
+
             select: {
                 id: true,
                 servicio: true,
                 estado: true,
-                modalidad: true,
-                precio: true
+                updateAt: true
             }
+
         });
     },
 

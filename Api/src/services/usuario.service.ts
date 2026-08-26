@@ -1,12 +1,13 @@
 import { prisma } from "../config/prisma";
 import bcrypt from "bcryptjs";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
-import {Rol,EstadoUsuario} from "../../generated/prisma/enums";
+import { Rol, EstadoUsuario } from "../../generated/prisma/enums";
 import {
     CreateUsuarioDto,
     UpdateUsuarioDto,
     RegisterUsuarioDto,
-    LoginUsuarioDto
+    LoginUsuarioDto,
+    UpdatePerfilUsuarioDto
 } from "../dtos/usuario.dto";
 import { AppError } from "../utils/app-error";
 
@@ -128,6 +129,7 @@ export const usuarioService = {
                 email: data.email,
                 nombre: data.nombre,
                 apellidos: data.apellidos,
+                telefono: data.telefono,
                 password: hashedPassword,
                 rol: Rol.CLIENTE,
                 estado: EstadoUsuario.ACTIVO,
@@ -138,6 +140,7 @@ export const usuarioService = {
                 email: true,
                 nombre: true,
                 apellidos: true,
+                telefono: true,
                 rol: true,
                 estado: true,
             },
@@ -193,7 +196,7 @@ export const usuarioService = {
             );
         }
 
-        const options: SignOptions = {expiresIn: "2h",};
+        const options: SignOptions = { expiresIn: "2h", };
         const token =
             jwt.sign(
                 payload,
@@ -220,8 +223,8 @@ export const usuarioService = {
 
         return await prisma.usuario.update({
 
-            where: { id},
-            data: {estado: EstadoUsuario.ACTIVO},
+            where: { id },
+            data: { estado: EstadoUsuario.ACTIVO },
 
             select: {
                 id: true,
@@ -237,17 +240,22 @@ export const usuarioService = {
 
 
     // Bloquear
-    async bloquear(id: number) {
+    async bloquear( id: number, usuarioAutenticadoId: number) {
+
+        // Evitar que el usuario autenticado
+        // pueda bloquear su propia cuenta
+        if (id === usuarioAutenticadoId) { throw AppError.badRequest( "No puede bloquear su propia cuenta" );}
+
         const usuario = await this.obtenerPorId(id);
+
         if (!usuario) {
-            throw AppError.notFound(
-                `Usuario con ID ${id} no encontrado`
-            );
+            throw AppError.notFound( `Usuario con ID ${id} no encontrado` );
         }
+
 
         return await prisma.usuario.update({
 
-            where: {id},
+            where: { id },
             data: {estado: EstadoUsuario.BLOQUEADO},
 
             select: {
@@ -259,6 +267,7 @@ export const usuarioService = {
                 rol: true,
                 updateAt: true
             }
+
         });
     },
 
@@ -293,7 +302,8 @@ export const usuarioService = {
                 apellidos: data.apellidos,
                 password: hashedPassword,
                 rol: data.rol ?? Rol.CLIENTE,
-                estado: data.estado ?? EstadoUsuario.ACTIVO,},
+                estado: data.estado ?? EstadoUsuario.ACTIVO,
+            },
 
             select: {
                 id: true,
@@ -310,7 +320,7 @@ export const usuarioService = {
     // Actualizar
     async actualizar(id: number, data: UpdateUsuarioDto) {
 
-        const usuario =await this.obtenerPorId(id);
+        const usuario = await this.obtenerPorId(id);
 
         if (!usuario) {
             throw AppError.notFound(
@@ -329,7 +339,7 @@ export const usuarioService = {
         }
 
         return await prisma.usuario.update({
-            where: {id},
+            where: { id },
 
             data: {
                 email: data.email,
@@ -348,6 +358,108 @@ export const usuarioService = {
                 rol: true,
                 estado: true,
             },
+        });
+    },
+
+
+
+    // Obtiene la información del perfil de un usuario por su ID.
+    // Selecciona únicamente campos seguros (excluyendo datos sensibles como contraseñas)
+    // y lanza un error 404 si el usuario no existe.
+    async perfil(usuarioId: number) {
+
+        const usuario =
+            await prisma.usuario.findUnique({
+                where: { id: usuarioId },
+
+                select: {
+                    id: true,
+                    email: true,
+                    nombre: true,
+                    apellidos: true,
+                    telefono: true,
+                    rol: true,
+                    estado: true,
+                    createdAt: true,
+                    updateAt: true,
+                },
+            });
+
+        if (!usuario) {
+            throw AppError.notFound(
+                "El usuario autenticado no existe"
+            );
+        }
+
+        return usuario;
+    },
+
+
+    // Actualizar perfil del usuario autenticado
+    async actualizarPerfil(usuarioId: number, data: UpdatePerfilUsuarioDto) {
+
+        // Verificar que el usuario exista
+        const usuario = await prisma.usuario.findUnique({
+            where: { id: usuarioId }
+        });
+
+        // Si no existe lanza error
+        if (!usuario) {
+            throw AppError.notFound("El usuario autenticado no existe");
+        }
+
+        // Si cambia el correo, verificar que no pertenezca a otro usuario
+        if (data.email) {
+            const correoExiste =
+                await prisma.usuario.findFirst({
+                    where: {
+                        email: data.email,
+                        NOT: {
+                            id: usuarioId
+                        }
+                    }
+                });
+
+            if (correoExiste) {
+                throw new Error(
+                    "El correo ya está registrado"
+                );
+            }
+        }
+
+        // Si envía una nueva contraseña, se encripta
+        let passwordHash: string | undefined;
+        if (data.password) {
+            passwordHash =
+                await bcrypt.hash(
+                    data.password,
+                    10
+                );
+        }
+
+        // Actualizar únicamente los datos permitidos
+        return await prisma.usuario.update({
+            where: { id: usuarioId },
+            data: {
+                email: data.email,
+                nombre: data.nombre,
+                apellidos: data.apellidos,
+                telefono: data.telefono,
+                password: passwordHash,
+            },
+
+            select: {
+                id: true,
+                email: true,
+                nombre: true,
+                apellidos: true,
+                telefono: true,
+                rol: true,
+                estado: true,
+                createdAt: true,
+                updateAt: true,
+            }
+
         });
     },
 };

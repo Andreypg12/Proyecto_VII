@@ -1,0 +1,83 @@
+<section class="login-page">
+    <div class="login-wrapper">
+        <div class="login-card">
+            <header class="login-card-header">
+                <div class="login-icon">
+                    <mat-icon>lock</mat-icon>
+                </div>
+                <div class="login-heading">
+                    <span>ACCESO SEGURO</span>
+                    <h1 class="shiny-text">Iniciar sesión</h1>
+                </div>
+            </header>
+
+            <form class="login-form" (submit)="$event.preventDefault(); submit()">
+                
+                <!-- CORREO -->
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Correo electrónico</mat-label>
+                    <mat-icon matPrefix>mail</mat-icon>
+                    <input matInput 
+                           type="email" 
+                           placeholder="ejemplo@correo.com"
+                           autocomplete="email"
+                           [formField]="loginForm.email" />
+                    @if (loginForm.email().touched() && loginForm.email().invalid()) {
+                        <mat-error>{{ loginForm.email().errors()[0].message }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- CONTRASEÑA -->
+                <mat-form-field appearance="outline" subscriptSizing="dynamic">
+                    <mat-label>Contraseña</mat-label>
+                    <mat-icon matPrefix>lock</mat-icon>
+                    <input matInput 
+                           [type]="ocultarPassword() ? 'password' : 'text'"
+                           placeholder="••••••••"
+                           autocomplete="current-password"
+                           [formField]="loginForm.password" />
+                    <button mat-icon-button matSuffix type="button" 
+                            (click)="ocultarPassword.update(v => !v)"
+                            aria-label="Mostrar u ocultar contraseña">
+                        <mat-icon>{{ ocultarPassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+                    </button>
+                    @if (loginForm.password().touched() && loginForm.password().invalid()) {
+                        <mat-error>{{ loginForm.password().errors()[0].message }}</mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- Error del API -->
+                @if (errorServidor()) {
+                <div class="server-error" role="alert">
+                    <mat-icon>error</mat-icon>
+                    <span>{{ errorServidor() }}</span>
+                </div>
+                }
+
+                <!-- Botón -->
+                <button mat-flat-button type="submit" class="login-submit" 
+                        [disabled]="enviando() || loginForm().invalid()">
+                    @if (enviando()) {
+                        <mat-spinner diameter="20" />
+                        <span>Ingresando...</span>
+                    } @else {
+                        <ng-container>
+                            <mat-icon>login</mat-icon>
+                            <span>Iniciar sesión</span>
+                        </ng-container>
+                    }
+                </button>
+
+                <!-- Registro -->
+                <div class="register-link">
+                    <span>¿No tienes una cuenta?</span>
+                    <a routerLink="/registro" class="register-button">
+                        Crear cuenta
+                        <mat-icon>arrow_forward</mat-icon>
+                    </a>
+                </div>
+            </form>
+        </div>
+        <div class="platform-badge"> PLATAFORMA DE TALENTO N°1 EN COSTA RICA </div>
+    </div>
+</section>

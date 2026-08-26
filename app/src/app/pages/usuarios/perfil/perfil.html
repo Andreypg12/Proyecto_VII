@@ -1,0 +1,198 @@
+<section class="perfil-page">
+
+    <div class="perfil-card">
+
+        <header class="perfil-header">
+            <div class="perfil-icon">
+                <mat-icon>manage_accounts</mat-icon>
+            </div>
+
+            <div>
+                <span class="perfil-eyebrow"> CUENTA PERSONAL </span>
+                <h1> Mi perfil </h1>
+                <p> Actualizá la información de tu cuenta.</p>
+            </div>
+        </header>
+
+
+        @if (usuario(); as usuarioActual) {
+
+        <div class="account-summary">
+
+            <div class="summary-item">
+                <span> Rol </span>
+                <strong> {{ usuarioActual.rol }} </strong>
+            </div>
+
+
+            <div class="summary-item">
+                <span> Estado </span>
+                <strong> {{ usuarioActual.estado }} </strong>
+            </div>
+        </div>
+        }
+
+
+        <form (submit)="$event.preventDefault(); submit()">
+
+            <div class="form-grid">
+
+                <!-- Nombre -->
+                <mat-form-field appearance="outline">
+                    <mat-label> Nombre </mat-label>
+                    <mat-icon matPrefix> person </mat-icon>
+
+                    <input matInput type="text" [formField]="perfilForm.nombre">
+                    @if (
+                    perfilForm.nombre().touched() &&
+                    perfilForm.nombre().invalid()
+                    ) {
+
+                    <mat-error>
+                        El nombre debe tener al menos
+                        3 caracteres.
+                    </mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- Apellidos -->
+                <mat-form-field appearance="outline">
+
+                    <mat-label> Apellidos </mat-label>
+                    <mat-icon matPrefix> badge </mat-icon>
+
+                    <input matInput type="text" [formField]="perfilForm.apellidos">
+
+                    @if (
+                    perfilForm.apellidos().touched() &&
+                    perfilForm.apellidos().invalid()
+                    ) {
+
+                    <mat-error>
+                        Los apellidos deben tener al menos
+                        3 caracteres.
+                    </mat-error>
+                    }
+                </mat-form-field>
+
+                <!-- Email -->
+                <mat-form-field appearance="outline">
+
+                    <mat-label> Correo electrónico </mat-label>
+
+                    <mat-icon matPrefix> mail </mat-icon>
+
+                    <input matInput type="email" [formField]="perfilForm.email">
+
+                    @if (
+                    perfilForm.email().touched() &&
+                    perfilForm.email().invalid()
+                    ) {
+
+                    <mat-error>
+                        Ingrese un correo electrónico válido.
+                    </mat-error>
+
+                    }
+
+                </mat-form-field>
+
+                <!-- Teléfono -->
+                <mat-form-field appearance="outline">
+
+                    <mat-label> Teléfono </mat-label>
+
+                    <mat-icon matPrefix> phone </mat-icon>
+
+                    <input matInput type="tel" [formField]="perfilForm.telefono">
+
+                    @if (
+                    perfilForm.telefono().touched() &&
+                    perfilForm.telefono().invalid()
+                    ) {
+
+                    <mat-error>
+                        El teléfono no puede superar
+                        los 20 caracteres.
+                    </mat-error>
+                    }
+                </mat-form-field>
+
+
+                <!-- Contraseña -->
+                <mat-form-field appearance="outline" class="full-width">
+
+                    <mat-label> Nueva contraseña </mat-label>
+                    <mat-icon matPrefix> lock</mat-icon>
+
+                    <input matInput [type]="
+                            ocultarPassword()
+                                ? 'password'
+                                : 'text'
+                        " [formField]="perfilForm.password">
+
+                    <button mat-icon-button matSuffix type="button" (click)="
+                            cambiarVisibilidadPassword()">
+
+                        <mat-icon>
+                            {{
+                            ocultarPassword()
+                            ? 'visibility_off'
+                            : 'visibility'
+                            }}
+
+                        </mat-icon>
+                    </button>
+                    <mat-hint> Déjela vacía si no desea cambiarla. </mat-hint>
+
+                    @if (
+                    perfilForm.password().touched() &&
+                    perfilForm.password().invalid()
+                    ) {
+
+                    <mat-error>
+                        La contraseña debe tener al menos
+                        6 caracteres.
+                    </mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            @if (mensajeError()) {
+
+            <div class="message error-message">
+                <mat-icon> error </mat-icon>
+                {{ mensajeError() }}
+            </div>
+            }
+
+            @if (mensajeExito()) {
+            <div class="message success-message">
+                <mat-icon> check_circle </mat-icon>
+                {{ mensajeExito() }}
+            </div>
+            }
+
+            <div class="form-actions">
+
+                <button mat-flat-button type="submit" [disabled]="
+                        guardando() ||
+                        perfilForm().invalid()
+                    ">
+
+                    @if (guardando()) {
+                    <ng-container>
+                        <mat-spinner diameter="18" />
+                        Guardando...
+                    </ng-container>
+                    } @else {
+                    <ng-container>
+                        <mat-icon>save</mat-icon>
+                        Guardar cambios
+                    </ng-container>
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+</section>

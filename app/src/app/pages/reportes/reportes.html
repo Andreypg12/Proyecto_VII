@@ -1,0 +1,878 @@
+<section class="reportes-page">
+
+    <div class="reportes-container">
+
+
+        <!-- ENCABEZADO -->
+
+
+        <header class="page-header">
+
+            <div>
+
+                <span class="eyebrow">
+                    REPORTES
+                </span>
+
+                <h1>
+                    Centro de reportes
+                </h1>
+
+                <p>
+                    Consulte los indicadores y resultados
+                    principales de TechHire.
+                </p>
+
+            </div>
+
+        </header>
+
+        <!--  Cambio de reportes  -->
+        <div class="report-tabs">
+            <button type="button" class="report-tab" [class.active]="reporteSeleccionado() === 'estado'"
+                (click)="seleccionarReporte('estado')">
+                Citas por estado
+            </button>
+
+            <button type="button" class="report-tab" [class.active]="reporteSeleccionado() === 'profesional'"
+                (click)="seleccionarReporte('profesional')">
+                Citas por profesional
+            </button>
+
+            <button type="button" class="report-tab" [class.active]="
+                    reporteSeleccionado() ===
+                    'calificaciones'
+                " (click)="
+                    seleccionarReporte(
+                        'calificaciones'
+                    )
+                ">
+                Calificaciones
+            </button>
+        </div>
+
+
+        @if (reporteSeleccionado() === 'estado') {
+        <!-- FILTROS -->
+        <section class="panel filtros-panel">
+
+            <div class="panel-header">
+                <div>
+                    <h2>Filtros</h2>
+                    <p>
+                        Utilice los filtros para consultar las citas por estado.
+                    </p>
+                </div>
+            </div>
+
+
+            <form class="filtros-form" [formGroup]="filtrosForm" (ngSubmit)="cargarReporte()">
+
+                <!-- FECHA DESDE -->
+
+                <div class="form-group">
+
+                    <label for="fechaDesde">
+                        Fecha desde
+                    </label>
+
+                    <input id="fechaDesde" type="date" formControlName="fechaDesde">
+
+                </div>
+
+                <!-- FECHA HASTA -->
+                <div class="form-group">
+
+                    <label for="fechaHasta">
+                        Fecha hasta
+                    </label>
+
+                    <input id="fechaHasta" type="date" formControlName="fechaHasta">
+
+                </div>
+
+
+
+                <!-- PROFESIONAL -->
+
+                <div class="form-group">
+
+                    <label for="idProfesional">
+                        Profesional
+                    </label>
+
+                    <select id="idProfesional" formControlName="idProfesional" [disabled]="cargandoFiltros()">
+
+                        <option value="">
+                            Todos los profesionales
+                        </option>
+
+                        @for (
+                        profesional of profesionales();
+                        track profesional.id
+                        ) {
+
+                        <option [value]="profesional.id">
+                            {{ profesional.usuario.nombre }}
+                            {{ profesional.usuario.apellidos }}
+                        </option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- CATEGORÍA -->
+
+                <div class="form-group">
+
+                    <label for="idCategoria">
+                        Categoría
+                    </label>
+
+                    <select id="idCategoria" formControlName="idCategoria" [disabled]="cargandoFiltros()">
+
+                        <option value="">
+                            Todas las categorías
+                        </option>
+
+                        @for (
+                        categoria of categorias();
+                        track categoria.id
+                        ) {
+
+                        <option [value]="categoria.id">
+                            {{ categoria.categoria }}
+                        </option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ACCIONES -->
+
+                <div class="filtros-actions">
+
+                    <button type="button" class="btn-secondary" (click)="limpiarFiltros()" [disabled]="cargando()">
+                        Limpiar
+                    </button>
+
+                    <button type="submit" class="btn-primary" [disabled]="cargando()">
+
+                        @if (cargando()) {
+                        Consultando...
+                        } @else {
+                        Aplicar filtros
+                        }
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+
+        <!-- LOADING -->
+
+        @if (cargando()) {
+
+        <section class="estado-panel">
+
+            <div class="spinner"></div>
+
+            <p>
+                Cargando información del reporte...
+            </p>
+
+        </section>
+
+        }
+
+
+
+        <!-- ERROR -->
+
+        @else if (error()) {
+
+        <section class="estado-panel error-panel">
+
+            <h3>
+                No se pudo cargar el reporte
+            </h3>
+
+            <p>
+                {{ error() }}
+            </p>
+
+            <button type="button" class="btn-secondary" (click)="cargarReporte()">
+                Reintentar
+            </button>
+
+        </section>
+
+        }
+
+
+
+        <!-- REPORTE -->
+
+        @else if (reporte(); as datos) {
+
+
+        <div class="reporte-actions">
+            <button type="button" class="btn-pdf" (click)="descargarPdf()"
+                [disabled]="cargando() || datos.totalGeneral === 0">
+                Descargar PDF
+            </button>
+        </div>
+
+        <!-- TOTAL -->
+        <section class="total-card">
+
+            <span>
+                TOTAL GENERAL
+            </span>
+
+            <strong>
+                {{ datos.totalGeneral }}
+            </strong>
+
+            <small>
+                citas registradas
+            </small>
+
+        </section>
+
+
+        @if (datos.totalGeneral > 0) {
+
+        <!-- TARJETAS -->
+        <section class="estado-grid">
+
+            @for (
+            item of datos.estados;
+            track item.estado
+            ) {
+
+            <article class="estado-card" [attr.data-estado]="item.estado">
+
+                <div class="estado-card-header">
+
+                    <span class="estado-indicador"></span>
+
+                    <span>
+                        {{ item.estado }}
+                    </span>
+
+                </div>
+
+
+                <strong class="cantidad">
+                    {{ item.cantidad }}
+                </strong>
+
+
+                <span class="porcentaje">
+                    {{ item.porcentaje }}%
+                </span>
+
+            </article>
+
+            }
+
+        </section>
+
+
+        <!-- TABLA -->
+
+        <section class="panel tabla-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <h2>
+                        Resumen por estado
+                    </h2>
+
+                    <p>
+                        Distribución de las citas
+                        según su estado actual.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Estado</th>
+                            <th>Cantidad</th>
+                            <th>Porcentaje</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @for (
+                        item of datos.estados;
+                        track item.estado
+                        ) {
+
+                        <tr>
+
+                            <td>
+
+                                <div class="estado-table">
+
+                                    <span class="estado-dot" [attr.data-estado]="item.estado"></span>
+
+                                    {{ item.estado }}
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                {{ item.cantidad }}
+                            </td>
+
+                            <td>
+                                {{ item.porcentaje }}%
+                            </td>
+
+                        </tr>
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        } @else {
+
+        <!-- SIN DATOS -->
+
+        <section class="estado-panel">
+
+            <h3>
+                No hay citas
+            </h3>
+
+            <p>
+                No existen citas que coincidan
+                con los filtros seleccionados.
+            </p>
+        </section>
+        }
+        }
+        }
+
+
+        <!--  Reporte 2  -->
+        @if (reporteSeleccionado() === 'profesional') {
+
+        <section class="reporte-profesional">
+
+            <header class="reporte-section-header">
+
+                <div>
+                    <span class="eyebrow">
+                        REPORTE
+                    </span>
+
+                    <h2>
+                        Citas por profesional
+                    </h2>
+
+                    <p>
+                        Consulte el total de citas,
+                        citas completadas y porcentaje
+                        de finalización de cada profesional.
+                    </p>
+                </div>
+
+            </header>
+
+
+            <!-- LOADING -->
+            @if (cargandoReporteProfesional()) {
+
+            <section class="estado-panel">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Cargando reporte por profesional...
+                </p>
+
+            </section>
+
+            }
+
+            <!-- ERROR -->
+            @else if (errorReporteProfesional()) {
+
+            <section class="estado-panel error-panel">
+
+                <h3>
+                    No se pudo cargar el reporte
+                </h3>
+
+                <p>
+                    {{ errorReporteProfesional() }}
+                </p>
+
+                <button type="button" class="btn-secondary" (click)="cargarReporteProfesional()">
+                    Reintentar
+                </button>
+
+            </section>
+
+            }
+
+            <!-- SIN DATOS -->
+            @else if (reporteProfesional().length === 0) {
+
+            <section class="estado-panel">
+
+                <h3>
+                    Sin información
+                </h3>
+
+                <p>
+                    No existen datos de profesionales
+                    para mostrar.
+                </p>
+
+            </section>
+
+            }
+
+            <!-- DATOS -->
+            @else {
+
+            <div class="reporte-actions">
+
+                <button type="button" class="btn-pdf" (click)="descargarPdfProfesional()" [disabled]="
+                            cargandoReporteProfesional() ||
+                            reporteProfesional().length === 0
+                        ">
+                    Descargar PDF
+                </button>
+
+            </div>
+
+
+            <section class="panel tabla-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h2> Rendimiento por profesional </h2>
+                        <p> Resumen de citas registrada y completadas.</p>
+                    </div>
+                </div>
+
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Profesional</th>
+                                <th>Total de citas</th>
+                                <th>Completadas</th>
+                                <th>Finalización</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+
+                            @for ( item of reporteProfesional(); track item.idProfesional) {
+                            <tr>
+
+                                <td> <strong> {{ item.profesional }}</strong> </td>
+                                <td> {{ item.totalCitas }} </td>
+                                <td> {{ item.citasCompletadas }} </td>
+                                <td>
+                                    <span class="finalizacion">
+                                        {{ item.porcentajeFinalizacion }}%
+                                    </span>
+                                </td>
+
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            }
+        </section>
+        }
+
+        <!-- ======================================
+     REPORTE 3
+     CALIFICACIONES
+======================================= -->
+
+        @if (
+        reporteSeleccionado() ===
+        'calificaciones'
+        ) {
+
+        <section class="reporte-calificaciones">
+
+            <header class="reporte-section-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        REPORTE
+                    </span>
+
+                    <h2>
+                        Calificaciones
+                    </h2>
+
+                    <p>
+                        Consulte el promedio de calificación,
+                        cantidad de reseñas y rendimiento
+                        de los servicios profesionales.
+                    </p>
+
+                </div>
+
+            </header>
+
+
+            <!-- LOADING -->
+
+            @if (
+            cargandoReporteCalificaciones()
+            ) {
+
+            <section class="estado-panel">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Cargando reporte de calificaciones...
+                </p>
+
+            </section>
+
+            }
+
+
+            <!-- ERROR -->
+
+            @else if (
+            errorReporteCalificaciones()
+            ) {
+
+            <section class="estado-panel error-panel">
+
+                <h3>
+                    No se pudo cargar el reporte
+                </h3>
+
+                <p>
+                    {{
+                    errorReporteCalificaciones()
+                    }}
+                </p>
+
+                <button type="button" class="btn-secondary" (click)="
+                        cargarReporteCalificaciones()
+                    ">
+                    Reintentar
+                </button>
+
+            </section>
+
+            }
+
+
+            <!-- SIN DATOS -->
+
+            @else if (
+            reporteCalificaciones().length === 0
+            ) {
+
+            <section class="estado-panel">
+
+                <h3>
+                    Sin información
+                </h3>
+
+                <p>
+                    No existen datos de
+                    calificaciones para mostrar.
+                </p>
+
+            </section>
+
+            }
+
+
+            <!-- DATOS -->
+
+            @else {
+
+            <div class="reporte-actions">
+                <button
+                    type="button"
+                    class="btn-pdf"
+                    (click)="descargarPdfCalificaciones()"
+                    [disabled]="
+                        cargandoReporteCalificaciones() ||
+                        reporteCalificaciones().length === 0
+                    "
+                >
+                    Descargar PDF
+                </button>
+            </div>
+
+            <section class="panel tabla-panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Rendimiento de calificaciones
+                        </h2>
+
+                        <p>
+                            Resumen obtenido a partir
+                            de las reseñas registradas.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>
+                                    Profesional
+                                </th>
+
+                                <th>
+                                    Promedio
+                                </th>
+
+                                <th>
+                                    Reseñas
+                                </th>
+
+                                <th>
+                                    Mejor servicio
+                                </th>
+
+                                <th>
+                                    Baja calificación
+                                </th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            @for (
+                            item of
+                            reporteCalificaciones();
+                            track
+                            item.idProfesional
+                            ) {
+
+                            <tr>
+
+                                <td>
+
+                                    <strong>
+                                        {{
+                                        item.profesional
+                                        }}
+                                    </strong>
+
+                                </td>
+
+
+                                <td>
+
+                                    @if (
+                                    item.cantidadResenas >
+                                    0
+                                    ) {
+
+                                    <span class="calificacion">
+                                        {{
+                                        item.promedioCalificacion
+                                        }}/5
+                                    </span>
+
+                                    } @else {
+
+                                    <span class="sin-calificacion">
+                                        Sin calificaciones
+                                    </span>
+
+                                    }
+
+                                </td>
+
+
+                                <td>
+                                    {{
+                                    item.cantidadResenas
+                                    }}
+                                </td>
+
+
+                                <!-- MEJOR SERVICIO -->
+
+                                <td>
+
+                                    @if (
+                                    item.mejoresServicios
+                                    .length > 0
+                                    ) {
+
+                                    @for (
+                                    servicio of
+                                    item.mejoresServicios;
+                                    track
+                                    servicio.servicio
+                                    ) {
+
+                                    <div class="servicio-calificacion">
+
+                                        {{
+                                        servicio.servicio
+                                        }}
+
+                                        <small>
+                                            {{
+                                            servicio.promedio
+                                            }}/5
+                                        </small>
+
+                                    </div>
+
+                                    }
+
+                                    } @else {
+
+                                    <span class="sin-calificacion">
+                                        Sin datos
+                                    </span>
+
+                                    }
+
+                                </td>
+
+
+                                <!-- BAJA CALIFICACIÓN -->
+
+                                <td>
+
+                                    @if (
+                                    item
+                                    .serviciosBajaCalificacion
+                                    .length > 0
+                                    ) {
+
+                                    @for (
+                                    servicio of
+                                    item
+                                    .serviciosBajaCalificacion;
+                                    track
+                                    servicio.servicio
+                                    ) {
+
+                                    <div class="servicio-calificacion">
+
+                                        {{
+                                        servicio.servicio
+                                        }}
+
+                                        <small>
+                                            {{
+                                            servicio.promedio
+                                            }}/5
+                                        </small>
+
+                                    </div>
+
+                                    }
+
+                                    } @else {
+
+                                    <span class="sin-calificacion">
+                                        Ninguno
+                                    </span>
+
+                                    }
+
+                                </td>
+
+                            </tr>
+
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <p class="umbral-info">
+
+                Se considera baja calificación
+                un promedio inferior a
+
+                <strong>
+                    {{
+                    reporteCalificaciones()[0]
+                    .umbralBajaCalificacion
+                    }}/5
+                </strong>.
+
+            </p>
+
+            }
+
+        </section>
+
+        }
+
+    </div>
+
+</section>

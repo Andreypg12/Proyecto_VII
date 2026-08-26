@@ -1,0 +1,262 @@
+<section class="registro-page">
+
+    <div class="registro-card">
+
+        <header class="registro-header">
+
+            <div class="registro-icon">
+                <mat-icon> person_add </mat-icon>
+            </div>
+
+            <div>
+                <span class="registro-eyebrow"> TECHHIRE</span>
+                <h1 class="shiny-text"> Crear cuenta </h1>
+                <p>
+                    Registrate como cliente para solicitar
+                    servicios profesionales.
+                </p>
+            </div>
+        </header>
+
+
+        <form (submit)="$event.preventDefault(); registrar()">
+            <div class="form-grid">
+                <!-- Nombre -->
+                <mat-form-field appearance="outline">
+                    <mat-label> Nombre </mat-label>
+                    <mat-icon matPrefix> person </mat-icon>
+                    <input matInput type="text" [formField]="registroForm.nombre">
+                    @if (registroForm.nombre().touched()) {
+
+                        @for (
+                            error of registroForm.nombre().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
+                    }
+                </mat-form-field>
+
+                <!-- Apellidos -->
+                <mat-form-field appearance="outline">
+                    <mat-label> Apellidos </mat-label>
+                    <mat-icon matPrefix> badge </mat-icon>
+
+                    <input matInput type="text" [formField]="registroForm.apellidos">
+                    @if (registroForm.apellidos().touched()) {
+
+                        @for (
+                            error of registroForm.apellidos().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
+                    }
+                </mat-form-field>
+
+                <!-- Correo -->
+                <mat-form-field appearance="outline">
+                    <mat-label> Correo electrónico </mat-label>
+                    <mat-icon matPrefix> mail </mat-icon>
+
+                    <input matInput type="email" [formField]="registroForm.email">
+                    @if (registroForm.email().touched()) {
+
+                        @for (
+                            error of registroForm.email().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
+                    }
+                </mat-form-field>
+
+                <!-- Teléfono -->
+                <mat-form-field appearance="outline">
+
+                    <mat-label> Teléfono </mat-label>
+                    <mat-icon matPrefix> phone </mat-icon>
+                    <input matInput type="tel" [formField]="registroForm.telefono">
+
+                    @if (registroForm.telefono().touched()) {
+
+                        @for (
+                            error of registroForm.telefono().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
+                    }
+                </mat-form-field>
+
+
+                <!-- Contraseña -->
+                <mat-form-field appearance="outline">
+                    <mat-label> Contraseña </mat-label>
+                    <mat-icon matPrefix> lock </mat-icon>
+
+                    <input matInput [type]="
+                            ocultarPassword()
+                                ? 'password'
+                                : 'text'
+                        " [formField]="registroForm.password">
+
+                    <button mat-icon-button matSuffix type="button" (click)="
+                            cambiarVisibilidadPassword()">
+
+                        <mat-icon>
+                            {{
+                            ocultarPassword()
+                            ? 'visibility_off'
+                            : 'visibility'
+                            }}
+                        </mat-icon>
+                    </button>
+
+                    @if (registroForm.password().touched()) {
+
+                        @for (
+                            error of registroForm.password().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
+                    }
+                </mat-form-field>
+
+
+                <!-- Confirmar contraseña -->
+                <mat-form-field appearance="outline">
+                    <mat-label> Confirmar contraseña </mat-label>
+                    <mat-icon matPrefix> lock_reset </mat-icon>
+
+                    <input matInput [type]="
+                            ocultarConfirmacion()
+                                ? 'password'
+                                : 'text'
+                        " [formField]="
+                            registroForm.confirmarPassword">
+
+                    <button mat-icon-button matSuffix type="button" (click)="
+                            cambiarVisibilidadConfirmacion()">
+
+                        <mat-icon>
+
+                            {{
+                            ocultarConfirmacion()
+                            ? 'visibility_off'
+                            : 'visibility'
+                            }}
+
+                        </mat-icon>
+
+                    </button>
+
+                    @if (registroForm.confirmarPassword().touched()) {
+
+                        @for (
+                            error of registroForm.confirmarPassword().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
+                        @if (
+                            !registroForm.confirmarPassword().invalid() &&
+                            passwordsNoCoinciden()
+                        ) {
+
+                            <mat-error>
+                                Las contraseñas no coinciden.
+                            </mat-error>
+
+                        }
+
+                    }
+                </mat-form-field>
+            </div>
+
+
+            @if (mensajeError()) {
+
+            <div class="message error-message">
+                <mat-icon> error </mat-icon>
+                <span>
+                    {{ mensajeError() }}
+                </span>
+            </div>
+            }
+
+
+            @if (mensajeExito()) {
+            <div class="message success-message">
+                <mat-icon> check_circle </mat-icon>
+                <span> {{ mensajeExito() }}</span>
+            </div>
+
+            }
+
+            <div class="form-actions">
+
+                <button
+                    mat-flat-button
+                    type="submit"
+                    [disabled]="registrando()"
+                >
+
+                    @if (registrando()) {
+                        <span class="button-content">
+                            <mat-spinner diameter="18" />
+                            <span> Creando cuenta... </span>
+                        </span>
+
+                    } @else {
+
+                        <span class="button-content">
+                            <mat-icon> person_add </mat-icon>
+                            <span> Crear cuenta </span>
+                        </span>
+                    }
+                </button>
+            </div>
+        </form>
+
+        <div class="login-link">
+            <span>¿Ya tienes una cuenta?</span>
+            <a routerLink="/login" class="login-button">
+                Iniciar sesión
+                <mat-icon>arrow_forward</mat-icon>
+            </a>
+        </div>
+
+    </div>
+</section>

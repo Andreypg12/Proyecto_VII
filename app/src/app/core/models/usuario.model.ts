@@ -1,17 +1,25 @@
-export type Rol = 'ADMINISTRADOR' | 'PROFESIONAL' | 'CLIENTE';
+export type Rol =
+    'ADMINISTRADOR' |
+    'PROFESIONAL' |
+    'CLIENTE';
 
-export type EstadoUsuario = 'ACTIVO' | 'BLOQUEADO';
+export type EstadoUsuario =
+    'ACTIVO' |
+    'BLOQUEADO';
+
 
 export interface Usuario {
     id: number;
     email: string;
     nombre: string;
     apellidos: string;
+    telefono?: string | null;
     rol: Rol;
     estado: EstadoUsuario;
     createdAt?: string;
     updateAt?: string;
 }
+
 
 export interface UsuarioCreateDto {
     email: string;
@@ -20,6 +28,7 @@ export interface UsuarioCreateDto {
     password: string;
     rol?: Rol;
 }
+
 
 export interface UsuarioUpdateDto {
     email?: string;
@@ -30,7 +39,57 @@ export interface UsuarioUpdateDto {
     estado?: EstadoUsuario;
 }
 
+
 export interface UsuarioConfiguracion {
     roles: Rol[];
     estados: EstadoUsuario[];
+}
+
+
+// AUTENTICACIÓN
+
+export interface LoginRequest {
+    email: string;
+    password: string;
+}
+
+
+export interface LoginData {
+    token: string;
+}
+
+
+export interface LoginResponse {
+    success: boolean;
+    message: string;
+    data: LoginData;
+}
+
+export interface PerfilResponse {
+    success: boolean;
+    message: string;
+    data: Usuario;
+}
+
+export interface UpdatePerfilUsuarioDto {
+    email?: string;
+    nombre?: string;
+    apellidos?: string;
+    telefono?: string;
+    password?: string;
+}
+
+
+export interface RegisterRequest {
+    email: string;
+    nombre: string;
+    apellidos: string;
+    telefono: string;
+    password: string;
+}
+
+export interface RegisterResponse {
+    success: boolean;
+    message: string;
+    data: Usuario;
 }

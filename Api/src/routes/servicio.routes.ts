@@ -3,6 +3,7 @@ import { ServicioController } from "../controllers/servicio.controller";
 import { validateRequest } from "../middlewares/validate-request.middleware";
 import { asyncHandler } from "../middlewares/async-handler.middleware";
 import { createServicioSchema, updateServicioSchema } from "../dtos/servicio.dto";
+import { authenticateToken } from "../middlewares/auth.middleware";
 
 export class ServicioRoutes {
     static get routes(): Router {
@@ -14,16 +15,18 @@ export class ServicioRoutes {
 
         router.get('/:id', asyncHandler(controller.obtenerPorId))
 
-        router.put('/cambiarEstado/:id', asyncHandler(controller.cambiarEstado))
+        router.put('/cambiarEstado/:id', authenticateToken, asyncHandler(controller.cambiarEstado))
 
         router.post(
             "/",
+            authenticateToken,
             validateRequest(createServicioSchema),
             asyncHandler(controller.crear)
         )
 
         router.put(
             "/:id",
+            authenticateToken,
             validateRequest(updateServicioSchema),
             asyncHandler(controller.actualizar)
         )

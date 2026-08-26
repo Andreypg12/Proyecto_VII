@@ -16,6 +16,8 @@ import { RouterLink } from '@angular/router';
 import { ProfesionalService } from '../../../core/services/profesional.service';
 import { Profesional } from '../../../core/models/profesional.model';
 
+import { AuthService } from '../../../core/services/auth.service';
+
 @Component({
   selector: 'app-profesional-list',
   imports: [
@@ -50,6 +52,21 @@ export class ProfesionalesList implements OnInit {
   loading = signal(false);
   error = signal<string | null>(null);
 
+  private readonly authService =
+    inject(AuthService);
+
+    readonly puedeCrearProfesional =
+    computed(() => {
+
+        const rol =
+            this.authService.usuario()?.rol;
+
+        return (
+            rol === 'ADMINISTRADOR' ||
+            rol === undefined
+        );
+
+    });
 
 
   ngOnInit(): void {
@@ -127,6 +144,31 @@ export class ProfesionalesList implements OnInit {
     return this.profesionalService.getImageUrl(imageName);
   }
 
+  iniciales(nombre: string): string {
+    if (!nombre) return '?';
+    return nombre.split(' ').map(p => p.charAt(0)).slice(0, 2).join('').toUpperCase();
+  }
+
+  etiquetaModalidad(modalidad?: string): string {
+    if (!modalidad) return 'No especificada';
+    const etiquetas: Record<string, string> = {
+      'PRESENCIAL': 'Presencial',
+      'VIRTUAL': 'Virtual',
+      'HÍBRIDA': 'Híbrida'
+    };
+    return etiquetas[modalidad] ?? modalidad;
+  }
+
+  iconoModalidad(modalidad?: string): string {
+    if (!modalidad) return 'help_outline';
+    const iconos: Record<string, string> = {
+      'PRESENCIAL': 'location_on',
+      'VIRTUAL': 'computer',
+      'HÍBRIDA': 'swap_horiz'
+    };
+    return iconos[modalidad] ?? 'help_outline';
+  }
+
   // Manejar error de carga de imagen
   handleImageError(event: Event): void {
     const img = event.target as HTMLImageElement;
@@ -178,5 +220,38 @@ export class ProfesionalesList implements OnInit {
         );
       },
     });
+  }
+
+  puedeCambiarDisponibilidad( profesional: Profesional ): boolean {
+
+      const usuario =
+          this.authService.usuario();
+
+      if (!usuario) {
+          return false;
+      }
+
+      // El cliente nunca puede cambiar
+      // la disponibilidad de un profesional
+      if (usuario.rol === 'CLIENTE') {
+          return false;
+      }
+
+      // El profesional solamente puede
+      // cambiar su propia disponibilidad
+      if (usuario.rol === 'PROFESIONAL') {
+
+          return (
+              Number(
+                  profesional.id_usuario ??
+                  profesional.usuario?.id
+              )
+              ===
+              Number(usuario.id)
+          );
+
+      }
+
+      return false;
   }
 }

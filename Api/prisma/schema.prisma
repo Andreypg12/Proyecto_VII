@@ -41,11 +41,12 @@ enum Modalidad {
 //Tablas normales
 
 model Usuario {
-  id        Int    @id @default(autoincrement())
-  email     String @unique @db.VarChar(150)
-  nombre    String @db.VarChar(100)
-  apellidos String @db.VarChar(120)
-  password  String @db.VarChar(251)
+  id        Int     @id @default(autoincrement())
+  email     String  @unique @db.VarChar(150)
+  nombre    String  @db.VarChar(100)
+  apellidos String  @db.VarChar(120)
+  telefono  String? @db.VarChar(20)
+  password  String  @db.VarChar(251)
 
   createdAt DateTime @default(now())
   updateAt  DateTime @default(now()) @updatedAt
@@ -56,6 +57,8 @@ model Usuario {
   perfiles_profesionales PerfilProfesional[]
   citas                  Cita[]
   valoracion             Valoracion[]
+  historialCitasCliente  HistorialCita[] @relation("HistorialCitaCliente")
+  historialCitasUsuario  HistorialCita[] @relation("HistorialCitaUsuario")
 
   @@map("usuario")
 }
@@ -84,6 +87,7 @@ model PerfilProfesional {
   citas          Cita[]
   valoracion     Valoracion[]
   servicios      Servicio[]
+  historialCitas HistorialCita[]
 
   @@map("perfil_profesional")
 }
@@ -124,7 +128,8 @@ model Servicio {
 
   especialidades Especialidad[]
 
-  citas Cita[]
+  citas          Cita[]
+  historialCitas HistorialCita[]
 
   @@map("servicio")
 }
@@ -168,8 +173,35 @@ model Cita {
   servicio    Servicio @relation(fields: [id_servicio], references: [id])
 
   valoracion Valoracion[]
+  historialCitas HistorialCita[]
 
   @@map("cita")
+}
+
+model HistorialCita {
+  id              Int        @id @default(autoincrement())
+  estado_anterior EstadoCita
+  estado_nuevo    EstadoCita
+  comentario      String?    @db.VarChar(500)
+  realizado_por   String     @default("PROFESIONAL") @db.VarChar(50)
+  fecha_cambio    DateTime   @default(now())
+
+  id_cita Int
+  cita    Cita @relation(fields: [id_cita], references: [id])
+
+  id_cliente Int
+  cliente    Usuario @relation("HistorialCitaCliente", fields: [id_cliente], references: [id])
+
+  id_profesional Int
+  profesional    PerfilProfesional @relation(fields: [id_profesional], references: [id])
+
+  id_servicio Int
+  servicio    Servicio @relation(fields: [id_servicio], references: [id])
+
+  id_usuario Int?
+  usuario   Usuario? @relation("HistorialCitaUsuario", fields: [id_usuario], references: [id])
+
+  @@map("historial_cita")
 }
 
 model Valoracion {

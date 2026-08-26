@@ -1,0 +1,20 @@
+Instalación
+
+--Abrir terminal y seguir los siguientes pasos:
+cd Api
+|
+npm install
+|
+npx prisma generate
+|
+npx prisma db seed
+
+npm run dev --- para ejecutar
+
+--Abrir nueva terminal y seguir los pasos
+
+cd app
+|
+npm install
+|
+ng serve -o --- Para ejecutar

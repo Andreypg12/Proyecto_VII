@@ -165,8 +165,8 @@
 
 .programming-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
 }
 
 .full-width,
@@ -448,4 +448,322 @@ mat-error {
     .programming-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ===== Sección de servicio fijo (reserva directa) ===== */
+.section-fixed {
+    border-left-color: var(--accent-teal);
+}
+
+.section-fixed .section-title h3 {
+    color: var(--accent-teal-light);
+}
+
+.section-fixed::before {
+    background: radial-gradient(circle at 0% 0%, rgba(88, 166, 166, 0.14), transparent 60%) !important;
+}
+
+.fixed-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(88, 166, 166, 0.12);
+    border: 1px solid rgba(88, 166, 166, 0.35);
+    color: var(--accent-teal-light);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+
+.fixed-chip mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* Tarjeta resumen del servicio (estilo glass tipo franja superior) */
+.servicio-resumen {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 18px;
+    align-items: center;
+    padding: 18px 24px;
+    background: var(--th-surface-container, linear-gradient(135deg, var(--surface-hover) 0%, var(--surface-gray) 100%));
+    border: 1px solid var(--th-outline-variant, var(--border-light));
+    border-radius: var(--th-radius-xl, var(--radius-section));
+    box-shadow: 0 8px 30px rgba(1, 15, 31, 0.5);
+    overflow: hidden;
+    animation: resumen-strip-in 300ms var(--th-ease-out, ease-out) both;
+}
+
+.servicio-resumen::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--th-primary, var(--accent-teal-light)), transparent);
+    opacity: 0.55;
+    pointer-events: none;
+}
+
+@keyframes resumen-strip-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .servicio-resumen {
+        animation: none;
+    }
+}
+
+.resumen-icono {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: rgba(88, 166, 166, 0.14);
+    border: 1px solid rgba(88, 166, 166, 0.3);
+    color: var(--accent-teal-light);
+}
+
+.resumen-icono mat-icon {
+    font-size: 26px;
+    width: 26px;
+    height: 26px;
+}
+
+.resumen-info {
+    min-width: 0;
+}
+
+.resumen-categoria {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--th-primary, var(--accent-teal-light));
+    margin-bottom: 4px;
+}
+
+.resumen-info h4 {
+    margin: 0 0 4px;
+    font-family: var(--th-font-display, inherit);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--th-on-surface, var(--text-dark));
+}
+
+.resumen-descripcion {
+    margin: 0 0 10px;
+    color: var(--text-mid);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.resumen-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: var(--th-radius-full, 16px);
+    background: var(--th-surface-container-high, var(--surface-light));
+    border: 1px solid var(--th-outline-variant, var(--border-light));
+    color: var(--th-on-surface-variant, var(--text-mid));
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.meta-pill mat-icon {
+    font-size: 17px;
+    width: 17px;
+    height: 17px;
+    color: var(--th-primary, var(--accent-teal-light));
+}
+
+.resumen-precio {
+    text-align: right;
+    padding-left: 18px;
+    border-left: 1px solid var(--border-light);
+}
+
+.precio-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+}
+
+.precio-valor {
+    display: block;
+    margin-top: 2px;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent-teal-light);
+    letter-spacing: -0.5px;
+}
+
+/* Profesional asignado */
+.resumen-profesional {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 14px;
+    padding: 14px 20px;
+    background: var(--surface-gray);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-section);
+}
+
+.pro-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(88, 166, 166, 0.5);
+    box-shadow: 0 0 0 3px rgba(88, 166, 166, 0.12);
+    flex: 0 0 auto;
+}
+
+.pro-iniciales {
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #1f6f9e, #3d7a7a);
+    color: #ffffff !important;
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+}
+
+.pro-datos {
+    min-width: 0;
+    flex: 1;
+}
+
+.pro-rol {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-light);
+}
+
+.pro-datos strong {
+    display: block;
+    margin-top: 1px;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.pro-titulo {
+    display: block;
+    color: var(--text-mid);
+    font-size: 0.8rem;
+    margin-top: 1px;
+}
+
+.disponible-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 16px;
+    background: rgba(88, 166, 166, 0.1);
+    border: 1px solid rgba(88, 166, 166, 0.3);
+    color: var(--accent-teal-light);
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.disponible-chip mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+@media (max-width: 640px) {
+    .servicio-resumen {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .resumen-precio {
+        text-align: left;
+        padding-left: 0;
+        padding-top: 12px;
+        border-left: none;
+        border-top: 1px solid var(--border-light);
+    }
+
+    .resumen-profesional {
+        flex-wrap: wrap;
+    }
+
+    .disponible-chip {
+        margin-left: auto;
+    }
+}
+
+/* ── Loading de disponibilidad (inline en mat-form-field) ── */
+.hour-loading-inline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+/* ── Mensaje de horarios vacíos ── */
+.hour-empty-msg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: rgba(255, 152, 0, 0.08);
+    border: 1px solid rgba(255, 152, 0, 0.25);
+    color: #ffb74d;
+    font-size: 0.82rem;
+}
+
+.hour-empty-msg mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #ffb74d;
 }

@@ -1,6 +1,7 @@
 ProyectoVII/
 .agents/
 skills-lock.json
+AGENTS.md
 
 # IDE/Editor
 .vscode/*

@@ -1,6 +1,18 @@
 export type EstadoCita = string;
 export type Modalidad = string;
 
+export interface ValoracionCita {
+    id: number;
+    puntuacion: number;
+    comentario: string;
+    createdAt: string;
+    cliente?: {
+        id: number;
+        nombre: string;
+        apellidos: string;
+    };
+}
+
 export interface ConfiguracionCita {
     modalidades: Modalidad[];
     estados: EstadoCita[];
@@ -60,6 +72,8 @@ export interface Cita {
     profesional: ProfesionalCita;
     servicio: ServicioCita;
 
+    valoracion?: ValoracionCita[] | null;
+
     createdAt?: string;
     updateAt?: string;
 }
@@ -104,4 +118,18 @@ export interface ResultadoCambioEstadoCita {
     comentario_profesional: string | null;
     fecha_hora_finalizacion_real: string | null;
     updateAt: string;
+}
+
+export interface HistorialCita {
+    id: number;
+    estado_anterior: EstadoCita;
+    estado_nuevo: EstadoCita;
+    comentario: string | null;
+    realizado_por: string;
+    fecha_cambio: string;
+    id_usuario: number | null;
+    cliente: ClienteCita;
+    profesional: { usuario: UsuarioProfesionalCita };
+    servicio: { servicio: string };
+    usuario?: { id: number; email: string; nombre: string; apellidos: string };
 }

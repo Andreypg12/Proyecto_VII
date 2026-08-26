@@ -24,6 +24,12 @@ export const registerUsuarioSchema = z.object({
         .min(3, "Los apellidos deben tener al menos 3 caracteres")
         .max(120, "Los apellidos no pueden superar los 120 caracteres"),
 
+    telefono: z
+        .string()
+        .trim()
+        .min(8, "El teléfono debe tener al menos 8 caracteres")
+        .max(20, "El teléfono no puede superar los 20 caracteres"),
+
     password: z
         .string()
         .min(6, "La contraseña debe tener al menos 6 caracteres")
@@ -43,6 +49,45 @@ export const loginUsuarioSchema = z.object({
     password: z
         .string()
         .min(6, "La contraseña debe tener al menos 6 caracteres"),
+});
+
+//Perfil
+export const updatePerfilUsuarioSchema = z.object({
+
+    email: z
+        .email({
+            error: "Debe ingresar un correo válido"
+        })
+        .max(150, {
+            error: "El correo no puede superar los 150 caracteres"
+        })
+        .optional(),
+
+    nombre: z
+        .string()
+        .trim()
+        .min(3, "El nombre debe tener al menos 3 caracteres")
+        .max(100, "El nombre no puede superar los 100 caracteres")
+        .optional(),
+
+    apellidos: z
+        .string()
+        .trim()
+        .min(3, "Los apellidos deben tener al menos 3 caracteres")
+        .max(120, "Los apellidos no pueden superar los 120 caracteres")
+        .optional(),
+
+    telefono: z
+        .string()
+        .trim()
+        .max(20, "El teléfono no puede superar los 20 caracteres")
+        .optional(),
+
+    password: z
+        .string()
+        .min(6, "La contraseña debe tener al menos 6 caracteres")
+        .max(255, "La contraseña no puede superar los 255 caracteres")
+        .optional(),
 });
 
 // Creción admin
@@ -92,3 +137,5 @@ export type LoginUsuarioDto = z.infer<typeof loginUsuarioSchema>;
 export type CreateUsuarioDto = z.infer<typeof createUsuarioSchema>;
 
 export type UpdateUsuarioDto = z.infer<typeof updateUsuarioSchema>;
+
+export type UpdatePerfilUsuarioDto = z.infer<typeof updatePerfilUsuarioSchema>;

@@ -3,6 +3,9 @@ import { citaController } from "../controllers/cita.controller";
 import { asyncHandler } from "../middlewares/async-handler.middleware";
 import { cambiarEstadoCitaSchema, createCitaSchema } from "../dtos/cita.dto";
 import { validateRequest } from "../middlewares/validate-request.middleware";
+import { authenticateToken } from "../middlewares/auth.middleware";
+
+
 
 export class CitaRoutes {
 
@@ -14,17 +17,20 @@ export class CitaRoutes {
         // GET CONFIGURACIÓN
         router.get("/configuracion", asyncHandler(controller.obtenerConfiguracion));
 
+        // GET DISPONIBILIDAD (debe ir antes de /:id)
+        router.get("/disponibilidad/:idProfesional/:fecha", authenticateToken, asyncHandler(controller.obtenerDisponibilidad));
+
         // GET LISTADO
-        router.get("/", asyncHandler(controller.listar));
+        router.get("/", authenticateToken, asyncHandler(controller.listar));
 
         // POST CREAR CITA
-        router.post("/", validateRequest(createCitaSchema), asyncHandler(controller.crear));
+        router.post("/",authenticateToken, validateRequest(createCitaSchema), asyncHandler(controller.crear));
 
         // PATCH CAMBIAR ESTADO
-        router.patch("/:id/estado", validateRequest(cambiarEstadoCitaSchema), asyncHandler(controller.cambiarEstado));
+        router.patch("/:id/estado", authenticateToken, validateRequest(cambiarEstadoCitaSchema), asyncHandler(controller.cambiarEstado));
 
         // GET CITA POR ID
-        router.get("/:id", asyncHandler(controller.obtenerPorId));
+        router.get("/:id", authenticateToken, asyncHandler(controller.obtenerPorId));
 
         return router;
     }

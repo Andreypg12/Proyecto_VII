@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -12,12 +12,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ProfesionalService } from '../../../core/services/profesional.service';
 import { Profesional } from '../../../core/models/profesional.model';
+import { MagicBentoComponent } from '../../../shared/components/magic-bento/magic-bento';
 
 @Component({
   selector: 'app-profesional-detail',
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -25,6 +27,7 @@ import { Profesional } from '../../../core/models/profesional.model';
     MatChipsModule,
     MatDividerModule,
     MatTooltipModule,
+    MagicBentoComponent,
   ],
   templateUrl: './profesional-detail.html',
   styleUrl: './profesional-detail.css',
@@ -40,6 +43,28 @@ export class ProfesionalDetail implements OnInit {
 
   // Filtro para servicios activos
   serviciosActivos = signal(true);
+
+  // Calificación promedio computada desde las valoraciones
+  calificacionPromedio = computed(() => {
+    const prof = this.profesional();
+    if (!prof || !prof.valoracion?.length) return 0;
+    const sum = prof.valoracion.reduce((acc, v) => acc + v.puntuacion, 0);
+    return Math.round((sum / prof.valoracion.length) * 10) / 10;
+  });
+
+  // Array de 5 estrellas con estado: 'full' | 'half' | 'empty'
+  estrellasArray = computed(() => {
+    const rating = this.calificacionPromedio();
+    const full = Math.floor(rating);
+    const hasHalf = rating % 1 >= 0.5;
+    const stars: ('full' | 'half' | 'empty')[] = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= full) stars.push('full');
+      else if (i === full + 1 && hasHalf) stars.push('half');
+      else stars.push('empty');
+    }
+    return stars;
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
@@ -100,7 +125,12 @@ export class ProfesionalDetail implements OnInit {
       'PRESENCIAL': { label: 'Presencial', icon: 'location_on' },
       'HÍBRIDA': { label: 'Híbrida', icon: 'swap_horiz' },
     };
-    return map[modalidad] || { label: modalidad || 'No especificada', icon: 'help' };
+    return map[modalidad] || { label: modalidad || 'No especificada', icon: 'help_outline' };
+  }
+
+  iniciales(nombre: string): string {
+    if (!nombre) return '?';
+    return nombre.split(' ').map(p => p.charAt(0)).slice(0, 2).join('').toUpperCase();
   }
 
   // Helper para estado del servicio

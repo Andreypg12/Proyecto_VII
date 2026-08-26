@@ -10,6 +10,7 @@ import {
     ConfiguracionCita,
     CreateCitaDto,
     FiltrosCita,
+    HistorialCita,
     ResultadoCambioEstadoCita
 } from '../models/cita.model';
 
@@ -63,11 +64,21 @@ export class CitaService {
         return this.http.get<ApiResponse<Cita>>(`${this.apiUrl}/${id}`);
     }
 
+    obtenerDisponibilidad(idProfesional: number, fecha: string) {
+        return this.http.get<ApiResponse<Array<{inicio: string, fin: string}>>>(
+            `${this.apiUrl}/disponibilidad/${idProfesional}/${fecha}`
+        );
+    }
+
     crear(data: CreateCitaDto) {
         return this.http.post<ApiResponse<Cita>>(this.apiUrl,data);
     }
 
     cambiarEstado(idCita: number, data: CambiarEstadoCitaDto) {
         return this.http.patch<ApiResponse<ResultadoCambioEstadoCita>>(`${this.apiUrl}/${idCita}/estado`,data);
+    }
+
+    obtenerHistorial(idCita: number) {
+        return this.http.get<ApiResponse<HistorialCita[]>>(`${environment.apiUrl}/historial-cita/cita/${idCita}`);
     }
 }

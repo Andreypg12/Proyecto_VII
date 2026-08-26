@@ -1,0 +1,105 @@
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+
+    <div class="modal-card glass-panel">
+
+        <!-- Header -->
+        <div class="modal-header">
+            <div class="modal-header-content">
+                <mat-icon class="modal-icon">rate_review</mat-icon>
+                <div>
+                    <h3 class="shiny-text">Calificar Cita #{{ idCita }}</h3>
+                    <p class="modal-subtitle">{{ nombreServicio }}</p>
+                </div>
+            </div>
+            <button class="modal-close" (click)="onCerrar()" type="button">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <!-- Profesional -->
+        <div class="modal-profesional">
+            <mat-icon>person</mat-icon>
+            <span>{{ nombreProfesional }}</span>
+        </div>
+
+        <!-- Divider -->
+        <div class="modal-divider"></div>
+
+        <!-- Estrellas -->
+        <div class="estrellas-section">
+            <p class="estrellas-label">¿Cómo fue tu experiencia?</p>
+
+            <div class="estrellas-container" (mouseleave)="leaveEstrellas()">
+                @for (estrella of estrellas; track estrella) {
+                <button
+                    type="button"
+                    class="estrella-btn"
+                    [class.activa]="estrella <= puntuacionMostrar"
+                    [class.seleccionada]="estrella <= puntuacion()"
+                    (click)="seleccionarEstrella(estrella)"
+                    (mouseenter)="hoverEstrella(estrella)"
+                >
+                    <mat-icon>{{ estrella <= puntuacionMostrar ? 'star' : 'star_border' }}</mat-icon>
+                </button>
+                }
+            </div>
+
+            @if (puntuacionMostrar > 0) {
+            <p class="estrellas-texto">{{ textoPuntuacion() }}</p>
+            }
+        </div>
+
+        <!-- Comentario -->
+        <div class="comentario-section">
+            <label class="comentario-label" for="comentarioValoracion">Tu comentario</label>
+            <textarea
+                id="comentarioValoracion"
+                class="comentario-input"
+                rows="4"
+                maxlength="500"
+                placeholder="Cuéntanos sobre tu experiencia..."
+                [value]="comentario()"
+                (input)="actualizarComentario($event)"
+            ></textarea>
+            <div class="comentario-footer">
+                <span class="comentario-contador">{{ comentario().length }}/500</span>
+            </div>
+        </div>
+
+        <!-- Error -->
+        @if (error()) {
+        <div class="modal-error">
+            <mat-icon>error_outline</mat-icon>
+            {{ error() }}
+        </div>
+        }
+
+        <!-- Actions -->
+        <div class="modal-actions">
+            <button
+                type="button"
+                class="modal-btn cancelar"
+                (click)="onCerrar()"
+                [disabled]="enviando()"
+            >
+                Cancelar
+            </button>
+            <button
+                type="button"
+                class="modal-btn enviar"
+                (click)="onEnviar()"
+                [disabled]="enviando()"
+            >
+                @if (enviando()) {
+                    <span class="spinner"></span>
+                    Enviando...
+                } @else {
+                    <mat-icon>check</mat-icon>
+                    Enviar valoración
+                }
+            </button>
+        </div>
+
+    </div>
+
+</div>
