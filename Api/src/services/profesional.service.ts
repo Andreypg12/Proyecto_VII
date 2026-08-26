@@ -128,15 +128,32 @@ export const profesionalService = {
     },
 
     async obtenerPorId(id: number) {
-        return await prisma.perfilProfesional.findUnique({
+        const profesional = await prisma.perfilProfesional.findUnique({
             where: { id },
             include: {
                 usuario: true,
                 servicios: true,
                 ubicaciones: true,
-                especialidades: true
+                especialidades: true,
+                valoracion: {
+                    select: { puntuacion: true, comentario: true, createdAt: true }
+                }
             }
         });
+
+        if (!profesional) return profesional;
+
+        // Calcular promedio de calificación
+        const valoraciones = profesional.valoracion;
+        const promedio = valoraciones.length > 0
+            ? valoraciones.reduce((sum, v) => sum + v.puntuacion, 0) / valoraciones.length
+            : 0;
+
+        return {
+            ...profesional,
+            promedioCalificacion: Math.round(promedio * 10) / 10,
+            totalValoraciones: valoraciones.length
+        };
     },
 
     async crear(data: CreateProfesionalDto) {

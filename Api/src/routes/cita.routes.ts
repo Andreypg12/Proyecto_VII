@@ -5,6 +5,8 @@ import { cambiarEstadoCitaSchema, createCitaSchema } from "../dtos/cita.dto";
 import { validateRequest } from "../middlewares/validate-request.middleware";
 import { authenticateToken } from "../middlewares/auth.middleware";
 
+
+
 export class CitaRoutes {
 
     static get routes(): Router {
@@ -14,6 +16,9 @@ export class CitaRoutes {
 
         // GET CONFIGURACIÓN
         router.get("/configuracion", asyncHandler(controller.obtenerConfiguracion));
+
+        // GET DISPONIBILIDAD (debe ir antes de /:id)
+        router.get("/disponibilidad/:idProfesional/:fecha", authenticateToken, asyncHandler(controller.obtenerDisponibilidad));
 
         // GET LISTADO
         router.get("/", authenticateToken, asyncHandler(controller.listar));
@@ -25,7 +30,7 @@ export class CitaRoutes {
         router.patch("/:id/estado", authenticateToken, validateRequest(cambiarEstadoCitaSchema), asyncHandler(controller.cambiarEstado));
 
         // GET CITA POR ID
-        router.get("/:id", asyncHandler(controller.obtenerPorId));
+        router.get("/:id", authenticateToken, asyncHandler(controller.obtenerPorId));
 
         return router;
     }

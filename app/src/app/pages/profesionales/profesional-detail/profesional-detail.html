@@ -61,6 +61,21 @@
                             <span>{{ getEstadoInfo(prof.usuario.estado || 'INACTIVO').label }}</span>
                         </div>
                     </div>
+
+                    <!-- Calificación con estrellas -->
+                    @if (calificacionPromedio() > 0) {
+                    <div class="hero-rating">
+                        <div class="stars" [style.--rating]="calificacionPromedio()">
+                            <mat-icon class="star filled" *ngFor="let s of [1,2,3,4,5]">star</mat-icon>
+                        </div>
+                        <span class="rating-text">{{ calificacionPromedio() | number:'1.1-1' }} ({{ (prof.valoracion?.length ?? 0) }} reseñas)</span>
+                    </div>
+                    } @else if (prof.valoracion && prof.valoracion.length > 0) {
+                    <div class="hero-rating">
+                        <span class="rating-text">Sin calificación aún</span>
+                    </div>
+                    }
+
                     <p class="hero-titulo">{{ prof.titulo || 'Sin título' }}</p>
                     <div class="hero-meta">
                         <span class="meta-chip">

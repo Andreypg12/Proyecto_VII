@@ -153,12 +153,23 @@ export class citaController {
     };
 
 
-    obtenerPorId = async (request: Request, response: Response, next: NextFunction) => {
+    obtenerPorId = async (request: AuthRequest, response: Response, next: NextFunction) => {
+
+        const usuarioAutenticado = request.user;
+
+        if (!usuarioAutenticado) {
+            return response
+                .status(StatusCodes.UNAUTHORIZED)
+                .json({
+                    success: false,
+                    message: "Usuario no autenticado",
+                });
+        }
 
         //Convierte el id por medio del parseId que se encuentra en utils
         const id = parseId(request.params.id);
         //Obtiene la cita por medio del id
-        const cita = await citaService.obtenerPorId(id);
+        const cita = await citaService.obtenerPorId(id, usuarioAutenticado);
 
         if (!cita) {
             return response.status(StatusCodes.NOT_FOUND).json({
@@ -218,6 +229,22 @@ export class citaController {
             data: configuracion
         });
     }
+
+    obtenerDisponibilidad = async (req: Request, res: Response) => {
+        const idProfesional = parseId(req.params.idProfesional as string);
+        const fecha = req.params.fecha as string;
+
+        if (!fecha || !/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: "Formato de fecha inválido. Use YYYY-MM-DD",
+            });
+        }
+
+        const bloques = await citaService.obtenerDisponibilidad(idProfesional, fecha);
+
+        return sendSuccess(res, bloques, "Disponibilidad obtenida correctamente");
+    };
 
 
     cambiarEstado = async ( request: AuthRequest, response: Response, next: NextFunction) => {

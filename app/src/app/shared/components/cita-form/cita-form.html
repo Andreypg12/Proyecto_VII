@@ -7,79 +7,56 @@
     <mat-card-content>
         <form class="cita-form" novalidate (submit)="$event.preventDefault(); submit()">
             <!-- CLIENTE -->
-                @if (clienteFijo(); as cliente) {
+            @if (!clienteFijo()) {
 
-                    <section class="form-section section-client">
-                        <div class="section-title">
-                            <div>
-                                <h3>Cliente</h3>
-                                <p>La cita será registrada a nombre de tu cuenta.</p>
-                            </div>
-                        </div>
+            <section class="form-section section-client">
+                <div class="section-title">
+                    <div>
+                        <h3>Cliente</h3>
+                        <p>Seleccione el cliente que solicita la cita.</p>
+                    </div>
+                </div>
 
-                        <mat-form-field appearance="outline" class="full-width">
-                            <mat-label>Cliente</mat-label>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Cliente</mat-label>
 
-                            <input
-                                matInput
-                                readonly
-                                [value]="cliente.nombre + ' ' + cliente.apellidos + ' — ' + cliente.email"
-                            />
+                    <mat-select [formField]="citaForm.id_cliente">
 
-                            <mat-icon matSuffix>person</mat-icon>
-                        </mat-form-field>
-                    </section>
+                        <mat-option [value]="null">
+                            Seleccione un cliente
+                        </mat-option>
 
-                } @else {
+                        @for (
+                        cliente of clientesDisponibles();
+                        track cliente.id
+                        ) {
+                        <mat-option [value]="cliente.id">
 
-                    <section class="form-section section-client">
-                        <div class="section-title">
-                            <div>
-                                <h3>Cliente</h3>
-                                <p>Seleccione el cliente que solicita la cita.</p>
-                            </div>
-                        </div>
+                            {{ cliente.nombre }}
+                            {{ cliente.apellidos }}
+                            —
+                            {{ cliente.email }}
 
-                        <mat-form-field appearance="outline" class="full-width">
-                            <mat-label>Cliente</mat-label>
+                        </mat-option>
+                        }
 
-                            <mat-select [formField]="citaForm.id_cliente">
+                    </mat-select>
 
-                                <mat-option [value]="null">
-                                    Seleccione un cliente
-                                </mat-option>
+                    <mat-icon matSuffix>person</mat-icon>
 
-                                @for (
-                                    cliente of clientesDisponibles();
-                                    track cliente.id
-                                ) {
-                                    <mat-option [value]="cliente.id">
+                    @if (
+                    citaForm.id_cliente().touched() &&
+                    citaForm.id_cliente().invalid()
+                    ) {
+                    <mat-error>
+                        {{ citaForm.id_cliente().errors()[0].message }}
+                    </mat-error>
+                    }
 
-                                        {{ cliente.nombre }}
-                                        {{ cliente.apellidos }}
-                                        —
-                                        {{ cliente.email }}
+                </mat-form-field>
+            </section>
 
-                                    </mat-option>
-                                }
-
-                            </mat-select>
-
-                            <mat-icon matSuffix>person</mat-icon>
-
-                            @if (
-                                citaForm.id_cliente().touched() &&
-                                citaForm.id_cliente().invalid()
-                            ) {
-                                <mat-error>
-                                    {{ citaForm.id_cliente().errors()[0].message }}
-                                </mat-error>
-                            }
-
-                        </mat-form-field>
-                    </section>
-
-                }
+            }
 
             <!-- PROFESIONAL Y SERVICIO -->
             @if (servicioFijo(); as servicio) {
@@ -198,7 +175,7 @@
             </section>
             }
 
-<!-- FECHA, HORA Y MODALIDAD -->
+            <!-- FECHA, HORA Y MODALIDAD -->
             <section class="form-section section-schedule">
                 <div class="section-title">
                     <div>
@@ -210,7 +187,8 @@
                 <div class="programming-grid">
                     <mat-form-field appearance="outline">
                         <mat-label>Fecha</mat-label>
-                        <input #fechaInput matInput type="date" [formField]="citaForm.fecha" />
+                        <input #fechaInput matInput type="date" [formField]="citaForm.fecha"
+                            (change)="onFechaChange(fechaInput.value)" />
                         @if (citaForm.fecha().touched() && citaForm.fecha().invalid()) {
                         <mat-error>{{ citaForm.fecha().errors()[0].message }}</mat-error>
                         }
@@ -218,19 +196,33 @@
 
                     <mat-form-field appearance="outline">
                         <mat-label>Hora</mat-label>
+                        @if (cargandoDisponibilidad()) {
+                        <div class="hour-loading-inline">
+                            <mat-spinner diameter="22"></mat-spinner>
+                            <span>Calculando disponibilidad…</span>
+                        </div>
+                        } @else {
                         <mat-select [formField]="citaForm.hora">
                             <mat-option [value]="null">Seleccione una hora</mat-option>
-                            @for (horario of horariosCita; track horario.inicio) {
-                            <mat-option [value]="horario.inicio">
-                                {{ horario.etiqueta }}
+                            @for (slot of horariosCita(); track slot.inicio) {
+                            <mat-option [value]="slot.inicio">
+                                {{ slot.etiqueta }}
                             </mat-option>
                             }
                         </mat-select>
+                        }
                         <mat-icon matSuffix>schedule</mat-icon>
                         @if (citaForm.hora().touched() && citaForm.hora().invalid()) {
                         <mat-error>{{ citaForm.hora().errors()[0].message }}</mat-error>
                         }
                     </mat-form-field>
+
+                    @if (slotsVacios()) {
+                    <div class="hour-empty-msg">
+                        <mat-icon>event_busy</mat-icon>
+                        <span>No hay horarios disponibles para este servicio en esta fecha.</span>
+                    </div>
+                    }
                 </div>
             </section>
 

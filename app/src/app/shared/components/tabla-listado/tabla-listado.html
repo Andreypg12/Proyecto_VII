@@ -12,11 +12,9 @@
                     {{ columna.titulo }}
                 </th>
                 }
-
                 <th>Acciones</th>
             </tr>
         </thead>
-
         <tbody>
 
             @for (item of datos();track item.id) {
@@ -101,77 +99,55 @@
 
                         <!-- Categorías y especialidades -->
                         @if (
-                            mostrarCambioEstado() &&
-                            typeof item.estado === 'boolean'
+                        mostrarCambioEstado() &&
+                        typeof item.estado === 'boolean'
                         ) {
 
-                            @if (item.estado) {
+                        @if (item.estado) {
 
-                                <button
-                                    class="action-btn deactivate"
-                                    type="button"
-                                    (click)="cambiarEstado.emit(item)"
-                                >
-                                    <mat-icon>toggle_off</mat-icon>
-                                    Desactivar
-                                </button>
+                        <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>toggle_off</mat-icon>
+                            Desactivar
+                        </button>
 
-                            } @else {
+                        } @else {
 
-                                <button
-                                    class="action-btn activate"
-                                    type="button"
-                                    (click)="cambiarEstado.emit(item)"
-                                >
-                                    <mat-icon>toggle_on</mat-icon>
-                                    Activar
-                                </button>
+                        <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>toggle_on</mat-icon>
+                            Activar
+                        </button>
 
-                            }
+                        }
 
                         }
 
                         <!-- Usuarios -->
                         @else if (
-                            item.estado === 'ACTIVO' ||
-                            item.estado === 'BLOQUEADO'
+                        item.estado === 'ACTIVO' ||
+                        item.estado === 'BLOQUEADO'
                         ) {
 
-                            @if (item.estado === 'ACTIVO') {
+                        @if (item.estado === 'ACTIVO') {
 
-                                <button
-                                    class="action-btn deactivate"
-                                    type="button"
-                                    (click)="cambiarEstado.emit(item)"
-                                >
-                                    <mat-icon>lock</mat-icon>
-                                    Bloquear
-                                </button>
+                        <button class="action-btn deactivate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>lock</mat-icon>
+                            Bloquear
+                        </button>
 
-                            } @else {
+                        } @else {
 
-                                <button
-                                    class="action-btn activate"
-                                    type="button"
-                                    (click)="cambiarEstado.emit(item)"
-                                >
-                                    <mat-icon>lock_open</mat-icon>
-                                    Activar
-                                </button>
-
-                            }
+                        <button class="action-btn activate" type="button" (click)="cambiarEstado.emit(item)">
+                            <mat-icon>lock_open</mat-icon>
+                            Activar
+                        </button>
 
                         }
 
+                        }
                     </div>
-
                 </td>
-
             </tr>
             }
-
         </tbody>
-
     </table>
-
 </div>

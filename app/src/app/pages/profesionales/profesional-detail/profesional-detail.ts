@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -43,6 +43,14 @@ export class ProfesionalDetail implements OnInit {
 
   // Filtro para servicios activos
   serviciosActivos = signal(true);
+
+  // Calificación promedio computada desde las valoraciones
+  calificacionPromedio = computed(() => {
+    const prof = this.profesional();
+    if (!prof || !prof.valoracion?.length) return 0;
+    const sum = prof.valoracion.reduce((acc, v) => acc + v.puntuacion, 0);
+    return Math.round((sum / prof.valoracion.length) * 10) / 10;
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
