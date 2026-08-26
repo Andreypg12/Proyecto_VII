@@ -52,6 +52,20 @@ export class ProfesionalDetail implements OnInit {
     return Math.round((sum / prof.valoracion.length) * 10) / 10;
   });
 
+  // Array de 5 estrellas con estado: 'full' | 'half' | 'empty'
+  estrellasArray = computed(() => {
+    const rating = this.calificacionPromedio();
+    const full = Math.floor(rating);
+    const hasHalf = rating % 1 >= 0.5;
+    const stars: ('full' | 'half' | 'empty')[] = [];
+    for (let i = 1; i <= 5; i++) {
+      if (i <= full) stars.push('full');
+      else if (i === full + 1 && hasHalf) stars.push('half');
+      else stars.push('empty');
+    }
+    return stars;
+  });
+
   ngOnInit(): void {
     const id = this.route.snapshot.params['id'];
     if (id) {
