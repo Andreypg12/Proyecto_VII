@@ -65,8 +65,8 @@
                     <!-- Calificación con estrellas -->
                     @if (calificacionPromedio() > 0) {
                     <div class="hero-rating">
-                        <div class="stars" [style.--rating]="calificacionPromedio()">
-                            <mat-icon class="star filled" *ngFor="let s of [1,2,3,4,5]">star</mat-icon>
+                        <div class="stars">
+                            <mat-icon class="star" [class.filled]="e === 'full'" [class.half]="e === 'half'" *ngFor="let e of estrellasArray()">star</mat-icon>
                         </div>
                         <span class="rating-text">{{ calificacionPromedio() | number:'1.1-1' }} ({{ (prof.valoracion?.length ?? 0) }} reseñas)</span>
                     </div>

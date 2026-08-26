@@ -591,6 +591,140 @@ async function main() {
             id_cliente: clienteFabian,
             id_profesional: profesionalFranklin.id,
             id_servicio: servByProf[`${profesionalFranklin.id}-Revisión de seguridad básica`]
+        },
+
+        // =====================================================
+        // CITAS COMPLETADAS ADICIONALES para más valoraciones
+        // =====================================================
+
+        // Alejandro - 2 más (total 4)
+        {
+            fecha_hora_inicio: makeDate(-30, 10, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-30, 11, 0),
+            fecha_hora_finalizacion_real: makeDate(-30, 11, 3),
+            comentario_cliente: "Consultoría para arquitectura de microservicios.",
+            monto_estimado: 10000,
+            modalidad: Modalidad.VIRTUAL,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteGael,
+            id_profesional: profesionalAlejandro.id,
+            id_servicio: servByProf[`${profesionalAlejandro.id}-Software estandard`]
+        },
+        {
+            fecha_hora_inicio: makeDate(-40, 15, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-40, 16, 0),
+            fecha_hora_finalizacion_real: makeDate(-40, 16, 2),
+            comentario_cliente: "Revisión de código y buenas prácticas.",
+            monto_estimado: 95000,
+            modalidad: Modalidad.VIRTUAL,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteFabian,
+            id_profesional: profesionalAlejandro.id,
+            id_servicio: servByProf[`${profesionalAlejandro.id}-Mantenimiento mensual de sistema`]
+        },
+
+        // Daniela - 2 más (total 3)
+        {
+            fecha_hora_inicio: makeDate(-25, 9, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-25, 11, 0), // 120 min
+            fecha_hora_finalizacion_real: makeDate(-25, 11, 5),
+            comentario_cliente: "Capacitación avanzada en React y TypeScript.",
+            monto_estimado: 55000,
+            modalidad: Modalidad.PRESENCIAL,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteFabian,
+            id_profesional: profesionalDaniela.id,
+            id_servicio: servByProf[`${profesionalDaniela.id}-Capacitación en desarrollo web`]
+        },
+        {
+            fecha_hora_inicio: makeDate(-35, 14, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-35, 15, 30), // 90 min
+            fecha_hora_finalizacion_real: makeDate(-35, 15, 25),
+            comentario_cliente: "Desarrollo de app móvil para e-commerce.",
+            monto_estimado: 120000,
+            modalidad: Modalidad.HÍBRIDA,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteGael,
+            id_profesional: profesionalDaniela.id,
+            id_servicio: servByProf[`${profesionalDaniela.id}-Aplicación móvil básica`]
+        },
+
+        // Sebastian - 2 más (total 3)
+        {
+            fecha_hora_inicio: makeDate(-22, 8, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-22, 10, 0), // 120 min
+            fecha_hora_finalizacion_real: makeDate(-22, 10, 10),
+            comentario_cliente: "Migración completa de sistema legacy a cloud.",
+            monto_estimado: 150000,
+            modalidad: Modalidad.HÍBRIDA,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteGael,
+            id_profesional: profesionalSebastian.id,
+            id_servicio: servByProf[`${profesionalSebastian.id}-Migración de sistema legado`]
+        },
+        {
+            fecha_hora_inicio: makeDate(-28, 10, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-28, 11, 30), // 90 min
+            fecha_hora_finalizacion_real: makeDate(-28, 11, 20),
+            comentario_cliente: "Sitio web corporativo con panel admin.",
+            monto_estimado: 85000,
+            modalidad: Modalidad.VIRTUAL,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteFabian,
+            id_profesional: profesionalSebastian.id,
+            id_servicio: servByProf[`${profesionalSebastian.id}-Desarrollo de sitio web informativo`]
+        },
+
+        // Valeria - 2 más (total 3)
+        {
+            fecha_hora_inicio: makeDate(-15, 9, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-15, 11, 0), // 120 min
+            fecha_hora_finalizacion_real: makeDate(-15, 11, 8),
+            comentario_cliente: "Auditoría completa de seguridad OWASP Top 10.",
+            monto_estimado: 110000,
+            modalidad: Modalidad.VIRTUAL,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteFabian,
+            id_profesional: profesionalValeria.id,
+            id_servicio: servByProf[`${profesionalValeria.id}-Auditoría de arquitectura de software`]
+        },
+        {
+            fecha_hora_inicio: makeDate(-18, 15, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-18, 16, 0), // 60 min
+            fecha_hora_finalizacion_real: makeDate(-18, 16, 15),
+            comentario_cliente: "Revisión de cumplimiento de normativas de datos.",
+            monto_estimado: 110000,
+            modalidad: Modalidad.VIRTUAL,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteGael,
+            id_profesional: profesionalValeria.id,
+            id_servicio: servByProf[`${profesionalValeria.id}-Auditoría de arquitectura de software`]
+        },
+
+        // Franklin - 2 más (total 3)
+        {
+            fecha_hora_inicio: makeDate(-12, 8, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-12, 10, 0), // 120 min
+            fecha_hora_finalizacion_real: makeDate(-12, 10, 5),
+            comentario_cliente: "Refactorización de monolito a microservicios.",
+            monto_estimado: 140000,
+            modalidad: Modalidad.HÍBRIDA,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteFabian,
+            id_profesional: profesionalFranklin.id,
+            id_servicio: servByProf[`${profesionalFranklin.id}-Refactorización y modernización de aplicaciones`]
+        },
+        {
+            fecha_hora_inicio: makeDate(-8, 14, 0),
+            fecha_hora_finalizacion_esperada: makeDate(-8, 15, 0), // 60 min
+            fecha_hora_finalizacion_real: makeDate(-8, 15, 2),
+            comentario_cliente: "Pentesting básico y reporte de vulnerabilidades.",
+            monto_estimado: 75000,
+            modalidad: Modalidad.VIRTUAL,
+            estado: EstadoCita.COMPLETADA,
+            id_cliente: clienteGael,
+            id_profesional: profesionalFranklin.id,
+            id_servicio: servByProf[`${profesionalFranklin.id}-Revisión de seguridad básica`]
         }
     ];
 
@@ -734,6 +868,86 @@ async function main() {
             id_profesional: profesionalFranklin.id,
             id_cliente: clienteFabian,
             id_cita: citasCompletadas.find(c => c.id_profesional === profesionalFranklin.id && c.id_cliente === clienteFabian)?.id
+        },
+
+        // Alejandro - 2 citas completadas adicionales
+        {
+            puntuacion: 5,
+            comentario: "Arquitectura de microservicios muy bien diseñada, escalable y documentada. Gran profesional.",
+            id_profesional: profesionalAlejandro.id,
+            id_cliente: clienteGael,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalAlejandro.id && c.id_cliente === clienteGael && c.id_servicio === servByProf[`${profesionalAlejandro.id}-Software estandard`])?.id
+        },
+        {
+            puntuacion: 4,
+            comentario: "Mantenimiento proactivo, detectó problemas antes de que fueran críticos. Muy confiable.",
+            id_profesional: profesionalAlejandro.id,
+            id_cliente: clienteFabian,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalAlejandro.id && c.id_cliente === clienteFabian && c.id_servicio === servByProf[`${profesionalAlejandro.id}-Mantenimiento mensual de sistema`])?.id
+        },
+
+        // Daniela - 2 citas completadas adicionales
+        {
+            puntuacion: 5,
+            comentario: "Capacitación avanzada excelente, contenido actualizado y ejercicios prácticos muy útiles.",
+            id_profesional: profesionalDaniela.id,
+            id_cliente: clienteFabian,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalDaniela.id && c.id_cliente === clienteFabian && c.id_servicio === servByProf[`${profesionalDaniela.id}-Capacitación en desarrollo web`])?.id
+        },
+        {
+            puntuacion: 4,
+            comentario: "App móvil entregada funcional y con buen diseño. Comunicación constante durante el desarrollo.",
+            id_profesional: profesionalDaniela.id,
+            id_cliente: clienteGael,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalDaniela.id && c.id_cliente === clienteGael && c.id_servicio === servByProf[`${profesionalDaniela.id}-Aplicación móvil básica`])?.id
+        },
+
+        // Sebastian - 2 citas completadas adicionales
+        {
+            puntuacion: 5,
+            comentario: "Migración a cloud impecable, cero downtime y mejora de performance notable. Experto en la materia.",
+            id_profesional: profesionalSebastian.id,
+            id_cliente: clienteGael,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalSebastian.id && c.id_cliente === clienteGael && c.id_servicio === servByProf[`${profesionalSebastian.id}-Migración de sistema legado`])?.id
+        },
+        {
+            puntuacion: 4,
+            comentario: "Sitio corporativo profesional, panel admin intuitivo y fácil de gestionar. Cumplió plazos.",
+            id_profesional: profesionalSebastian.id,
+            id_cliente: clienteFabian,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalSebastian.id && c.id_cliente === clienteFabian && c.id_servicio === servByProf[`${profesionalSebastian.id}-Desarrollo de sitio web informativo`])?.id
+        },
+
+        // Valeria - 2 citas completadas adicionales
+        {
+            puntuacion: 5,
+            comentario: "Auditoría OWASP exhaustiva, reporte detallado con prioridades claras. Muy valioso para nuestra seguridad.",
+            id_profesional: profesionalValeria.id,
+            id_cliente: clienteFabian,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalValeria.id && c.id_cliente === clienteFabian && c.id_servicio === servByProf[`${profesionalValeria.id}-Auditoría de arquitectura de software`])?.id
+        },
+        {
+            puntuacion: 4,
+            comentario: "Revisión de cumplimiento normativo completa, nos ahorró problemas legales futuros. Muy recomendada.",
+            id_profesional: profesionalValeria.id,
+            id_cliente: clienteGael,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalValeria.id && c.id_cliente === clienteGael && c.id_servicio === servByProf[`${profesionalValeria.id}-Auditoría de arquitectura de software`])?.id
+        },
+
+        // Franklin - 2 citas completadas adicionales
+        {
+            puntuacion: 5,
+            comentario: "Refactorización a microservicios perfecta, arquitectura limpia y tests automatizados. Trabajo de alto nivel.",
+            id_profesional: profesionalFranklin.id,
+            id_cliente: clienteFabian,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalFranklin.id && c.id_cliente === clienteFabian && c.id_servicio === servByProf[`${profesionalFranklin.id}-Refactorización y modernización de aplicaciones`])?.id
+        },
+        {
+            puntuacion: 4,
+            comentario: "Pentesting exhaustivo, reporte de vulnerabilidades claro y plan de remediación accionable.",
+            id_profesional: profesionalFranklin.id,
+            id_cliente: clienteGael,
+            id_cita: citasCompletadas.find(c => c.id_profesional === profesionalFranklin.id && c.id_cliente === clienteGael && c.id_servicio === servByProf[`${profesionalFranklin.id}-Revisión de seguridad básica`])?.id
         }
     ];
 
