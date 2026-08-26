@@ -80,9 +80,18 @@ export class ProfesionalCreatePage {
         this.router.navigate(['/profesionales'])
       },
       error: (error) => {
-        console.error('Error al crear:', error)
-        this.error.set('No se pudo registrar el profesional')
-        this.saving.set(false)
+
+          console.error(
+              'Error al crear:',
+              error
+          )
+
+          this.error.set(
+              error.error?.message
+              ?? 'No se pudo registrar el profesional'
+          )
+
+          this.saving.set(false)
       },
       complete: () => {
         this.saving.set(false)

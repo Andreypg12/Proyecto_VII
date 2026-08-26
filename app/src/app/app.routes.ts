@@ -37,6 +37,8 @@ import { Reportes } from './pages/reportes/reportes'
 //Full calendar proceso
 import { CitasAgenda } from './pages/citas/agenda/agenda';
 
+
+
 export const routes: Routes = [
 
     {
@@ -71,9 +73,10 @@ export const routes: Routes = [
 
             // Profesionales
             { path: 'profesionales', component: ProfesionalesList, title: 'Profesionales' },
-            { path: 'profesionales/crear', component: ProfesionalCreatePage, title: 'Registrar profesional' },
+            { path: 'profesionales/crear', component: ProfesionalCreatePage, title: 'Registrar profesional'},
             { path: 'profesionales/editar/:id', component: ProfesionalEditPage, title: 'Actualizar profesional', canActivate: [authGuard, roleGuard(['PROFESIONAL'])] },
             { path: 'profesionales/:id', component: ProfesionalDetail, title: 'Profesional' },
+            
 
             // Citas
             { path: 'citas', component: CitasList, title: 'Citas', canActivate: [authGuard] },

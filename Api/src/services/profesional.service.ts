@@ -1,4 +1,6 @@
-import { Rol } from "../../generated/prisma/enums";
+import { EstadoUsuario, Rol} from "../../generated/prisma/enums";
+
+import { hash } from "bcryptjs";
 import { prisma } from "../config/prisma";
 import { UpdateEspecialidadDto } from "../dtos/especialidad.dto";
 import { CreateProfesionalDto, UpdateProfesionalDto } from "../dtos/profesional.dto";
@@ -160,8 +162,11 @@ export const profesionalService = {
 
     async crear(data: CreateProfesionalDto) {
 
+        // Validar que las especialidades enviadas existan
         if (data.especialidades_Ids?.length) {
-            await this.validateEspecialidades(data.especialidades_Ids)
+            await this.validateEspecialidades(
+                data.especialidades_Ids
+            );
         }
 
         const hashedPassword = await bcrypt.hash(data.usuario.password, 10);
@@ -176,36 +181,159 @@ export const profesionalService = {
             }
         })
 
-        const profesional = await prisma.perfilProfesional.create({
-            data: {
-                titulo: data.titulo,
-                descripcion: data.descripcion,
-                tarifa_por_hora: data.tarifa_por_hora,
-                annos_experiencia: data.annos_experiencia,
-                imagen_profesional: data.imagen_profesional ?? "image-not-found.jpg",
-                disponibilidad: data.disponibilidad ?? true,
-                modalidad: data.modalidad,
-                telefono: data.telefono ?? "00000000",
-                id_usuario: usuario.id,
-                especialidades: {
-                    connect: data.especialidades_Ids?.map(id => ({ id })) || []
+        // Normalizar el correo
+        const emailNormalizado =
+            data.usuario.email
+                .trim()
+                .toLowerCase();
+
+
+        // Verificar que el correo no esté registrado
+        const usuarioExistente =
+            await prisma.usuario.findUnique({
+                where: {
+                    email: emailNormalizado
                 }
-            }
-        });
+            });
 
-        await prisma.ubicacionProfesional.create({
-            data: {
-                descripcion: data.ubicacion.descripcion,
-                id_distrito: data.ubicacion.id_distrito,
-                distrito: data.ubicacion.distrito,
-                canton: data.ubicacion.canton,
-                ciudad: data.ubicacion.ciudad,
-                id_profesional: profesional.id
-            }
-        });
 
-        return profesional
+        if (usuarioExistente) {
+            throw AppError.badRequest(
+                "El correo electrónico ya se encuentra registrado"
+            );
+        }
 
+
+        // Hashear la contraseña antes de almacenarla
+        const passwordHash =
+            await hash(
+                data.usuario.password,
+                10
+            );
+
+
+        // Usuario, perfil y ubicación deben crearse
+        // como una sola operación.
+        const profesional =
+            await prisma.$transaction(
+                async (tx) => {
+
+                    // Crear el usuario del profesional
+                    const usuario =
+                        await tx.usuario.create({
+                            data: {
+                                email:
+                                    emailNormalizado,
+
+                                nombre:
+                                    data.usuario.nombre.trim(),
+
+                                apellidos:
+                                    data.usuario.apellidos.trim(),
+
+                                // El teléfono del formulario profesional
+                                // también se utiliza para la cuenta.
+                                telefono:
+                                    data.telefono.trim(),
+
+                                password:
+                                    passwordHash,
+
+                                // Este registro siempre crea
+                                // un usuario profesional.
+                                rol:
+                                    Rol.PROFESIONAL,
+
+                                estado:
+                                    EstadoUsuario.ACTIVO
+                            }
+                        });
+
+
+                    // Crear el perfil profesional
+                    const nuevoProfesional =
+                        await tx.perfilProfesional.create({
+                            data: {
+                                titulo:
+                                    data.titulo,
+
+                                descripcion:
+                                    data.descripcion,
+
+                                tarifa_por_hora:
+                                    data.tarifa_por_hora,
+
+                                annos_experiencia:
+                                    data.annos_experiencia,
+
+                                imagen_profesional:
+                                    data.imagen_profesional
+                                    ?? "image-not-found.jpg",
+
+                                disponibilidad:
+                                    data.disponibilidad
+                                    ?? true,
+
+                                modalidad:
+                                    data.modalidad,
+
+                                telefono:
+                                    data.telefono,
+
+                                id_usuario:
+                                    usuario.id,
+
+                                especialidades: {
+                                    connect:
+                                        data.especialidades_Ids
+                                            ?.map(
+                                                id => ({
+                                                    id
+                                                })
+                                            )
+                                        ?? []
+                                }
+                            }
+                        });
+
+
+                    // Crear ubicación del profesional
+                    await tx
+                        .ubicacionProfesional
+                        .create({
+                            data: {
+                                descripcion:
+                                    data.ubicacion
+                                        .descripcion,
+
+                                id_distrito:
+                                    data.ubicacion
+                                        .id_distrito,
+
+                                distrito:
+                                    data.ubicacion
+                                        .distrito,
+
+                                canton:
+                                    data.ubicacion
+                                        .canton,
+
+                                ciudad:
+                                    data.ubicacion
+                                        .ciudad,
+
+                                id_profesional:
+                                    nuevoProfesional.id
+                            }
+                        });
+
+
+                    return nuevoProfesional;
+                }
+            );
+
+
+        return profesional;
     },
 
     async actualizar(id: number, data: UpdateProfesionalDto, usuarioAutenticado?: { id: number }) {

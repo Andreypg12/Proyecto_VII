@@ -13,18 +13,13 @@ export const authGuard: CanActivateFn = ( route, state ) => {
     const notification = inject(NotificationService);
 
     // Ya existe una sesión autenticada
-
     if (authService.autenticado()) {
         return true;
     }
 
-
     // La sesión ya fue revisada y no existe token
-
     if ( authService.sesionInicializada() && !authService.obtenerToken() ) {
-
         notification.error( 'Debe iniciar sesión para acceder a este módulo.' );
-
         return router.createUrlTree(
             [
                 '/login'
@@ -38,35 +33,20 @@ export const authGuard: CanActivateFn = ( route, state ) => {
     }
 
 
-
     // Todavía no sabemos si existe una sesión.
     // Intentamos restaurarla.
-    return authService
-
-        .inicializarSesion()
-
+    return authService.inicializarSesion()
         .pipe(
-
-            map((usuario) => { // usuario es Usuario | null
-
+            map((usuario) => {
                 if (usuario) {
-
                     return true;
-
                 }
-
-                notification.error(
-                    'Debe iniciar sesión para acceder a este módulo.'
-                );
+                notification.error( 'Debe iniciar sesión para acceder a este módulo.' );
 
                 return router.createUrlTree(
-                    [
-                        '/login'
-                    ],
+                    [ '/login' ],
                     {
-                        queryParams: {
-                            returnUrl: state.url
-                        }
+                        queryParams: { returnUrl: state.url }
                     }
                 );
             })

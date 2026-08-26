@@ -27,9 +27,8 @@ export const createProfesionalSchema = z.object({
             .max(120, "Los apellidos no pueden superar los 120 caracteres"),
         password: z
             .string()
-            .trim()
-            .min(3, "La contraseña deben tener al menos 3 caracteres")
-            .max(251, "La contraseña no pueden superar los 251 caracteres"),
+            .min(6, "La contraseña debe tener al menos 6 caracteres")
+            .max(255, "La contraseña no puede superar los 255 caracteres"),
     }),
     titulo: z
         .string()
