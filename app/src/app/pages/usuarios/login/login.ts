@@ -29,6 +29,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoginRequest } from '../../../core/models/usuario.model';
 
+import { HttpErrorResponse } from '@angular/common/http';
+
 
 @Component({
     selector: 'app-login',
@@ -155,12 +157,36 @@ export class Login {
                 },
 
 
-                error: (error) => {
+                error: (error: HttpErrorResponse) => {
 
+                    // Angular no logró comunicarse con el API
+                    if (error.status === 0) {
+
+                        this.errorServidor.set(
+                            'No se pudo conectar con el servidor. Intente nuevamente.'
+                        );
+
+                        return;
+                    }
+
+                    // El API respondió, pero las credenciales son incorrectas
+                    if (
+                        error.status === 401 ||
+                        error.status === 400
+                    ) {
+
+                        this.errorServidor.set(
+                            error.error?.message
+                            ?? 'Correo o contraseña incorrectos.'
+                        );
+
+                        return;
+                    }
+
+                    // Cualquier otro error
                     this.errorServidor.set(
                         error.error?.message
-                        ??
-                        'No fue posible iniciar sesión.'
+                        ?? 'No fue posible iniciar sesión.'
                     );
                 }
 

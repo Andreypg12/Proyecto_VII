@@ -146,52 +146,84 @@ export class Registro {
 
 
     registrar(): void {
-        if (
-            this.registrando() ||
-            this.registroForm().invalid() ||
-            this.passwordsNoCoinciden()
-        ) {
+
+        // Evitar doble envío mientras ya se está registrando
+        if (this.registrando()) {
             return;
         }
 
+        // Limpiar mensajes anteriores
         this.mensajeError.set('');
         this.mensajeExito.set('');
 
-        const valores =
-            this.model();
+        // Marca el formulario y sus campos como tocados.
+        // Esto permite mostrar los mensajes de validación.
+        this.registroForm().markAsTouched();
+
+        // Si el formulario tiene errores,
+        // no se envía la petición al API.
+        if ( this.registroForm().invalid() || this.passwordsNoCoinciden() ) {
+            this.mensajeError.set( 'Complete correctamente los campos obligatorios.' );
+            return;
+        }
+
+
+        const valores = this.model();
+
 
         const data: RegisterRequest = {
             nombre: valores.nombre.trim(),
             apellidos: valores.apellidos.trim(),
             email: valores.email.trim(),
             telefono: valores.telefono.trim(),
-            password: valores.password,
+            password:valores.password,
         };
 
         this.registrando.set(true);
-        this.authService .registrar(data) .pipe(
+
+        this.authService
+            .registrar(data)
+            .pipe(
+
                 finalize(() =>
                     this.registrando.set(false)
                 )
+
             )
             .subscribe({
+
                 next: () => {
-                    this.mensajeExito.set('Cuenta creada correctamente.');
+
+                    this.mensajeExito.set(
+                        'Cuenta creada correctamente.'
+                    );
+
+
                     setTimeout(() => {
+
                         void this.router.navigate(
                             ['/login']
                         );
+
                     }, 1200);
+
                 },
 
+
                 error: (
-                    error:
-                        HttpErrorResponse
+                    error: HttpErrorResponse
                 ) => {
 
-                    this.mensajeError.set( error.error?.message ??'No fue posible crear la cuenta.');
+                    this.mensajeError.set(
+                        error.error?.message
+                        ??
+                        'No fue posible crear la cuenta.'
+                    );
+
                 }
+
             });
+
     }
 
 }

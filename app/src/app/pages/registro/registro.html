@@ -26,14 +26,19 @@
                     <mat-label> Nombre </mat-label>
                     <mat-icon matPrefix> person </mat-icon>
                     <input matInput type="text" [formField]="registroForm.nombre">
-                    @if (
-                    registroForm.nombre().touched() &&
-                    registroForm.nombre().invalid()
-                    ) {
-                    <mat-error>
-                        El nombre debe tener al menos
-                        3 caracteres.
-                    </mat-error>
+                    @if (registroForm.nombre().touched()) {
+
+                        @for (
+                            error of registroForm.nombre().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
                     }
                 </mat-form-field>
 
@@ -43,14 +48,19 @@
                     <mat-icon matPrefix> badge </mat-icon>
 
                     <input matInput type="text" [formField]="registroForm.apellidos">
-                    @if (
-                    registroForm.apellidos().touched() &&
-                    registroForm.apellidos().invalid()
-                    ) {
-                    <mat-error>
-                        Los apellidos deben tener al menos
-                        3 caracteres.
-                    </mat-error>
+                    @if (registroForm.apellidos().touched()) {
+
+                        @for (
+                            error of registroForm.apellidos().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
                     }
                 </mat-form-field>
 
@@ -60,12 +70,19 @@
                     <mat-icon matPrefix> mail </mat-icon>
 
                     <input matInput type="email" [formField]="registroForm.email">
-                    @if (
-                    registroForm.email().touched() &&
-                    registroForm.email().invalid()
-                    ) {
+                    @if (registroForm.email().touched()) {
 
-                    <mat-error> Ingrese un correo electrónico válido. </mat-error>
+                        @for (
+                            error of registroForm.email().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
                     }
                 </mat-form-field>
 
@@ -76,12 +93,19 @@
                     <mat-icon matPrefix> phone </mat-icon>
                     <input matInput type="tel" [formField]="registroForm.telefono">
 
-                    @if (
-                    registroForm.telefono().touched() &&
-                    registroForm.telefono().invalid()
-                    ) {
+                    @if (registroForm.telefono().touched()) {
 
-                    <mat-error> Ingrese un teléfono válido. </mat-error>
+                        @for (
+                            error of registroForm.telefono().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
                     }
                 </mat-form-field>
 
@@ -109,15 +133,19 @@
                         </mat-icon>
                     </button>
 
-                    @if (
-                    registroForm.password().touched() &&
-                    registroForm.password().invalid()
-                    ) {
+                    @if (registroForm.password().touched()) {
 
-                    <mat-error>
-                        La contraseña debe tener al menos
-                        6 caracteres.
-                    </mat-error>
+                        @for (
+                            error of registroForm.password().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
                     }
                 </mat-form-field>
 
@@ -149,13 +177,30 @@
 
                     </button>
 
-                    @if (
-                    registroForm.confirmarPassword().touched()
-                    &&
-                    passwordsNoCoinciden()
-                    ) {
+                    @if (registroForm.confirmarPassword().touched()) {
 
-                    <mat-error> Las contraseñas no coinciden. </mat-error>
+                        @for (
+                            error of registroForm.confirmarPassword().errors();
+                            track error.kind
+                        ) {
+
+                            <mat-error>
+                                {{ error.message }}
+                            </mat-error>
+
+                        }
+
+                        @if (
+                            !registroForm.confirmarPassword().invalid() &&
+                            passwordsNoCoinciden()
+                        ) {
+
+                            <mat-error>
+                                Las contraseñas no coinciden.
+                            </mat-error>
+
+                        }
+
                     }
                 </mat-form-field>
             </div>
@@ -181,26 +226,24 @@
             }
 
             <div class="form-actions">
+
                 <button
                     mat-flat-button
                     type="submit"
-                    [disabled]="
-                        registrando() ||
-                        registroForm().invalid() ||
-                        passwordsNoCoinciden()
-                    ">
-                    @if (registrando()) {
+                    [disabled]="registrando()"
+                >
 
+                    @if (registrando()) {
                         <span class="button-content">
                             <mat-spinner diameter="18" />
-                            <span>Creando cuenta...</span>
+                            <span> Creando cuenta... </span>
                         </span>
 
                     } @else {
 
                         <span class="button-content">
-                            <mat-icon>person_add</mat-icon>
-                            <span>Crear cuenta</span>
+                            <mat-icon> person_add </mat-icon>
+                            <span> Crear cuenta </span>
                         </span>
                     }
                 </button>

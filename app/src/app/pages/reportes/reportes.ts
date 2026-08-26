@@ -436,44 +436,31 @@ export class Reportes {
 
     // CARGAR REPORTE
     cargarReporte(): void {
-
         this.cargando.set(true);
-
         this.error.set(null);
-
-        const valores =
-            this.filtrosForm.getRawValue();
+        const usuarioActual = this.authService.usuario();
 
 
-        const filtros:
-            FiltrosReporteCitasEstado = {};
+        if (!usuarioActual) {
+            this.error.set( 'No existe un usuario autenticado' );
+            this.cargando.set(false);
+            return;
+        }
+
+        const valores = this.filtrosForm.getRawValue();
+
+        const filtros: FiltrosReporteCitasEstado = {};
 
 
         // Fecha desde
         if (valores.fechaDesde) {
-
-            filtros.fechaDesde =
-                valores.fechaDesde;
+            filtros.fechaDesde = valores.fechaDesde;
         }
-
 
         // Fecha hasta
         if (valores.fechaHasta) {
-
-            filtros.fechaHasta =
-                valores.fechaHasta;
+            filtros.fechaHasta = valores.fechaHasta;
         }
-
-
-        // Profesional
-        if (valores.idProfesional) {
-
-            filtros.idProfesional =
-                Number(
-                    valores.idProfesional
-                );
-        }
-
 
         // Categoría
         if (valores.idCategoria) {
@@ -482,11 +469,89 @@ export class Reportes {
                 Number(
                     valores.idCategoria
                 );
+
         }
 
+        if ( usuarioActual.rol === 'ADMINISTRADOR' ) {
+
+            if (valores.idProfesional) {
+                filtros.idProfesional = Number( valores.idProfesional );
+            }
+
+            this.consultarReporteEstado( filtros );
+            return;
+        }
+
+        if ( usuarioActual.rol === 'PROFESIONAL' ) {
+
+            this.profesionalService
+                .listar()
+                .subscribe({
+
+                    next: (response) => {
+
+                        const profesionalActual =
+                            response.data.find(
+                                profesional =>
+                                    Number(
+                                        profesional.id_usuario ??
+                                        profesional.usuario?.id
+                                    ) ===
+                                    Number(
+                                        usuarioActual.id
+                                    )
+                            );
+
+
+                        if (!profesionalActual) {
+
+                            this.error.set( 'No se encontró el perfil profesional del usuario autenticado' );
+                            this.cargando.set(false);
+                            return;
+                        }
+
+
+                        // Forzamos el ID del profesional autenticado.
+                        // No dependemos de lo seleccionado en el formulario.
+                        filtros.idProfesional = profesionalActual.id;
+
+                        // Se guarda también el ID en el formulario.
+                        this.filtrosForm.patchValue(
+                            {
+                                idProfesional:
+                                    profesionalActual.id.toString()
+                            }, { emitEvent: false}
+                        );
+
+
+                        this.consultarReporteEstado(filtros );
+                    },
+
+
+                    error: (error) => {
+                        console.error( 'Error obteniendo el perfil profesional:', error );
+                        this.error.set( 'No fue posible obtener el perfil profesional' );
+                        this.cargando.set(false);
+                    }
+                });
+
+            return;
+        }
+
+        this.error.set(
+            'No tiene permisos para consultar este reporte'
+        );
+
+        this.cargando.set(false);
+
+    }
+
+    private consultarReporteEstado( filtros: FiltrosReporteCitasEstado ): void {
 
         this.reporteService
-            .obtenerCitasPorEstado(filtros)
+            .obtenerCitasPorEstado(
+                filtros
+            )
             .subscribe({
 
                 next: (response) => {
@@ -496,7 +561,9 @@ export class Reportes {
                     );
 
                     this.cargando.set(false);
+
                 },
+
 
                 error: (error) => {
 
@@ -511,9 +578,11 @@ export class Reportes {
                     );
 
                     this.cargando.set(false);
+
                 }
 
             });
+
     }
 
 

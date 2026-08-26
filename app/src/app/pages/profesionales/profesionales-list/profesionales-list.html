@@ -8,10 +8,22 @@
             </p>
         </div>
         <div class="header-actions">
-            <button mat-flat-button color="primary" class="add-button" [routerLink]="['/profesionales/crear']">
-                <mat-icon>add</mat-icon>
-                Nuevo Profesional
-            </button>
+            @if (puedeCrearProfesional()) {
+
+                    <button
+                        mat-flat-button
+                        [routerLink]="[
+                            '/profesionales/crear'
+                        ]"
+                    >
+                        <mat-icon>
+                            add
+                        </mat-icon>
+
+                        Nuevo Profesional
+                    </button>
+
+                }
         </div>
     </div>
 </section>
@@ -131,14 +143,42 @@
                     <span class="precio-valor">${{ profesional.tarifa_por_hora | number }}</span>
                     <span class="precio-unit">/ hora</span>
                 </div>
-                <div class="disponibilidad-switch" [class.available]="profesional.disponibilidad"
-                    [class.unavailable]="!profesional.disponibilidad"
-                    (click)="cambiarDisponibilidad(profesional, $event)"
-                    matTooltip="{{ profesional.disponibilidad ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
-                    matTooltipPosition="above">
-                    <mat-icon class="switch-icon">{{ profesional.disponibilidad ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-                    <span class="switch-label">{{ profesional.disponibilidad ? 'Activo' : 'Inactivo' }}</span>
-                </div>
+                @if (puedeCambiarDisponibilidad(profesional)) {
+
+                    <div
+                        class="disponibilidad-switch"
+                        [class.available]="profesional.disponibilidad"
+                        [class.unavailable]="!profesional.disponibilidad"
+                        (click)="cambiarDisponibilidad(profesional, $event)"
+                        matTooltip="{{ profesional.disponibilidad ? 'Haz clic para desactivar' : 'Haz clic para activar' }}"
+                        matTooltipPosition="above"
+                    >
+                        <mat-icon class="switch-icon">
+                            {{ profesional.disponibilidad ? 'toggle_on' : 'toggle_off' }}
+                        </mat-icon>
+
+                        <span class="switch-label">
+                            {{ profesional.disponibilidad ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </div>
+
+                } @else {
+
+                    <div
+                        class="disponibilidad-switch"
+                        [class.available]="profesional.disponibilidad"
+                        [class.unavailable]="!profesional.disponibilidad"
+                    >
+                        <mat-icon class="switch-icon">
+                            {{ profesional.disponibilidad ? 'toggle_on' : 'toggle_off' }}
+                        </mat-icon>
+
+                        <span class="switch-label">
+                            {{ profesional.disponibilidad ? 'Activo' : 'Inactivo' }}
+                        </span>
+                    </div>
+
+                }
             </div>
         </mat-card-content>
 
