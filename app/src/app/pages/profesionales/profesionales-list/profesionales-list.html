@@ -8,10 +8,22 @@
             </p>
         </div>
         <div class="header-actions">
-            <button mat-flat-button color="primary" class="add-button" [routerLink]="['/profesionales/crear']">
-                <mat-icon>add</mat-icon>
-                Nuevo Profesional
-            </button>
+            @if (puedeCrearProfesional()) {
+
+                    <button
+                        mat-flat-button
+                        [routerLink]="[
+                            '/profesionales/crear'
+                        ]"
+                    >
+                        <mat-icon>
+                            add
+                        </mat-icon>
+
+                        Nuevo Profesional
+                    </button>
+
+                }
         </div>
     </div>
 </section>

@@ -55,6 +55,19 @@ export class ProfesionalesList implements OnInit {
   private readonly authService =
     inject(AuthService);
 
+    readonly puedeCrearProfesional =
+    computed(() => {
+
+        const rol =
+            this.authService.usuario()?.rol;
+
+        return (
+            rol === 'ADMINISTRADOR' ||
+            rol === 'PROFESIONAL'
+        );
+
+    });
+
 
   ngOnInit(): void {
     this.loadProfesionales();
