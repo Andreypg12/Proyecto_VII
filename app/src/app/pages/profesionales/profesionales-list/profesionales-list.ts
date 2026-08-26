@@ -254,4 +254,31 @@ export class ProfesionalesList implements OnInit {
 
       return false;
   }
+
+  esPerfilProfesionalPropio(
+        profesional: Profesional
+    ): boolean {
+
+        const usuario =
+            this.authService.usuario();
+
+        if (!usuario) {
+            return false;
+        }
+
+        if (
+            usuario.rol !== 'PROFESIONAL'
+        ) {
+            return false;
+        }
+
+        return (
+            Number(
+                profesional.id_usuario ??
+                profesional.usuario?.id
+            )
+            ===
+            Number(usuario.id)
+        );
+    }
 }

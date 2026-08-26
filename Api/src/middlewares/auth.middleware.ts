@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import { StatusCodes } from "http-status-codes";
 import jwt, {JwtPayload, Secret} from "jsonwebtoken";
-export interface AuthTokenPayload extends JwtPayload {
+export interface AuthTokenPayload extends JwtPayload { //Lo que se espera que tenga el jwt
     id: number;
     email: string;
     rol: string;

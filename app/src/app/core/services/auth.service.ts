@@ -230,6 +230,8 @@ export class AuthService {
         return this.solicitudPerfilActual;
     }
 
+
+    
     logout(redirigir = true): void {
 
     this.limpiarSesion();

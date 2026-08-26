@@ -8,7 +8,7 @@
             </p>
         </div>
         <div class="header-actions">
-            @if (puedeCrearProfesional()) {
+            
 
                     <button
                         mat-flat-button
@@ -23,7 +23,7 @@
                         Nuevo Profesional
                     </button>
 
-                }
+                
         </div>
     </div>
 </section>
@@ -183,10 +183,17 @@
         </mat-card-content>
 
         <mat-card-actions align="end" class="card-acciones">
+
+        @if (
+            esPerfilProfesionalPropio(
+                profesional
+            )
+        ) {
             <a mat-stroked-button class="admin-btn" [routerLink]="['/profesionales/editar', profesional.id]">
                 <mat-icon>edit</mat-icon>
                 Editar
             </a>
+        }
             <a mat-stroked-button class="admin-btn" [routerLink]="['/profesionales', profesional.id]">
                 <mat-icon>more_horiz</mat-icon>
                 Detalle
